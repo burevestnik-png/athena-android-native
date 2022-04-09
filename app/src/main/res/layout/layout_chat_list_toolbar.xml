@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/toolbar"
+    style="@style/Toolbar">
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="start"
+        android:layout_marginStart="10dp"
+        android:contentDescription="@string/chat_list_toolbar_edit_desc"
+        android:src="@drawable/ic_baseline_edit_24" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/chat_list_toolbar_title_chats"
+        android:textSize="20sp"
+        tools:text="Chats" />
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="end"
+        android:layout_marginEnd="10dp"
+        android:contentDescription="@string/chat_list_toolbar_create_desc"
+        android:src="@drawable/ic_baseline_add_24" />
+
+</androidx.appcompat.widget.Toolbar>
