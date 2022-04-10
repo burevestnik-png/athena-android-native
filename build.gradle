@@ -15,6 +15,10 @@ buildscript {
         hilt_version = '2.38.1'
         androidx_hilt_version = "1.0.0-alpha03"
     }
+
+    dependencies {
+        classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
+    }
 }
 
 plugins {

@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.chat.adapter.MessageAdapter
 import ru.yofik.athena.chat.viewmodel.ChatViewModel
 import ru.yofik.athena.common.WorkspaceActivity
@@ -19,6 +20,7 @@ import timber.log.Timber
 
 private const val ARG_NAME = "ru.yofik.athena.chat.view.name"
 
+@AndroidEntryPoint
 class ChatFragment : Fragment() {
     private var _binding: FragmentChatBinding? = null
     private val binding: FragmentChatBinding

@@ -7,12 +7,14 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.databinding.FragmentSettingsBinding
 
 /**
  * A simple [Fragment] subclass. Use the [SettingsFragment.newInstance] factory method to create an
  * instance of this fragment.
  */
+@AndroidEntryPoint
 class SettingsFragment : Fragment() {
     private var _binding: FragmentSettingsBinding? = null
     private val binding: FragmentSettingsBinding

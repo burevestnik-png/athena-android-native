@@ -1,17 +1,18 @@
 package ru.yofik.athena.common.data.di
 
+import com.facebook.stetho.okhttp3.StethoInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import ru.yofik.athena.BuildConfig
 import ru.yofik.athena.common.data.api.ApiConstants
 import ru.yofik.athena.common.data.api.UserApi
-import ru.yofik.athena.common.data.api.interceptors.LoggingInterceptor
+import ru.yofik.athena.common.data.api.interceptors.AuthenticationInterceptor
 import ru.yofik.athena.common.data.api.interceptors.NetworkStatusInterceptor
 
 @Module
@@ -26,7 +27,6 @@ object ApiModule {
 
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit.Builder {
-
         return Retrofit.Builder()
             .baseUrl(ApiConstants.BASE_ENDPOINT)
             .client(okHttpClient)
@@ -35,23 +35,16 @@ object ApiModule {
 
     @Provides
     fun provideOkHttpClient(
-        httpLoggingInterceptor: HttpLoggingInterceptor,
         networkStatusInterceptor: NetworkStatusInterceptor,
+        authenticationInterceptor: AuthenticationInterceptor
     ): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addInterceptor(networkStatusInterceptor)
-            .addInterceptor(httpLoggingInterceptor)
-            .build()
-    }
+        val builder =
+            OkHttpClient.Builder()
+                .addInterceptor(networkStatusInterceptor)
+                .addInterceptor(authenticationInterceptor)
 
-    @Provides
-    fun provideHttpLoggingInterceptor(
-        loggingInterceptor: LoggingInterceptor
-    ): HttpLoggingInterceptor {
-        val interceptor = HttpLoggingInterceptor(loggingInterceptor)
+        if (BuildConfig.DEBUG) builder.addNetworkInterceptor(StethoInterceptor())
 
-        interceptor.level = HttpLoggingInterceptor.Level.BODY
-
-        return interceptor
+        return builder.build()
     }
 }

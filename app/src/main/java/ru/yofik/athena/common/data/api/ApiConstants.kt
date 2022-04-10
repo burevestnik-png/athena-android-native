@@ -1,26 +1,16 @@
 package ru.yofik.athena.common.data.api
 
 object ApiConstants {
-  const val BASE_ENDPOINT = "https://api.petfinder.com/v2/"
-  const val AUTH_ENDPOINT = "oauth2/token/"
+    const val BASE_ENDPOINT = "http://10.0.2.2:8080"
 
-  const val ANIMALS_ENDPOINT = "animals"
-  const val USER_ENDPOINT = ""
+    const val V1 = "/api/v1"
+    const val ACTIVATE_ENDPOINT = "$V1/users/activation"
+
+    const val CLIENT_TOKEN =
+        "eyJhbGciOiJBMTI4S1ciLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0.9hySVyyM-nhE5E41Y48LTiaiTr-of2Xl-Khr_EqvZcBPEt7Kjzj3Sw.xeNpU7r7PDj2RFSuC6Ncrw.243VkwN2Y4wGM6f0qLHGXtoaoyFiHNvj2UfG7TSSQTxD0jFBGKPW79B5dRYOd-VeHglmnXcsNaqqpjCQdJiNtH_sHGvaX8c7e6BGk2Y3uLaOcX106cEGkJtEUhe5BqzW.OLeLKzI173aoAsYujY5U6g"
 }
 
 object ApiParameters {
-  const val TOKEN_TYPE = "Bearer "
-  const val AUTH_HEADER = "Authorization"
-  const val GRANT_TYPE_KEY = "grant_type"
-  const val GRANT_TYPE_VALUE = "client_credentials"
-  const val CLIENT_ID = "client_id"
-  const val CLIENT_SECRET = "client_secret"
-
-  const val PAGE = "page"
-  const val LIMIT = "limit"
-  const val LOCATION = "location"
-  const val DISTANCE = "distance"
-  const val NAME = "name"
-  const val AGE = "age"
-  const val TYPE = "type"
+    const val TOKEN_TYPE = "Bearer "
+    const val AUTH_HEADER = "Authorization"
 }

@@ -8,9 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.R
 import ru.yofik.athena.databinding.ActivityWorkspaceBinding
 
+
+@AndroidEntryPoint
 class WorkspaceActivity : AppCompatActivity() {
     private lateinit var binding: ActivityWorkspaceBinding
     private lateinit var navController: NavController

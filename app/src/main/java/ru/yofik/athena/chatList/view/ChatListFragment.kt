@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.R
 import ru.yofik.athena.chat.view.ChatFragment
 import ru.yofik.athena.chatList.adapter.ChatAdapter
@@ -16,6 +17,7 @@ import ru.yofik.athena.common.WorkspaceActivity
 import ru.yofik.athena.common.domain.model.chat.Chat
 import ru.yofik.athena.databinding.FragmentChatListBinding
 
+@AndroidEntryPoint
 class ChatListFragment : Fragment() {
     private var _binding: FragmentChatListBinding? = null
     private val binding

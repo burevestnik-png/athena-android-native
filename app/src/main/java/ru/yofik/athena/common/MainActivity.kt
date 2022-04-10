@@ -2,10 +2,12 @@ package ru.yofik.athena.common
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.R
 import ru.yofik.athena.databinding.ActivityMainBinding
 import ru.yofik.athena.login.view.LoginFragment
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
