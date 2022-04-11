@@ -4,7 +4,7 @@ import java.util.*
 
 /** Basic entity object */
 data class User(
-    val id: Int,
+    val id: Long,
     val name: String,
     val login: String
 ) {

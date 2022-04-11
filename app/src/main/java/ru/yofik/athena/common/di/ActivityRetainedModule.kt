@@ -48,5 +48,5 @@ abstract class ActivityRetainedModule {
 
     @Binds
     @ActivityRetainedScoped
-    abstract fun bindAnimalRepository(repository: UserRepositoryImpl): UserRepository
+    abstract fun bindUserRepository(repository: UserRepositoryImpl): UserRepository
 }

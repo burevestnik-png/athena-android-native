@@ -4,11 +4,15 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class AccessTokenDTO(@field:Json(name = "accessToken") val accessToken: String?)
+data class UserDTO(
+    @field:Json(name = "id") val id: Long?,
+    @field:Json(name = "name") val name: String?,
+    @field:Json(name = "login") val login: String?
+)
 
 @JsonClass(generateAdapter = true)
-class ActivateUserResponse(
-    @field:Json(name = "payload") val payload: AccessTokenDTO,
+class AuthUserResponse(
+    @field:Json(name = "payload") val payload: UserDTO,
     code: String,
     status: ResponseStatus
 ) : Response(code, status)
