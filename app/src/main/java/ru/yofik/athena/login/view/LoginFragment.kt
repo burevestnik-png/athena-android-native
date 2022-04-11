@@ -36,7 +36,6 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.code.observe(viewLifecycleOwner) { Timber.d("onViewCreated $it") }
         binding.submitButton.setOnClickListener {
             viewModel.activate()
 //            requireActivity().startActivity(WorkspaceActivity.intentOf(requireActivity()))

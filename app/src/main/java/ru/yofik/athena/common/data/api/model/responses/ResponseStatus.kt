@@ -13,5 +13,9 @@ enum class ResponseStatus(val code: Int, val status: String) {
     UNAUTHENTICATED(401, "UNAUTHENTICATED"),
     NOT_HAVE_PERMISSION(403, "NOT_HAVE_PERMISSION"),
     DEACTIVATED(403, "DEACTIVATED"),
-    UNEXPECTED_ERROR(500, "UNEXPECTED_ERROR")
+    UNEXPECTED_ERROR(500, "UNEXPECTED_ERROR");
+
+    override fun toString(): String {
+        return "ResponseStatus(code=$code, status='$status')"
+    }
 }

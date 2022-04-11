@@ -11,6 +11,8 @@ object ApiConstants {
 }
 
 object ApiParameters {
-    const val TOKEN_TYPE = "Bearer "
+    const val TOKEN_TYPE = "Bearer"
     const val AUTH_HEADER = "Authorization"
+    const val NO_AUTH_HEADER = "no-auth"
+    const val NO_AUTH_HEADER_FULL = "no-auth: "
 }
