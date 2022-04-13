@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_chats"
-        android:name="ru.yofik.athena.chatList.view.ChatListFragment"
+        android:name="ru.yofik.athena.chatList.presentation.ChatListFragment"
         android:label="@string/navigation_title_chats"
         tools:layout="@layout/fragment_chat_list" />
 

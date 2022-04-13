@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.R
 import ru.yofik.athena.databinding.ActivityMainBinding
-import ru.yofik.athena.login.view.LoginFragment
+import ru.yofik.athena.login.presentation.LoginFragment
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

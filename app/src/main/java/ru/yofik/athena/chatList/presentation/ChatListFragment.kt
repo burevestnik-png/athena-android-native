@@ -1,4 +1,4 @@
-package ru.yofik.athena.chatList.view
+package ru.yofik.athena.chatList.presentation
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,6 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.R
 import ru.yofik.athena.chat.view.ChatFragment
@@ -28,16 +27,18 @@ class ChatListFragment : Fragment() {
             (activity as AppCompatActivity).supportActionBar
                 ?: throw RuntimeException("View was initialized wrong")
 
-    private lateinit var recyclerView: RecyclerView
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentChatListBinding.inflate(inflater, container, false)
-        setupUI()
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupUI()
     }
 
     override fun onDestroyView() {
@@ -46,30 +47,48 @@ class ChatListFragment : Fragment() {
     }
 
     private fun setupUI() {
+        setupActionBar()
+        setupBottomNavigation()
+
+        val adapter = createAdapter()
+        setupRecyclerView(adapter)
+    }
+
+    private fun createAdapter(): ChatAdapter {
+        return ChatAdapter(
+            listOf(Chat.getLeshaChat()),
+            object : ChatAdapter.Callbacks {
+                override fun onChatSelected(chatView: Chat) {
+                    val fragment = ChatFragment.newInstance(chatView.name)
+                    this@ChatListFragment.parentFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.container_fragment, fragment)
+                        .addToBackStack(null)
+                        .commit()
+                }
+            }
+        )
+    }
+
+    private fun setupRecyclerView(adapter: ChatAdapter) {
+        binding.recyclerView.apply {
+            this.adapter = adapter
+            layoutManager = LinearLayoutManager(context)
+            // todo add in future
+            // setHasFixedSize(true)
+        }
+    }
+
+    private fun setupActionBar() {
         // Adding Toolbar & removing showing app name in title
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbarWrapper.toolbar)
         actionBar.title = ""
+    }
 
+    private fun setupBottomNavigation() {
         if (activity != null) {
             (activity as WorkspaceActivity).showBottomNavigation()
         }
-
-        recyclerView = binding.recyclerView
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter =
-            ChatAdapter(
-                listOf(Chat.getLeshaChat()),
-                object : ChatAdapter.Callbacks {
-                    override fun onChatSelected(chatView: Chat) {
-                        val fragment = ChatFragment.newInstance(chatView.name)
-                        this@ChatListFragment.parentFragmentManager
-                            .beginTransaction()
-                            .replace(R.id.container_fragment, fragment)
-                            .addToBackStack(null)
-                            .commit()
-                    }
-                }
-            )
     }
 
     companion object {

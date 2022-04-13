@@ -7,7 +7,7 @@ import ru.yofik.athena.common.domain.model.user.User
 data class Message(
     val id: Int,
     val text: String,
-    val senderId: Int,
+    val senderId: Long,
     val chatId: Int,
     val date: LocalDateTime = LocalDateTime.now(),
 ) {
