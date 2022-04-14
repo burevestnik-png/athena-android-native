@@ -21,7 +21,7 @@ constructor(
     private val accessTokenDtoMapper: AccessTokenDtoMapper,
     private val userDtoMapper: UserDtoMapper
 ) : UserRepository {
-    override suspend fun activateUser(code: String) {
+    override suspend fun requestActivateUser(code: String) {
         try {
             val request = ActivateUserRequest(code)
             val response = userApi.activate(request)
@@ -35,17 +35,24 @@ constructor(
         }
     }
 
-    override suspend fun authUser(): User {
+    // todo add custom exceptions
+    override suspend fun requestAuthUser() {
         try {
             val request = AuthUserRequest(preferences.getAccessToken())
             val response = userApi.auth(request)
 
-            return userDtoMapper.mapToDomain(response.payload)
+            val user = userDtoMapper.mapToDomain(response.payload)
+            preferences.putUserInfo(user)
+
+            Timber.d("requestAuthUser: ${preferences.getUser()}")
         } catch (exception: HttpException) {
             throw NetworkException(exception.message ?: "Code ${exception.code()}")
         }
     }
 
+    override fun getCachedUser(): User {
+        return preferences.getUser()
+    }
 
     // todo why this is not working
     @Throws(NetworkException::class)

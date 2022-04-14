@@ -1,4 +1,4 @@
-package ru.yofik.athena.chatList.adapter
+package ru.yofik.athena.chatList.presentation
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

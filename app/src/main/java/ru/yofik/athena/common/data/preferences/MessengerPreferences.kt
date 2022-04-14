@@ -5,6 +5,10 @@ import android.content.SharedPreferences
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_ACCESS_TOKEN
+import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_USER_ID
+import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_USER_LOGIN
+import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_USER_NAME
+import ru.yofik.athena.common.domain.model.user.User
 
 class MessengerPreferences @Inject constructor(@ApplicationContext context: Context) : Preferences {
     private val preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
@@ -18,9 +22,39 @@ class MessengerPreferences @Inject constructor(@ApplicationContext context: Cont
     }
 
     override fun deleteAccessToken() {
+        edit { remove(KEY_ACCESS_TOKEN) }
+    }
+
+    override fun putUserInfo(user: User) {
         edit {
-            remove(KEY_ACCESS_TOKEN)
+            putLong(KEY_USER_ID, user.id)
+            putString(KEY_USER_LOGIN, user.login)
+            putString(KEY_USER_NAME, user.name)
         }
+    }
+
+    override fun getUser(): User {
+        return User(id = getUserId(), name = getUserName(), login = getUserLogin())
+    }
+
+    override fun deleteUserInfo() {
+        edit {
+            remove(KEY_USER_ID)
+            remove(KEY_USER_NAME)
+            remove(KEY_USER_LOGIN)
+        }
+    }
+
+    private fun getUserId(): Long {
+        return preferences.getLong(KEY_USER_ID, -1)
+    }
+
+    private fun getUserLogin(): String {
+        return preferences.getString(KEY_USER_LOGIN, "").orEmpty()
+    }
+
+    private fun getUserName(): String {
+        return preferences.getString(KEY_USER_NAME, "").orEmpty()
     }
 
     private inline fun edit(block: SharedPreferences.Editor.() -> Unit) {

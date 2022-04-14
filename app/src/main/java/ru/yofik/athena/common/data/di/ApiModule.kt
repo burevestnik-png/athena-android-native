@@ -22,7 +22,7 @@ object ApiModule {
     @Provides
     @Singleton
     fun provideUserApi(builder: Retrofit.Builder): UserApi {
-        return builder.build().create(UserApi::class.java)
+        return builder.build().create(UserApi::class.java) 
     }
 
     @Provides

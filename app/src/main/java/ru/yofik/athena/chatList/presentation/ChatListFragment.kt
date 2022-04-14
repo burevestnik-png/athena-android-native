@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.R
 import ru.yofik.athena.chat.view.ChatFragment
-import ru.yofik.athena.chatList.adapter.ChatAdapter
 import ru.yofik.athena.common.WorkspaceActivity
 import ru.yofik.athena.common.domain.model.chat.Chat
 import ru.yofik.athena.databinding.FragmentChatListBinding

@@ -11,12 +11,16 @@ import ru.yofik.athena.common.domain.model.NetworkException
 import ru.yofik.athena.common.domain.model.NetworkUnavailableException
 import ru.yofik.athena.common.presentation.FailureEvent
 import ru.yofik.athena.login.domain.usecases.RequestUserActivation
+import ru.yofik.athena.login.domain.usecases.RequestUserInfo
 import timber.log.Timber
 
 @HiltViewModel
 class LoginFragmentViewModel
 @Inject
-constructor(private val requestUserActivation: RequestUserActivation) : ViewModel() {
+constructor(
+    private val requestUserActivation: RequestUserActivation,
+    private val requestUserInfo: RequestUserInfo
+) : ViewModel() {
 
     private val _state = MutableLiveData<LoginViewState>()
     val state: LiveData<LoginViewState>
@@ -52,6 +56,7 @@ constructor(private val requestUserActivation: RequestUserActivation) : ViewMode
         job =
             CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
                 requestUserActivation(code.value!!)
+                requestUserInfo()
 
                 withContext(Dispatchers.Main) {
                     _state.value =
@@ -62,10 +67,6 @@ constructor(private val requestUserActivation: RequestUserActivation) : ViewMode
 
     private fun setLoadingTrue() {
         _state.value = state.value!!.copy(loading = true)
-    }
-
-    private fun setLoadingFalse() {
-        _state.value = state.value!!.copy(loading = false)
     }
 
     private fun onFailure(failure: Throwable) {
