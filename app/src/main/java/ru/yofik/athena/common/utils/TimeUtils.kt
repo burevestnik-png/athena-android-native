@@ -11,3 +11,14 @@ fun LocalDateTime.toFormattedString(format: String = "HH:mm"): String {
     val dateTimeFormatter = DateTimeFormatter.ofPattern(format, Locale("ru"))
     return this.format(dateTimeFormatter)
 }
+
+object TimeUtils {
+    fun parseToLocalDateTime(dateTimeString: String): LocalDateTime {
+        return try {
+            LocalDateTime.parse(dateTimeString)
+        } catch (e: Exception) {
+            val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ")
+            LocalDateTime.parse(dateTimeString, dateFormatter)
+        }
+    }
+}

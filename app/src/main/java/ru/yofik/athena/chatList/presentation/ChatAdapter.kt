@@ -32,7 +32,7 @@ class ChatAdapter(private val chats: List<Chat>, private val callbacks: Callback
         fun bind(chat: Chat) {
             binding.apply {
                 this.chat = chat
-                this.timestamp = chat.lastMessage.date.toFormattedString()
+                this.timestamp = ""
             }
         }
     }

@@ -7,10 +7,11 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.R
-import ru.yofik.athena.chat.view.ChatFragment
+import ru.yofik.athena.chat.presentation.ChatFragment
 import ru.yofik.athena.common.WorkspaceActivity
 import ru.yofik.athena.common.domain.model.chat.Chat
 import ru.yofik.athena.databinding.FragmentChatListBinding
@@ -26,6 +27,8 @@ class ChatListFragment : Fragment() {
             (activity as AppCompatActivity).supportActionBar
                 ?: throw RuntimeException("View was initialized wrong")
 
+    private val viewModel: ChatListFragmentViewModel by viewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -38,6 +41,7 @@ class ChatListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUI()
+        viewModel.onEvent(ChatListEvent.GetAllChats)
     }
 
     override fun onDestroyView() {
@@ -55,7 +59,7 @@ class ChatListFragment : Fragment() {
 
     private fun createAdapter(): ChatAdapter {
         return ChatAdapter(
-            listOf(Chat.getLeshaChat()),
+            emptyList(),
             object : ChatAdapter.Callbacks {
                 override fun onChatSelected(chatView: Chat) {
                     val fragment = ChatFragment.newInstance(chatView.name)

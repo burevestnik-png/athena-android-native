@@ -1,4 +1,4 @@
-package ru.yofik.athena.chat.view
+package ru.yofik.athena.chat.presentation
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,8 +11,6 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
-import ru.yofik.athena.chat.adapter.MessageAdapter
-import ru.yofik.athena.chat.viewmodel.ChatViewModel
 import ru.yofik.athena.common.WorkspaceActivity
 import ru.yofik.athena.common.domain.model.message.Message
 import ru.yofik.athena.databinding.FragmentChatBinding
@@ -34,7 +32,7 @@ class ChatFragment : Fragment() {
     private var name: String? = null
 
     private lateinit var recyclerView: RecyclerView
-    private val viewModel by viewModels<ChatViewModel>()
+    private val viewModel by viewModels<ChatFragmentViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +77,6 @@ class ChatFragment : Fragment() {
         if (activity != null) {
             (activity as WorkspaceActivity).hideBottomNavigation()
         }
-
 
         binding.lifecycleOwner = this
         binding.apply {

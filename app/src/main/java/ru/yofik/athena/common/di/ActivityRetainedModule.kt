@@ -39,7 +39,9 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.hilt.android.scopes.ActivityRetainedScoped
-import ru.yofik.athena.common.data.UserRepositoryImpl
+import ru.yofik.athena.common.data.repositories.ChatRepositoryImpl
+import ru.yofik.athena.common.data.repositories.UserRepositoryImpl
+import ru.yofik.athena.common.domain.repositories.ChatRepository
 import ru.yofik.athena.common.domain.repositories.UserRepository
 
 @Module
@@ -49,4 +51,8 @@ abstract class ActivityRetainedModule {
     @Binds
     @ActivityRetainedScoped
     abstract fun bindUserRepository(repository: UserRepositoryImpl): UserRepository
+
+    @Binds
+    @ActivityRetainedScoped
+    abstract fun bindChatRepository(repository: ChatRepositoryImpl): ChatRepository
 }

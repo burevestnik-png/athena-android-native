@@ -4,14 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.*
-import ru.yofik.athena.login.domain.usecases.RequestUserInfo
-import timber.log.Timber
+import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.*
+import ru.yofik.athena.chatList.domain.usecases.GetAllChats
+import timber.log.Timber
 
-class ChatListFragmentViewModel @Inject constructor(
-    private val requestUserInfo: RequestUserInfo
-) : ViewModel() {
+@HiltViewModel
+class ChatListFragmentViewModel @Inject constructor(private val getAllChats: GetAllChats) :
+    ViewModel() {
     private var _state = MutableLiveData<ChatListViewState>()
     val state: LiveData<ChatListViewState>
         get() = _state
@@ -28,17 +29,21 @@ class ChatListFragmentViewModel @Inject constructor(
 
     fun onEvent(event: ChatListEvent) {
         when (event) {
-            is ChatListEvent.GetAllChats -> getAllChats()
+            is ChatListEvent.GetAllChats -> fetchAllChats()
         }
     }
 
-    private fun getAllChats() {}
+    private fun fetchAllChats() {
+        job =
+            CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+                val res = getAllChats()
+                Timber.d("getAllChats: ${res.joinToString("\n")}")
+            }
+    }
 
     private fun setLoadingTrue() {
         _state.value = state.value!!.copy(loading = true)
     }
 
-    private fun onFailure(throwable: Throwable) {
-
-    }
+    private fun onFailure(throwable: Throwable) {}
 }

@@ -1,4 +1,4 @@
-package ru.yofik.athena.chat.viewmodel
+package ru.yofik.athena.chat.presentation
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -6,16 +6,16 @@ import ru.yofik.athena.common.domain.model.chat.Chat
 import ru.yofik.athena.common.domain.model.message.Message
 import ru.yofik.athena.common.domain.model.user.User
 
-class ChatViewModel : ViewModel() {
+class ChatFragmentViewModel : ViewModel() {
     val messages = MutableLiveData<List<Message>>(emptyList())
     var currentMessage = MutableLiveData("")
 
     fun addMessage() {
-        val msgs =
-            mutableListOf<Message>().apply {
+        /*val msgs =
+            mutableListOf<MessageWithDetails>().apply {
                 messages.value?.let { addAll(it) }
                 add(
-                    Message(
+                    MessageWithDetails(
                         id = 12,
                         text = currentMessage.value ?: "",
                         senderId = User.getYarik().id,
@@ -24,6 +24,6 @@ class ChatViewModel : ViewModel() {
                 )
             }
 
-        messages.postValue(msgs)
+        messages.postValue(msgs)*/
     }
 }

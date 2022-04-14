@@ -11,9 +11,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import ru.yofik.athena.BuildConfig
 import ru.yofik.athena.common.data.api.ApiConstants
-import ru.yofik.athena.common.data.api.UserApi
+import ru.yofik.athena.common.data.api.model.user.UserApi
 import ru.yofik.athena.common.data.api.interceptors.AuthenticationInterceptor
 import ru.yofik.athena.common.data.api.interceptors.NetworkStatusInterceptor
+import ru.yofik.athena.common.data.api.model.chat.ChatApi
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -21,8 +22,14 @@ object ApiModule {
 
     @Provides
     @Singleton
+    fun provideChatApi(builder: Retrofit.Builder): ChatApi {
+        return builder.build().create(ChatApi::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun provideUserApi(builder: Retrofit.Builder): UserApi {
-        return builder.build().create(UserApi::class.java) 
+        return builder.build().create(UserApi::class.java)
     }
 
     @Provides
