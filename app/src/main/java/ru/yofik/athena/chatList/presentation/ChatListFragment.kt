@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -14,6 +15,7 @@ import ru.yofik.athena.R
 import ru.yofik.athena.chat.presentation.ChatFragment
 import ru.yofik.athena.common.WorkspaceActivity
 import ru.yofik.athena.common.domain.model.chat.Chat
+import ru.yofik.athena.createChat.presentation.CreateChatFragment
 import ru.yofik.athena.databinding.FragmentChatListBinding
 
 @AndroidEntryPoint
@@ -53,6 +55,8 @@ class ChatListFragment : Fragment() {
         setupActionBar()
         setupBottomNavigation()
 
+        setupOnCreateChatButtonListener()
+
         val adapter = createAdapter()
         setupRecyclerView(adapter)
     }
@@ -63,11 +67,10 @@ class ChatListFragment : Fragment() {
             object : ChatAdapter.Callbacks {
                 override fun onChatSelected(chatView: Chat) {
                     val fragment = ChatFragment.newInstance(chatView.name)
-                    this@ChatListFragment.parentFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container_fragment, fragment)
-                        .addToBackStack(null)
-                        .commit()
+                    this@ChatListFragment.parentFragmentManager.commit {
+                        add(R.id.container_fragment, fragment)
+                        addToBackStack(null)
+                    }
                 }
             }
         )
@@ -82,9 +85,13 @@ class ChatListFragment : Fragment() {
         }
     }
 
+    private fun setupOnCreateChatButtonListener() {
+        binding.toolbar.addButton.setOnClickListener { navigateToCreateChatScreen() }
+    }
+
     private fun setupActionBar() {
         // Adding Toolbar & removing showing app name in title
-        (activity as AppCompatActivity).setSupportActionBar(binding.toolbarWrapper.toolbar)
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar.root)
         actionBar.title = ""
     }
 
@@ -92,6 +99,13 @@ class ChatListFragment : Fragment() {
         if (activity != null) {
             (activity as WorkspaceActivity).showBottomNavigation()
         }
+    }
+
+    private fun navigateToCreateChatScreen() {
+        parentFragmentManager
+            .beginTransaction()
+            .replace(R.id.container_fragment, CreateChatFragment.newInstance())
+            .commit()
     }
 
     companion object {

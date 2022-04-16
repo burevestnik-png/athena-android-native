@@ -7,6 +7,8 @@ object ApiConstants {
     const val ACTIVATE_ENDPOINT = "$V1/users/activation"
     const val AUTHORIZATION_ENDPOINT = "$V1/users/authorization"
 
+    const val ALL_USERS_ENDPOINT = "$V1/userProfiles"
+
     const val CHATS_ENDPOINT = "$V1/chats"
 
     const val CLIENT_TOKEN =

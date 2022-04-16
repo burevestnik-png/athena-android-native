@@ -13,6 +13,9 @@
     <!--  layout_settings_toolbar.xml  -->
     <string name="settings_toolbar_title">Settings</string>
 
+    <!-- layout_create_chat_toolbar.xml -->
+    <string name="create_chat_toolbar_title">Add chat</string>
+
     <!-- fragment_login.xml -->
     <string name="login_submit_button">Send</string>
     <string name="login_code_input">Enter code</string>
@@ -20,7 +23,7 @@
     <!-- navigation.xml -->
     <string name="navigation_title_chats">Chats</string>
     <string name="navigation_title_settings">Settings</string>
-    <string name="invalid_username">R.string.invalid_username</string>
-    <string name="invalid_password">R.string.invalid_password</string>
-    <string name="login_failed">R.string.login_failed</string>
+
+    <!--  common  -->
+    <string name="an_error_occurred">An error occurred. Please try again later.</string>
 </resources>

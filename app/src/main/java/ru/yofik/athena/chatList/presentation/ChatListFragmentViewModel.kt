@@ -29,11 +29,11 @@ class ChatListFragmentViewModel @Inject constructor(private val getAllChats: Get
 
     fun onEvent(event: ChatListEvent) {
         when (event) {
-            is ChatListEvent.GetAllChats -> fetchAllChats()
+            is ChatListEvent.GetAllChats -> requestAllChats()
         }
     }
 
-    private fun fetchAllChats() {
+    private fun requestAllChats() {
         job =
             CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
                 val res = getAllChats()

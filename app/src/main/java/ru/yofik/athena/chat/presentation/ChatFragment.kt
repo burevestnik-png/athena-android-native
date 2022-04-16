@@ -71,7 +71,7 @@ class ChatFragment : Fragment() {
 
     private fun setupUI() {
         // Adding Toolbar & removing showing app name in title
-        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar.toolbar)
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar.root)
         actionBar.title = ""
 
         if (activity != null) {

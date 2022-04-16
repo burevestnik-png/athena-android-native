@@ -2,6 +2,7 @@ package ru.yofik.athena.common
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.commit
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.R
 import ru.yofik.athena.databinding.ActivityMainBinding
@@ -17,9 +18,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportFragmentManager
-            .beginTransaction()
-            .add(R.id.rootLayout, LoginFragment.newInstance())
-            .commit()
+        supportFragmentManager.commit {
+            add(R.id.rootLayout, LoginFragment.newInstance())
+        }
     }
 }

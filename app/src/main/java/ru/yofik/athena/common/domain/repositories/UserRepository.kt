@@ -5,5 +5,6 @@ import ru.yofik.athena.common.domain.model.user.User
 interface UserRepository {
     suspend fun requestActivateUser(code: String)
     suspend fun requestAuthUser()
+    suspend fun requestGetAllUsers(): List<User>
     fun getCachedUser(): User
 }

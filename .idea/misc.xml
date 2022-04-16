@@ -20,19 +20,22 @@
         <entry key="app/src/main/res/layout/delete_fragment.xml" value="0.2515625" />
         <entry key="app/src/main/res/layout/fragment_chat.xml" value="0.165" />
         <entry key="app/src/main/res/layout/fragment_chat_list.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_create_chat.xml" value="0.265625" />
         <entry key="app/src/main/res/layout/fragment_dashboard.xml" value="0.265625" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.265625" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.2796875" />
         <entry key="app/src/main/res/layout/fragment_login2.xml" value="0.265625" />
         <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.265625" />
         <entry key="app/src/main/res/layout/fragment_settings.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/layout_chat_list_toolbar.xml" value="0.12291666666666666" />
-        <entry key="app/src/main/res/layout/layout_chat_toolbar.xml" value="0.12360688956433637" />
+        <entry key="app/src/main/res/layout/layout_chat_list_toolbar.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/layout_chat_toolbar.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/layout_create_chat_toolbar.xml" value="0.2515625" />
         <entry key="app/src/main/res/layout/layout_message.xml" value="0.2682291666666667" />
         <entry key="app/src/main/res/layout/layout_settings_toolbar.xml" value="0.2515625" />
         <entry key="app/src/main/res/layout/layout_toolbar.xml" value="0.1" />
         <entry key="app/src/main/res/layout/list_item_chat.xml" value="0.375" />
         <entry key="app/src/main/res/layout/list_item_message.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/list_item_user.xml" value="0.265625" />
         <entry key="app/src/main/res/layout/settings_activity.xml" value="0.2796875" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.2796875" />
         <entry key="app/src/main/res/xml/root_preferences.xml" value="0.265625" />

@@ -50,6 +50,15 @@ constructor(
         }
     }
 
+    override suspend fun requestGetAllUsers(): List<User> {
+        try {
+            val response = userApi.getAllUsers()
+            return response.payload.map(userDtoMapper::mapToDomain)
+        } catch (exception: HttpException) {
+            throw NetworkException(exception.message ?: "Code ${exception.code()}")
+        }
+    }
+
     override fun getCachedUser(): User {
         return preferences.getUser()
     }

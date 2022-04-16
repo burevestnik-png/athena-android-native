@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.common.WorkspaceActivity
 import ru.yofik.athena.common.presentation.FailureEvent
+import ru.yofik.athena.common.presentation.model.handleFailures
 import ru.yofik.athena.databinding.FragmentLoginBinding
 import timber.log.Timber
 
@@ -90,11 +91,6 @@ class LoginFragment : Fragment() {
         if (shouldNavigate) {
             requireActivity().apply { startActivity(WorkspaceActivity.intentOf(this)) }
         }
-    }
-
-    private fun handleFailures(failure: FailureEvent?) {
-        val unhandledFailure = failure?.getFailureOrNull() ?: return
-        Timber.d("Handled failure: ${unhandledFailure.message}")
     }
 
     private fun onCodeValueChange(value: String) {

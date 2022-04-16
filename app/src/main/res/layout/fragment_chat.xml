@@ -21,28 +21,27 @@
 
         <include
             android:id="@+id/toolbar"
-            layout="@layout/layout_chat_toolbar"
+            layout="@layout/toolbar_chat"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:name="@{name}" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ScrollView
             android:id="@+id/scrollView"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            app:layout_constraintBottom_toTopOf="@id/recyclerView"
-            android:fitsSystemWindows="true"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:layout_constraintBottom_toTopOf="@id/recyclerView"
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@id/input"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/input"
             tools:itemCount="5"
             tools:listitem="@layout/list_item_message" />
 
@@ -60,11 +59,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="@{() -> vm.addMessage()}"
-            app:layout_constraintTop_toBottomOf="@id/recyclerView"
+            android:src="@drawable/ic_baseline_send_24"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/input"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:src="@drawable/ic_baseline_send_24"/>
+            app:layout_constraintTop_toBottomOf="@id/recyclerView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

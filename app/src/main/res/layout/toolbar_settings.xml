@@ -8,6 +8,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/settings_toolbar_title"
+        android:textColor="@color/white"
         android:textSize="20sp" />
 
 </androidx.appcompat.widget.Toolbar>

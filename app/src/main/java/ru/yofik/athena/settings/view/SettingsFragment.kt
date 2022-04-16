@@ -41,7 +41,7 @@ class SettingsFragment : Fragment() {
     }
 
     private fun setupUI() {
-        (activity as AppCompatActivity).setSupportActionBar(binding.toolbarWrapper.toolbar)
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar.toolbar)
         actionBar.title = ""
     }
 
