@@ -23,6 +23,10 @@ constructor(
 ) : ViewModel() {
 
     private val _state = MutableLiveData<LoginViewState>()
+    private val _effects = MutableLiveData<LoginViewEffect>()
+
+    val effects: LiveData<LoginViewEffect>
+        get() = _effects
     val state: LiveData<LoginViewState>
         get() = _state
 
@@ -31,8 +35,6 @@ constructor(
         Timber.d("exceptionHandler: ${throwable.message}")
         viewModelScope.launch { onFailure(throwable) }
     }
-
-    private val code = MutableLiveData("")
 
     init {
         _state.value = LoginViewState()
@@ -47,7 +49,7 @@ constructor(
     }
 
     private fun onCodeValueChange(newValue: String) {
-        code.value = newValue
+        _state.value = state.value!!.copy(code = newValue)
     }
 
     private fun onUserActivation() {
@@ -55,12 +57,12 @@ constructor(
 
         job =
             CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-                requestUserActivation(code.value!!)
+                requestUserActivation(state.value!!.code)
                 requestUserInfo()
 
                 withContext(Dispatchers.Main) {
-                    _state.value =
-                        state.value!!.copy(shouldNavigateToChatListScreen = true, loading = false)
+                    _state.value = state.value!!.copy(loading = false)
+                    _effects.value = LoginViewEffect.NavigateToChatListPage
                 }
             }
     }

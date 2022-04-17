@@ -1,18 +1,18 @@
 package ru.yofik.athena.login.presentation
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import ru.yofik.athena.common.WorkspaceActivity
-import ru.yofik.athena.common.presentation.FailureEvent
 import ru.yofik.athena.common.presentation.model.handleFailures
+import ru.yofik.athena.common.utils.InternalDeepLink
 import ru.yofik.athena.databinding.FragmentLoginBinding
 import timber.log.Timber
 
@@ -39,7 +39,10 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         setupUI()
+        observeViewStateUpdates()
+        observeViewEffects()
     }
 
     override fun onDestroy() {
@@ -49,31 +52,15 @@ class LoginFragment : Fragment() {
 
     private fun setupUI() {
         setOnCodeChangeListener()
-        setOnSubmitButtonClickListener()
-        observeViewStateUpdates()
+        listenToSubmitButton()
     }
 
-    private fun setOnSubmitButtonClickListener() {
+    private fun listenToSubmitButton() {
         binding.submitButton.setOnClickListener { requestUserActivation() }
     }
 
     private fun setOnCodeChangeListener() {
-        binding.codeInput.addTextChangedListener(
-            object : TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {}
-
-                override fun afterTextChanged(s: Editable?) {}
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    onCodeValueChange(s?.toString() ?: "")
-                }
-            }
-        )
+        binding.codeInput.doAfterTextChanged { onCodeValueChange(it?.toString() ?: "") }
     }
 
     private fun observeViewStateUpdates() {
@@ -83,14 +70,22 @@ class LoginFragment : Fragment() {
     private fun updateScreenState(state: LoginViewState) {
         Timber.d("updateScreenState: $state")
         binding.progressBar.isVisible = state.loading
-        handleNavigateToChatListScreen(state.shouldNavigateToChatListScreen)
         handleFailures(state.failure)
     }
 
-    private fun handleNavigateToChatListScreen(shouldNavigate: Boolean) {
-        if (shouldNavigate) {
-            requireActivity().apply { startActivity(WorkspaceActivity.intentOf(this)) }
+    private fun observeViewEffects() {
+        viewModel.effects.observe(viewLifecycleOwner) { reactTo(it) }
+    }
+
+    private fun reactTo(effect: LoginViewEffect) {
+        when (effect) {
+            is LoginViewEffect.NavigateToChatListPage -> navigateToChatListScreen()
         }
+    }
+
+    private fun navigateToChatListScreen() {
+        val deepLink = InternalDeepLink.CHAT_LIST.toUri()
+        findNavController().navigate(deepLink)
     }
 
     private fun onCodeValueChange(value: String) {

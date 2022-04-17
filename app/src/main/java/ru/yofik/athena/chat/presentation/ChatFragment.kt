@@ -11,7 +11,6 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
-import ru.yofik.athena.common.WorkspaceActivity
 import ru.yofik.athena.common.domain.model.message.Message
 import ru.yofik.athena.databinding.FragmentChatBinding
 import timber.log.Timber
@@ -74,9 +73,9 @@ class ChatFragment : Fragment() {
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbar.root)
         actionBar.title = ""
 
-        if (activity != null) {
-            (activity as WorkspaceActivity).hideBottomNavigation()
-        }
+//        if (activity != null) {
+//            (activity as WorkspaceActivity).hideBottomNavigation()
+//        }
 
         binding.lifecycleOwner = this
         binding.apply {

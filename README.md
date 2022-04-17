@@ -70,3 +70,15 @@
 * Think about settings
 
 ---
+
+### v0.1.4
+
+### Features
+
+### Plans
+  * Rework AppBar with Navigation framework
+  * Think about settings
+  * Coroutines :]
+  * TextInputLayout rewrite on
+  * Add validation on Login screen like on Onboarding
+  * Add functionality to buttons in actionbar

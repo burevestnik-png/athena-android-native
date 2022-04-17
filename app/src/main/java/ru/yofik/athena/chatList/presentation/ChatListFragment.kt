@@ -6,16 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.R
 import ru.yofik.athena.chat.presentation.ChatFragment
-import ru.yofik.athena.common.WorkspaceActivity
 import ru.yofik.athena.common.domain.model.chat.Chat
-import ru.yofik.athena.createChat.presentation.CreateChatFragment
+import ru.yofik.athena.common.utils.InternalDeepLink
 import ru.yofik.athena.databinding.FragmentChatListBinding
 
 @AndroidEntryPoint
@@ -53,7 +54,6 @@ class ChatListFragment : Fragment() {
 
     private fun setupUI() {
         setupActionBar()
-        setupBottomNavigation()
 
         setupOnCreateChatButtonListener()
 
@@ -67,10 +67,10 @@ class ChatListFragment : Fragment() {
             object : ChatAdapter.Callbacks {
                 override fun onChatSelected(chatView: Chat) {
                     val fragment = ChatFragment.newInstance(chatView.name)
-                    this@ChatListFragment.parentFragmentManager.commit {
-                        add(R.id.container_fragment, fragment)
-                        addToBackStack(null)
-                    }
+//                    this@ChatListFragment.parentFragmentManager.commit {
+//                        add(R.id.container_fragment, fragment)
+//                        addToBackStack(null)
+//                    }
                 }
             }
         )
@@ -95,17 +95,9 @@ class ChatListFragment : Fragment() {
         actionBar.title = ""
     }
 
-    private fun setupBottomNavigation() {
-        if (activity != null) {
-            (activity as WorkspaceActivity).showBottomNavigation()
-        }
-    }
-
     private fun navigateToCreateChatScreen() {
-        parentFragmentManager
-            .beginTransaction()
-            .replace(R.id.container_fragment, CreateChatFragment.newInstance())
-            .commit()
+        val deepLink = InternalDeepLink.CREATE_CHAT.toUri()
+        findNavController().navigate(deepLink)
     }
 
     companion object {
