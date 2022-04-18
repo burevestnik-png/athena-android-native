@@ -1,30 +1,6 @@
 <resources>
     <string name="app_name">athena</string>
-
-    <!-- layout_chat_list_toolbar.xml.xml -->
-    <string name="chat_list_toolbar_edit_desc">Edit chats</string>
-    <string name="chat_list_toolbar_create_desc">Create new chat</string>
-    <string name="chat_list_toolbar_title_chats">Chats</string>
-
-    <!-- layout_chat_toolbar.xml -->
-    <string name="chat_toolbar_back_desc">Return to chats</string>
-    <string name="chat_toolbar_profile_desc">Return to chats</string>
-
-    <!-- layout_settings_toolbar.xml  -->
-    <string name="settings_toolbar_title">Settings</string>
-
-    <!-- layout_create_chat_toolbar.xml -->
-    <string name="create_chat_toolbar_title">Add chat</string>
-
-    <!-- fragment_login.xml -->
-    <string name="login_submit_button">Send</string>
-    <string name="login_code_input">Enter code</string>
-    <string name="no_error" />
-
     <!-- navigation.xml -->
     <string name="navigation_title_chats">Chats</string>
     <string name="navigation_title_settings">Settings</string>
-
-    <!--  common  -->
-    <string name="an_error_occurred">An error occurred. Please try again later.</string>
 </resources>

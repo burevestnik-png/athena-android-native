@@ -16,3 +16,9 @@ dependencyResolutionManagement {
 
 rootProject.name = "athena"
 include ':app'
+include ':features:createChat'
+include ':common'
+include ':features:chat'
+include ':features:settings'
+include ':features:login'
+include ':features:chatList'

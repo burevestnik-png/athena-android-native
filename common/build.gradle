@@ -1,0 +1,13 @@
+apply from: "$rootProject.projectDir/android-library.gradle"
+
+dependencies {
+    // Network
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-moshi:$moshi_converter_version"
+    implementation "com.squareup.okhttp3:okhttp:$okHttp_version"
+    implementation "com.squareup.moshi:moshi-kotlin:$moshi_version"
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
+
+    // Utils
+    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
+}

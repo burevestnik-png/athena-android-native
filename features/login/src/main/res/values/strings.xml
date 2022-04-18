@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="login_submit_button">Send</string>
+    <string name="login_code_input">Enter code</string>
+    <string name="no_error" />
+</resources>

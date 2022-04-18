@@ -1,17 +1,17 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'kotlin-kapt'
 }
 
 android {
-    compileSdk 31
+    compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
         applicationId "ru.yofik.athena"
-        minSdk 21
-        targetSdk 31
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -34,7 +34,7 @@ android {
         jvmTarget = '1.8'
     }
 
-    // added data-binding
+    // todo delete data-binding
     buildFeatures {
         dataBinding true
         viewBinding true
@@ -42,33 +42,12 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.7.0'
-
-    // Support Libraries
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
-    implementation 'androidx.fragment:fragment-ktx:1.4.1'
-    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
-    implementation 'androidx.preference:preference:1.2.0'
-
-    // Testing dependencies
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-
-    // Network
-    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:converter-moshi:$moshi_converter_version"
-    implementation "com.squareup.okhttp3:okhttp:$okHttp_version"
-//    implementation "com.squareup.okhttp3:logging-interceptor:$okHttp_version"
-    implementation "com.squareup.moshi:moshi-kotlin:$moshi_version"
-    kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
-
-    // UI
-    implementation 'androidx.recyclerview:recyclerview:1.2.1'
-    implementation 'com.google.android.material:material:1.5.0'
+    implementation project(":common")
+    implementation project(":features:createChat")
+    implementation project(":features:chat")
+    implementation project(":features:settings")
+    implementation project(":features:login")
+    implementation project(":features:chatList")
 
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
     implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
@@ -76,16 +55,14 @@ dependencies {
     // DI
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
-
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$androidx_hilt_version"
     kapt "androidx.hilt:hilt-compiler:$androidx_hilt_version"
-
-    androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
-    kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_version"
 
     // Utils
     implementation "com.jakewharton.threetenabp:threetenabp:1.4.0"
     implementation 'com.jakewharton.timber:timber:4.7.1'
+
+
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.okhttp3:okhttp:$okHttp_version"
     implementation 'com.facebook.stetho:stetho:1.5.0'
-    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
 }

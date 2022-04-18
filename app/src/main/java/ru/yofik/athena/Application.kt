@@ -4,7 +4,6 @@ import android.app.Application
 import com.facebook.stetho.Stetho
 import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.hilt.android.HiltAndroidApp
-import org.threeten.bp.LocalDateTime
 import timber.log.Timber
 
 @HiltAndroidApp
