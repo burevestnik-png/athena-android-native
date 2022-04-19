@@ -63,6 +63,24 @@ constructor(
         return preferences.getUser()
     }
 
+    override fun hasAccess(): Boolean {
+        return with(preferences) {
+            val cachedUser = getCachedUser()
+            getAccessToken().isNotEmpty() &&
+                cachedUser.login.isNotEmpty() &&
+                cachedUser.name.isNotEmpty() &&
+                cachedUser.id != -1L
+        }
+    }
+
+    override fun removeCachedUser() {
+        preferences.deleteUserInfo()
+    }
+
+    override fun removeUserAccessToken() {
+        preferences.deleteAccessToken()
+    }
+
     // todo why this is not working
     @Throws(NetworkException::class)
     private inline fun wrapHttpException(block: UserRepository.() -> Unit) {

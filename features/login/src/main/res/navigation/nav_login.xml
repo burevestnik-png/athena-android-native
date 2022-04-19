@@ -10,5 +10,9 @@
         android:id="@+id/loginFragment"
         android:name="ru.yofik.athena.login.presentation.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login">
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="athena://login" />
+    </fragment>
 </navigation>
