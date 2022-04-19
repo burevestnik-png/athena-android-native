@@ -9,7 +9,7 @@ import ru.yofik.athena.common.domain.model.user.User
 class UserDtoMapper @Inject constructor() : DtoMapper<UserDto, User> {
     override fun mapToDomain(entityDTO: UserDto?): User {
         return User(
-            id = entityDTO?.id ?: throw MappingException("Invalid id from server ${entityDTO?.id}"),
+            id = entityDTO?.id ?: throw MappingException("Invalid user id from server"),
             name = entityDTO.name.orEmpty(),
             login = entityDTO.login.orEmpty()
         )

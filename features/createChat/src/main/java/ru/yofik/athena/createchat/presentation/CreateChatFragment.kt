@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.common.presentation.model.handleFailures
+import ru.yofik.athena.common.utils.InternalDeepLink
 import ru.yofik.athena.createchat.databinding.FragmentCreateChatBinding
 import timber.log.Timber
 
@@ -34,6 +37,7 @@ class CreateChatFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupUI()
         requestGetAllUsers()
+        observeViewEffects()
     }
 
     override fun onDestroy() {
@@ -45,6 +49,23 @@ class CreateChatFragment : Fragment() {
         val adapter = createAdapter()
         setupRecyclerView(adapter)
         observeViewStateUpdates(adapter)
+    }
+
+    private fun observeViewEffects() {
+        viewModel.effects.observe(viewLifecycleOwner) {
+            reactTo(it)
+        }
+    }
+
+    private fun reactTo(effect: CreateChatFragmentViewEffect) {
+        when (effect) {
+            is CreateChatFragmentViewEffect.NavigateToChatListScreen -> navigateToChatListScreen()
+        }
+    }
+
+    private fun navigateToChatListScreen() {
+        val deepLink = InternalDeepLink.CHAT_LIST.toUri()
+        findNavController().navigate(deepLink)
     }
 
     private fun observeViewStateUpdates(adapter: UserAdapter) {
@@ -70,14 +91,16 @@ class CreateChatFragment : Fragment() {
     }
 
     private fun createAdapter(): UserAdapter {
-        return UserAdapter()
+        return UserAdapter().apply {
+            setUserClickListener { id, name -> requestCreateChat(id, name) }
+        }
     }
 
     private fun requestGetAllUsers() {
         viewModel.onEvent(CreateChatEvent.GetAllUsers)
     }
 
-    companion object {
-        fun newInstance() = CreateChatFragment()
+    private fun requestCreateChat(id: Long, name: String) {
+        viewModel.onEvent(CreateChatEvent.CreateChat(id, name))
     }
 }

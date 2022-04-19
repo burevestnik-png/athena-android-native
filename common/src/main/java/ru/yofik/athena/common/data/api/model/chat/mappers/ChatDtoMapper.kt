@@ -13,7 +13,7 @@ class ChatDtoMapper @Inject constructor(
 ) : DtoMapper<ChatDto, Chat> {
     override fun mapToDomain(entityDTO: ChatDto?): Chat {
         return Chat(
-            id = entityDTO?.id ?: throw MappingException("Invalid id from server ${entityDTO?.id}"),
+            id = entityDTO?.id ?: throw MappingException("Invalid chat chat id from server"),
             name = entityDTO.name.orEmpty(),
             users = entityDTO.userViews?.map(userDtoMapper::mapToDomain) ?: emptyList(),
             lastMessage = messageDtoMapper.mapToDomain(entityDTO.lastMessage)

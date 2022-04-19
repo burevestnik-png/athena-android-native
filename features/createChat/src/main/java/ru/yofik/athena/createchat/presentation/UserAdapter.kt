@@ -8,7 +8,17 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.yofik.athena.common.presentation.model.user.UiUser
 import ru.yofik.athena.createchat.databinding.ListItemUserBinding
 
+fun interface UserClickListener {
+    fun onUserClick(id: Long, name: String)
+}
+
 class UserAdapter : ListAdapter<UiUser, UserAdapter.UserViewHolder>(UI_USER_COMPARATOR) {
+
+    private var userClickListener: UserClickListener? = null
+
+    fun setUserClickListener(listener: UserClickListener) {
+        userClickListener = listener
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val binding =
@@ -24,8 +34,11 @@ class UserAdapter : ListAdapter<UiUser, UserAdapter.UserViewHolder>(UI_USER_COMP
 
     inner class UserViewHolder(private val binding: ListItemUserBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bind(user: UiUser) {
             binding.root.text = user.name
+
+            binding.root.setOnClickListener { userClickListener?.onUserClick(user.id, user.name) }
         }
     }
 }

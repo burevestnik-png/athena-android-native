@@ -8,17 +8,25 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.*
 import ru.yofik.athena.common.presentation.model.user.UiUserMapper
+import ru.yofik.athena.createchat.domain.usecases.CreateChat
 import ru.yofik.athena.createchat.domain.usecases.GetAllUsers
 import timber.log.Timber
 
 @HiltViewModel
 class CreateChatFragmentViewModel
 @Inject
-constructor(private val getAllUsers: GetAllUsers, private val uiUserMapper: UiUserMapper) :
-    ViewModel() {
+constructor(
+    private val getAllUsers: GetAllUsers,
+    private val createChat: CreateChat,
+    private val uiUserMapper: UiUserMapper
+) : ViewModel() {
     private var _state = MutableLiveData<CreateChatViewState>()
     val state: LiveData<CreateChatViewState>
         get() = _state
+
+    private var _effects = MutableLiveData<CreateChatFragmentViewEffect>()
+    val effects: LiveData<CreateChatFragmentViewEffect>
+        get() = _effects
 
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -32,11 +40,25 @@ constructor(private val getAllUsers: GetAllUsers, private val uiUserMapper: UiUs
 
     fun onEvent(event: CreateChatEvent) {
         when (event) {
-            is CreateChatEvent.GetAllUsers -> requestGetAllUsers()
+            is CreateChatEvent.GetAllUsers -> handleGetAllUsers()
+            is CreateChatEvent.CreateChat -> handleCreateChat(event.id, event.name)
         }
     }
 
-    private fun requestGetAllUsers() {
+    private fun handleCreateChat(id: Long, name: String) {
+        _state.value = state.value!!.copy(loading = true)
+        job =
+            CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+                val createdChat = createChat(name, id)
+                Timber.d("handleCreateChat: $createdChat")
+
+                withContext(Dispatchers.Main) {
+                    _effects.value = CreateChatFragmentViewEffect.NavigateToChatListScreen
+                }
+            }
+    }
+
+    private fun handleGetAllUsers() {
         _state.value = state.value!!.copy(loading = true)
         job =
             CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
@@ -53,5 +75,7 @@ constructor(private val getAllUsers: GetAllUsers, private val uiUserMapper: UiUs
             }
     }
 
-    private fun onFailure(throwable: Throwable) {}
+    private fun onFailure(throwable: Throwable) {
+        // todo add
+    }
 }
