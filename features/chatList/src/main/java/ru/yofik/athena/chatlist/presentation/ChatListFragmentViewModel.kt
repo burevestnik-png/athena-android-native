@@ -7,15 +7,21 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.*
+import ru.yofik.athena.chatlist.domain.model.mappers.UiChatMapper
 import ru.yofik.athena.chatlist.domain.usecases.GetAllChats
 import timber.log.Timber
 
 @HiltViewModel
-class ChatListFragmentViewModel @Inject constructor(private val getAllChats: GetAllChats) :
+class ChatListFragmentViewModel @Inject constructor(private val getAllChats: GetAllChats,
+private val uiChatMapper: UiChatMapper) :
     ViewModel() {
-    private var _state = MutableLiveData<ChatListViewState>()
+    private val _state = MutableLiveData<ChatListViewState>()
     val state: LiveData<ChatListViewState>
         get() = _state
+
+    private val _effects = MutableLiveData<ChatListFragmentViewEffect>()
+    val effect: LiveData<ChatListFragmentViewEffect>
+        get() = _effects
 
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -34,10 +40,18 @@ class ChatListFragmentViewModel @Inject constructor(private val getAllChats: Get
     }
 
     private fun requestAllChats() {
+        setLoadingTrue()
+
         job =
             CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-                val res = getAllChats()
-                Timber.d("getAllChats: ${res.joinToString("\n")}")
+                val chats = getAllChats()
+
+                withContext(Dispatchers.Main) {
+                    _state.value = state.value!!.copy(
+                        loading = false,
+                        chats = chats.map(uiChatMapper::mapToView)
+                )
+                }
             }
     }
 

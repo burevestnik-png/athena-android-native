@@ -7,14 +7,16 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.chatList.databinding.FragmentChatListBinding
-import ru.yofik.athena.common.domain.model.chat.Chat
+import ru.yofik.athena.common.presentation.model.handleFailures
 import ru.yofik.athena.common.utils.InternalDeepLink
+import timber.log.Timber
 
 @AndroidEntryPoint
 class ChatListFragment : Fragment() {
@@ -41,7 +43,7 @@ class ChatListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUI()
-        viewModel.onEvent(ChatListEvent.GetAllChats)
+        requestGetAllChats()
     }
 
     override fun onDestroyView() {
@@ -51,25 +53,26 @@ class ChatListFragment : Fragment() {
 
     private fun setupUI() {
         setupActionBar()
-
-        setupOnCreateChatButtonListener()
+        listenToAddButton()
 
         val adapter = createAdapter()
         setupRecyclerView(adapter)
+        observeViewStateUpdates(adapter)
+    }
+
+    private fun observeViewStateUpdates(adapter: ChatAdapter) {
+        viewModel.state.observe(viewLifecycleOwner) { updateScreenState(it, adapter) }
+    }
+
+    private fun updateScreenState(state: ChatListViewState, adapter: ChatAdapter) {
+        Timber.d("updateScreenState: $state")
+        binding.progressBar.isVisible = state.loading
+        adapter.submitList(state.chats)
+        handleFailures(state.failure)
     }
 
     private fun createAdapter(): ChatAdapter {
-        return ChatAdapter(
-            emptyList(),
-            object : ChatAdapter.Callbacks {
-                override fun onChatSelected(chatView: Chat) {
-//                    this@ChatListFragment.parentFragmentManager.commit {
-//                        add(R.id.container_fragment, fragment)
-//                        addToBackStack(null)
-//                    }
-                }
-            }
-        )
+        return ChatAdapter().apply { setChatClickListener {} }
     }
 
     private fun setupRecyclerView(adapter: ChatAdapter) {
@@ -81,7 +84,7 @@ class ChatListFragment : Fragment() {
         }
     }
 
-    private fun setupOnCreateChatButtonListener() {
+    private fun listenToAddButton() {
         binding.toolbar.addButton.setOnClickListener { navigateToCreateChatScreen() }
     }
 
@@ -96,9 +99,7 @@ class ChatListFragment : Fragment() {
         findNavController().navigate(deepLink)
     }
 
-    companion object {
-        fun newInstance(): ChatListFragment {
-            return ChatListFragment()
-        }
+    private fun requestGetAllChats() {
+        viewModel.onEvent(ChatListEvent.GetAllChats)
     }
 }

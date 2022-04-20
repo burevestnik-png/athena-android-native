@@ -30,11 +30,11 @@
 
 * UI & UX
     * Troubles with running lib with LocalDateTime, returned to Date <br>
-    So dates in app are very bad right now :]
+      So dates in app are very bad right now :]
 
 * Codebase
     * Added base for networking, need Alex to implement in fully
-    
+
 ### Plans
 
 * Adding login screen
@@ -75,10 +75,16 @@
 
 ### Features
 
+* Now we can create chats with any user which we have in DB
+* Auto logining if you have already logined
+* Logout button in settings, which will be moved in future
+
 ### Plans
-  * Rework AppBar with Navigation framework
-  * Think about settings
-  * Coroutines :]
-  * TextInputLayout rewrite on
-  * Add validation on Login screen like on Onboarding
-  * Add functionality to buttons in actionbar
+
+* Rework AppBar with Navigation framework
+* Think about settings
+* Coroutines :]
+* TextInputLayout rewrite on
+* Add validation on Login screen like on Onboarding
+* Add functionality to buttons in actionbar
+* Think about creating several chats

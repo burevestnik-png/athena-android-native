@@ -1,4 +1,4 @@
-package ru.yofik.athena.common.presentation.model.user
+package ru.yofik.athena.createchat.domain.model
 
 data class UiUser(
     val id: Long,

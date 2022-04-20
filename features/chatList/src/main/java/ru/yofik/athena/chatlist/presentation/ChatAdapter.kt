@@ -2,37 +2,53 @@ package ru.yofik.athena.chatlist.presentation
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.yofik.athena.chatList.databinding.ListItemChatBinding
+import ru.yofik.athena.chatlist.domain.model.UiChat
 import ru.yofik.athena.common.domain.model.chat.Chat
 
-private const val TAG = "ChatListAdapter"
+fun interface ChatClickListener {
+    fun onChatClick(id: Long)
+}
 
-class ChatAdapter(private val chats: List<Chat>, private val callbacks: Callbacks) :
-    RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
+class ChatAdapter : ListAdapter<UiChat, ChatAdapter.ViewHolder>(UI_CHAT_COMPARATOR) {
 
-    interface Callbacks {
-        fun onChatSelected(chatView: Chat)
+    private var chatClickListener: ChatClickListener? = null
+
+    fun setChatClickListener(chatClickListener: ChatClickListener) {
+        this.chatClickListener = chatClickListener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(ListItemChatBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(chat = chats[position])
-        holder.itemView.setOnClickListener { callbacks.onChatSelected(chats[position]) }
+        val item = getItem(position)
+        holder.bind(item)
     }
-
-    override fun getItemCount(): Int = chats.size
 
     inner class ViewHolder(private val binding: ListItemChatBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(chat: Chat) {
+        fun bind(chat: UiChat) {
             binding.apply {
-                this.chat = chat
-                this.timestamp = ""
+                chatName.text = chat.name
+                message.text = chat.message.content
+                time.text = chat.message.time
             }
         }
     }
 }
+
+private val UI_CHAT_COMPARATOR =
+    object : DiffUtil.ItemCallback<UiChat>() {
+        override fun areItemsTheSame(oldItem: UiChat, newItem: UiChat): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: UiChat, newItem: UiChat): Boolean {
+            return oldItem == newItem
+        }
+    }

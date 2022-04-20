@@ -1,7 +1,7 @@
 package ru.yofik.athena.createchat.presentation
 
 import ru.yofik.athena.common.presentation.FailureEvent
-import ru.yofik.athena.common.presentation.model.user.UiUser
+import ru.yofik.athena.createchat.domain.model.UiUser
 
 data class CreateChatViewState(
     val loading: Boolean = false,

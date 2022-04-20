@@ -1,4 +1,4 @@
-package ru.yofik.athena.common.presentation.model.user
+package ru.yofik.athena.createchat.domain.model
 
 import ru.yofik.athena.common.domain.model.user.User
 import ru.yofik.athena.common.presentation.model.UiMapper
