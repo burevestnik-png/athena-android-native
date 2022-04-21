@@ -6,4 +6,5 @@ object InternalDeepLink {
     const val CHAT_LIST = "${DOMAIN}chatList"
     const val CREATE_CHAT = "${DOMAIN}createChat"
     const val LOGIN = "${DOMAIN}login"
+    const val CHAT = "${DOMAIN}chat"
 }
