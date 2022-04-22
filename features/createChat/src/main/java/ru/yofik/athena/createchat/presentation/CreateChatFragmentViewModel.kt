@@ -78,4 +78,9 @@ constructor(
     private fun onFailure(throwable: Throwable) {
         // todo add
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        job = null
+    }
 }

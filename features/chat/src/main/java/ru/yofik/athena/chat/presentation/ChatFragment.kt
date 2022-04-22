@@ -6,12 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
-import ru.yofik.athena.common.domain.model.message.Message
 import ru.yofik.athena.chat.databinding.FragmentChatBinding
 import timber.log.Timber
 
@@ -30,12 +29,12 @@ class ChatFragment : Fragment() {
 
     private var name: String? = null
 
-    private lateinit var recyclerView: RecyclerView
     private val viewModel by viewModels<ChatFragmentViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let { name = it.getString(ARG_NAME) }
+        Timber.d("onCreate: $name")
     }
 
     override fun onCreateView(
@@ -44,19 +43,12 @@ class ChatFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentChatBinding.inflate(inflater, container, false)
-        setupUI()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel.messages.observe(viewLifecycleOwner) {
-            Timber.d("onViewCreated: ${it.joinToString()}")
-            updateUI(it)
-        }
-
-        viewModel.currentMessage.observe(viewLifecycleOwner) { Timber.d("onViewCreated:$it") }
+        setupUI()
     }
 
     override fun onDestroy() {
@@ -64,40 +56,32 @@ class ChatFragment : Fragment() {
         _binding = null
     }
 
-    private fun updateUI(messages: List<Message>) {
-        recyclerView.adapter = MessageAdapter(messages)
+    private fun setupUI() {
+        val adapter = createAdapter()
+        setupRecycleView(adapter)
+        setupActionBar()
     }
 
-    private fun setupUI() {
+    private fun createAdapter(): MessageAdapter {
+        return MessageAdapter()
+    }
+
+    private fun setupRecycleView(adapter: MessageAdapter) {
+        binding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            this.adapter = adapter
+        }
+    }
+
+    private fun setupActionBar() {
         // Adding Toolbar & removing showing app name in title
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbar.root)
         actionBar.title = ""
-
-//        if (activity != null) {
-//            (activity as WorkspaceActivity).hideBottomNavigation()
-//        }
-
-        binding.lifecycleOwner = this
-        binding.apply {
-            name = this@ChatFragment.name
-            vm = viewModel
-        }
-
-        recyclerView = binding.recyclerView
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = MessageAdapter(viewModel.messages.value ?: emptyList())
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of this fragment using the provided
-         * parameters.
-         *
-         * @param name Chat name.
-         * @return A new instance of fragment ChatFragment.
-         */
-        @JvmStatic
-        fun newInstance(name: String) =
-            ChatFragment().apply { arguments = Bundle().apply { putString(ARG_NAME, name) } }
+        fun createBundle(name: String): Bundle {
+            return bundleOf(name to ARG_NAME)
+        }
     }
 }

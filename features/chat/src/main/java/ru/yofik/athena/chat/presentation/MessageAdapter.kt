@@ -2,33 +2,43 @@ package ru.yofik.athena.chat.presentation
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import ru.yofik.athena.common.domain.model.message.Message
 import ru.yofik.athena.chat.databinding.ListItemMessageBinding
+import ru.yofik.athena.chat.domain.model.UiMessage
 
-class MessageAdapter(private val messages: List<Message>) :
-    RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(
+class MessageAdapter : ListAdapter<UiMessage, MessageAdapter.ViewHolder>(UI_MESSAGE_COMPARATOR) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(
             ListItemMessageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(messages[position])
     }
 
-    override fun getItemCount(): Int = messages.size
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = getItem(position)
+        holder.bind(item)
+    }
 
     inner class ViewHolder(private val binding: ListItemMessageBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(message: Message) {
+        fun bind(message: UiMessage) {
             binding.apply {
-                // todo add sender name
-                owner = message.senderId.toString()
-                content = ""
-                time = ""
+                owner.text = message.sender
+                time.text = message.time
+                content.text = message.content
             }
         }
     }
 }
+
+private val UI_MESSAGE_COMPARATOR =
+    object : DiffUtil.ItemCallback<UiMessage>() {
+        override fun areItemsTheSame(oldItem: UiMessage, newItem: UiMessage): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: UiMessage, newItem: UiMessage): Boolean {
+            return oldItem == newItem
+        }
+    }
