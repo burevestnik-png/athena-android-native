@@ -9,4 +9,10 @@ data class ChatWithDetails(
     val name: String,
     val users: List<User>,
     val details: Details
-)
+) {
+    companion object {
+        // todo is it good
+        fun createNullChat() =
+            ChatWithDetails(id = -1, name = "", users = emptyList(), details = Details(emptyList()))
+    }
+}
