@@ -6,15 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.chat.databinding.FragmentChatBinding
-import timber.log.Timber
 
-private const val ARG_ID = "ru.yofik.athena.chat.presentation.name"
+private const val ARG_ID = "id"
 
 @AndroidEntryPoint
 class ChatFragment : Fragment() {
@@ -34,7 +33,6 @@ class ChatFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let { id = it.getLong(ARG_ID) }
-        Timber.d("onCreate: $id")
     }
 
     override fun onCreateView(
@@ -61,6 +59,8 @@ class ChatFragment : Fragment() {
         val adapter = createAdapter()
         setupRecycleView(adapter)
         setupActionBar()
+
+        observeViewStateUpdates(adapter)
     }
 
     private fun createAdapter(): MessageAdapter {
@@ -80,13 +80,26 @@ class ChatFragment : Fragment() {
         actionBar.title = ""
     }
 
+    private fun observeViewStateUpdates(adapter: MessageAdapter) {
+        viewModel.state.observe(viewLifecycleOwner) {
+
+        }
+    }
+
+    private fun updateScreenState(state: ChatFragmentState, adapter: MessageAdapter) {
+        binding.progressBar.isVisible = state.loading
+
+    }
+
+    private fun requestUpdateInput(value: String) {
+        viewModel.onEvent(ChatFragmentEvent.UpdateInput(value))
+    }
+
     private fun requestGetChat(id: Long) {
         viewModel.onEvent(ChatFragmentEvent.GetChat(id))
     }
 
-    companion object {
-        fun createBundle(id: Long): Bundle {
-            return bundleOf(ARG_ID to id)
-        }
+    private fun requestSendMessage() {
+        viewModel.onEvent(ChatFragmentEvent.SendMessage)
     }
 }

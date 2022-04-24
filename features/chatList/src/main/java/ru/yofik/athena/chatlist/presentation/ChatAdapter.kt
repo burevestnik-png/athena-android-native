@@ -38,6 +38,12 @@ class ChatAdapter : ListAdapter<UiChat, ChatAdapter.ViewHolder>(UI_CHAT_COMPARAT
                 message.text = chat.message.content
                 time.text = chat.message.time
             }
+
+            binding.root.apply {
+                setOnClickListener {
+                    chatClickListener?.onChatClick(chat.id)
+                }
+            }
         }
     }
 }

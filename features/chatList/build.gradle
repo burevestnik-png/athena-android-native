@@ -2,5 +2,4 @@ apply from: "$rootProject.projectDir/android-library.gradle"
 
 dependencies {
     implementation project(":common")
-    implementation project(":features:chat")
 }

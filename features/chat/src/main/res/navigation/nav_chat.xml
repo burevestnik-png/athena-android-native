@@ -11,8 +11,13 @@
         android:name="ru.yofik.athena.chat.presentation.ChatFragment"
         android:label="ChatFragment"
         tools:layout="@layout/fragment_chat">
+
+        <argument
+            android:name="id"
+            app:argType="long" />
+
         <deepLink
             android:id="@+id/deepLink"
-            app:uri="athena://chat" />
+            app:uri="athena://chat/?id={id}" />
     </fragment>
 </navigation>

@@ -13,7 +13,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import ru.yofik.athena.chat.presentation.ChatFragment
 import ru.yofik.athena.chatList.databinding.FragmentChatListBinding
 import ru.yofik.athena.common.presentation.model.handleFailures
 import ru.yofik.athena.common.utils.InternalDeepLink
@@ -73,9 +72,7 @@ class ChatListFragment : Fragment() {
     }
 
     private fun createAdapter(): ChatAdapter {
-        return ChatAdapter().apply { setChatClickListener {
-            navigateToChatScreen(it)
-        } }
+        return ChatAdapter().apply { setChatClickListener { navigateToChatScreen(it) } }
     }
 
     private fun setupRecyclerView(adapter: ChatAdapter) {
@@ -88,9 +85,9 @@ class ChatListFragment : Fragment() {
     }
 
     private fun navigateToChatScreen(id: Long) {
-        val deepLink = InternalDeepLink.CHAT.toUri()
-        val bundle = ChatFragment.createBundle(id)
-        findNavController().navigate(deepLink, bundle)
+        val deepLink = InternalDeepLink.createChatDeepLink(id)
+        Timber.d("navigateToChatScreen: $deepLink")
+        findNavController().navigate(deepLink)
     }
 
     private fun listenToAddButton() {
