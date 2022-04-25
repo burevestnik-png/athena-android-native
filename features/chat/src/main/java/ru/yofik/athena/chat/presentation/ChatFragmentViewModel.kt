@@ -9,13 +9,18 @@ import javax.inject.Inject
 import kotlinx.coroutines.*
 import ru.yofik.athena.chat.domain.usecases.GetChat
 import ru.yofik.athena.chat.domain.usecases.SendMessage
-import ru.yofik.athena.common.domain.model.message.Message
+import ru.yofik.athena.common.domain.repositories.NotificationRepository
 import timber.log.Timber
 
 @HiltViewModel
 class ChatFragmentViewModel
 @Inject
-constructor(private val getChat: GetChat, private val sendMessage: SendMessage) : ViewModel() {
+constructor(
+    private val getChat: GetChat,
+    private val sendMessage: SendMessage,
+    // todo extract to use case
+    private val notificationRepository: NotificationRepository
+) : ViewModel() {
     private val _state = MutableLiveData(ChatFragmentState())
     val state: LiveData<ChatFragmentState>
         get() = _state
@@ -57,12 +62,11 @@ constructor(private val getChat: GetChat, private val sendMessage: SendMessage) 
 
                 val messages = state.value!!.chatWithDetails.details.messages.toMutableList()
 
-                messages.add(Message(
-                    // todo попросить лешу доделать бек
-                    id = -1,
-                    content = state.value!!.input,
-                    senderId =
-                ))
+                //                messages.add(Message(
+                //                    id = -1,
+                //                    content = state.value!!.input,
+                //                    senderId =
+                //                ))
 
                 withContext(Dispatchers.Main) { _state.value = state.value!!.copy(loading = false) }
             }

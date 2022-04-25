@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -58,7 +59,10 @@ class ChatFragment : Fragment() {
     private fun setupUI() {
         val adapter = createAdapter()
         setupRecycleView(adapter)
+
         setupActionBar()
+        listenToInput()
+        listenToSubmitButton()
 
         observeViewStateUpdates(adapter)
     }
@@ -74,6 +78,18 @@ class ChatFragment : Fragment() {
         }
     }
 
+    private fun listenToInput() {
+        binding.input.addTextChangedListener {
+            requestUpdateInput(it.toString())
+        }
+    }
+
+    private fun listenToSubmitButton() {
+        binding.sendButton.setOnClickListener {
+            requestSendMessage()
+        }
+    }
+
     private fun setupActionBar() {
         // Adding Toolbar & removing showing app name in title
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbar.root)
@@ -82,12 +98,12 @@ class ChatFragment : Fragment() {
 
     private fun observeViewStateUpdates(adapter: MessageAdapter) {
         viewModel.state.observe(viewLifecycleOwner) {
-
+            updateScreenState(it, adapter)
         }
     }
 
     private fun updateScreenState(state: ChatFragmentState, adapter: MessageAdapter) {
-        binding.progressBar.isVisible = state.loading
+//        binding.progressBar.isVisible = state.loading
 
     }
 

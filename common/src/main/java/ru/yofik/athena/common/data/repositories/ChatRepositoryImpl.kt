@@ -11,7 +11,6 @@ import ru.yofik.athena.common.data.preferences.Preferences
 import ru.yofik.athena.common.domain.model.NetworkException
 import ru.yofik.athena.common.domain.model.chat.Chat
 import ru.yofik.athena.common.domain.model.chat.ChatWithDetails
-import ru.yofik.athena.common.domain.model.message.Message
 import ru.yofik.athena.common.domain.repositories.ChatRepository
 import timber.log.Timber
 
