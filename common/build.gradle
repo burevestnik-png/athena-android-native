@@ -1,5 +1,21 @@
 apply from: "$rootProject.projectDir/android-library.gradle"
 
+Properties localProperties = new Properties()
+localProperties.load(project.rootProject.file("local.properties").newDataInputStream())
+
+
+android {
+    buildTypes {
+        debug {
+            buildConfigField "String", "CLIENT_TOKEN", localProperties.getProperty("clientToken")
+        }
+
+        release {
+            buildConfigField "String", "CLIENT_TOKEN", localProperties.getProperty("clientToken")
+        }
+    }
+}
+
 dependencies {
     // Network
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"

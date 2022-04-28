@@ -4,6 +4,7 @@ import javax.inject.Inject
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
+import ru.yofik.athena.common.BuildConfig
 import ru.yofik.athena.common.data.api.ApiConstants.CLIENT_TOKEN
 import ru.yofik.athena.common.data.api.ApiParameters.AUTH_HEADER
 import ru.yofik.athena.common.data.api.ApiParameters.NO_AUTH_HEADER
@@ -30,14 +31,14 @@ class AuthenticationInterceptor @Inject constructor(private val preferences: Pre
     private fun Interceptor.Chain.createRequestWithClientToken(): Request {
         return request()
             .newBuilder()
-            .addHeader(AUTH_HEADER, "$TOKEN_TYPE $CLIENT_TOKEN")
+            .addHeader(AUTH_HEADER, "$TOKEN_TYPE ${BuildConfig.CLIENT_TOKEN}")
             .build()
     }
 
     private fun Interceptor.Chain.createRequestWithClientAndUserTokens(accessToken: String): Request {
         return request()
             .newBuilder()
-            .addHeader(AUTH_HEADER, "$TOKEN_TYPE $CLIENT_TOKEN $accessToken")
+            .addHeader(AUTH_HEADER, "$TOKEN_TYPE ${BuildConfig.CLIENT_TOKEN} $accessToken")
             .build()
     }
 }

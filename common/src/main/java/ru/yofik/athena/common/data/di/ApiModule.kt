@@ -54,6 +54,8 @@ object ApiModule {
         networkStatusInterceptor: NetworkStatusInterceptor,
         authenticationInterceptor: AuthenticationInterceptor
     ): OkHttpClient {
+//        Timber.d("Build config ${BuildConfig.CLIENT_TOKEN}")
+
         val builder =
             OkHttpClient.Builder()
                 .addInterceptor(networkStatusInterceptor)
@@ -80,7 +82,7 @@ object ApiModule {
         val request =
             Request.Builder()
                 .url(ApiConstants.WS_NOTIFICATION_ENDPOINT)
-                .addHeader(AUTH_HEADER, "$TOKEN_TYPE $CLIENT_TOKEN $accessToken")
+                .addHeader(AUTH_HEADER, "$TOKEN_TYPE ${BuildConfig.CLIENT_TOKEN} $accessToken")
                 .build()
 
         Timber.d("provideNotificationWebsocket: before connecting")
