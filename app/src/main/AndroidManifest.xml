@@ -24,7 +24,5 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".common.WorkspaceActivity" />
-
     </application>
 </manifest>
