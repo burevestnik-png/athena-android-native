@@ -5,7 +5,6 @@ import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import ru.yofik.athena.common.BuildConfig
-import ru.yofik.athena.common.data.api.ApiConstants.CLIENT_TOKEN
 import ru.yofik.athena.common.data.api.ApiParameters.AUTH_HEADER
 import ru.yofik.athena.common.data.api.ApiParameters.NO_AUTH_HEADER
 import ru.yofik.athena.common.data.api.ApiParameters.TOKEN_TYPE

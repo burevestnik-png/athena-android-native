@@ -9,6 +9,8 @@ class NotificationRepositoryImpl @Inject constructor(
     private val notificationWebSocket: WebSocket
 ): NotificationRepository {
     override fun startNotificationChannel() {
+        val result = notificationWebSocket.send("{\"command\":\"SUBSCRIBE_ON_NOTIFICATIONS\"}")
+        Timber.d("In repository result: $result")
         Timber.d("startNotificationChannel: $notificationWebSocket")
     }
 }

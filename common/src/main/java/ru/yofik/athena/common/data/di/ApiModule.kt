@@ -14,7 +14,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import ru.yofik.athena.common.BuildConfig
 import ru.yofik.athena.common.data.api.ApiConstants
-import ru.yofik.athena.common.data.api.ApiConstants.CLIENT_TOKEN
 import ru.yofik.athena.common.data.api.ApiParameters.AUTH_HEADER
 import ru.yofik.athena.common.data.api.ApiParameters.TOKEN_TYPE
 import ru.yofik.athena.common.data.api.interceptors.AuthenticationInterceptor
