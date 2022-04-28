@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -54,6 +53,7 @@ class ChatListFragment : Fragment() {
     private fun setupUI() {
         setupActionBar()
         listenToAddButton()
+        setupSwipeRefreshLayout()
 
         val adapter = createAdapter()
         setupRecyclerView(adapter)
@@ -66,7 +66,7 @@ class ChatListFragment : Fragment() {
 
     private fun updateScreenState(state: ChatListViewState, adapter: ChatAdapter) {
         Timber.d("updateScreenState: $state")
-        binding.progressBar.isVisible = state.loading
+        binding.swipeLayout.isRefreshing = state.loading
         adapter.submitList(state.chats)
         handleFailures(state.failure)
     }
@@ -82,6 +82,10 @@ class ChatListFragment : Fragment() {
             // todo add in future
             // setHasFixedSize(true)
         }
+    }
+
+    private fun setupSwipeRefreshLayout() {
+        binding.swipeLayout.setOnRefreshListener { requestGetAllChats() }
     }
 
     private fun navigateToChatScreen(id: Long) {

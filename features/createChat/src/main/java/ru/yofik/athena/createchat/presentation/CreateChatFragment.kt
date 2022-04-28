@@ -48,13 +48,13 @@ class CreateChatFragment : Fragment() {
     private fun setupUI() {
         val adapter = createAdapter()
         setupRecyclerView(adapter)
+        setupSwipeRefreshLayout()
+
         observeViewStateUpdates(adapter)
     }
 
     private fun observeViewEffects() {
-        viewModel.effects.observe(viewLifecycleOwner) {
-            reactTo(it)
-        }
+        viewModel.effects.observe(viewLifecycleOwner) { reactTo(it) }
     }
 
     private fun reactTo(effect: CreateChatFragmentViewEffect) {
@@ -76,7 +76,7 @@ class CreateChatFragment : Fragment() {
     }
 
     private fun updateScreenState(state: CreateChatViewState, adapter: UserAdapter) {
-        binding.progressBar.isVisible = state.loading
+        binding.swipeLayout.isRefreshing = state.loading
         adapter.submitList(state.users)
         handleFailures(state.failure)
     }
@@ -88,6 +88,10 @@ class CreateChatFragment : Fragment() {
             // todo add in future
             // setHasFixedSize(true)
         }
+    }
+
+    private fun setupSwipeRefreshLayout() {
+        binding.swipeLayout.apply { setOnRefreshListener { requestGetAllUsers() } }
     }
 
     private fun createAdapter(): UserAdapter {
