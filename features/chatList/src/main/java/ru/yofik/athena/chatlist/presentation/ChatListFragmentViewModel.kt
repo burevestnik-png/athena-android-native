@@ -5,23 +5,27 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 import kotlinx.coroutines.*
 import ru.yofik.athena.chatlist.domain.model.mappers.UiChatMapper
 import ru.yofik.athena.chatlist.domain.usecases.GetAllChats
+import ru.yofik.athena.common.data.api.ws.RxNotificationEvent
+import ru.yofik.athena.common.data.api.ws.RxNotificationPublisher
 import timber.log.Timber
 
 @HiltViewModel
-class ChatListFragmentViewModel @Inject constructor(private val getAllChats: GetAllChats,
-private val uiChatMapper: UiChatMapper) :
+class ChatListFragmentViewModel
+@Inject
+constructor(private val getAllChats: GetAllChats, private val uiChatMapper: UiChatMapper) :
     ViewModel() {
     private val _state = MutableLiveData<ChatListViewState>()
     val state: LiveData<ChatListViewState>
         get() = _state
 
-    private val _effects = MutableLiveData<ChatListFragmentViewEffect>()
-    val effect: LiveData<ChatListFragmentViewEffect>
-        get() = _effects
+    private val compositeDisposable = CompositeDisposable()
 
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -31,6 +35,7 @@ private val uiChatMapper: UiChatMapper) :
 
     init {
         _state.value = ChatListViewState()
+        subscribeOnNotificationChannel()
     }
 
     fun onEvent(event: ChatListEvent) {
@@ -38,6 +43,17 @@ private val uiChatMapper: UiChatMapper) :
             is ChatListEvent.GetAllChats -> requestAllChats()
         }
     }
+
+    private fun subscribeOnNotificationChannel() {
+        RxNotificationPublisher.listen(RxNotificationEvent.Notification::class.java)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                Timber.d(it.toString())
+            }
+            .addTo(compositeDisposable)
+    }
+
+    private fun handleNewNotification()
 
     private fun requestAllChats() {
         setLoadingTrue()
@@ -47,10 +63,11 @@ private val uiChatMapper: UiChatMapper) :
                 val chats = getAllChats()
 
                 withContext(Dispatchers.Main) {
-                    _state.value = state.value!!.copy(
-                        loading = false,
-                        chats = chats.map(uiChatMapper::mapToView)
-                )
+                    _state.value =
+                        state.value!!.copy(
+                            loading = false,
+                            chats = chats.map(uiChatMapper::mapToView)
+                        )
                 }
             }
     }
@@ -60,4 +77,10 @@ private val uiChatMapper: UiChatMapper) :
     }
 
     private fun onFailure(throwable: Throwable) {}
+
+    override fun onCleared() {
+        super.onCleared()
+        job = null
+        compositeDisposable.clear()
+    }
 }

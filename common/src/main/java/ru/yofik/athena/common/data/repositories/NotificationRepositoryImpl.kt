@@ -1,16 +1,29 @@
 package ru.yofik.athena.common.data.repositories
 
-import okhttp3.WebSocket
-import ru.yofik.athena.common.domain.repositories.NotificationRepository
-import timber.log.Timber
+import io.reactivex.Observable
 import javax.inject.Inject
+import okhttp3.WebSocket
+import ru.yofik.athena.common.data.api.ws.RxNotificationEvent
+import ru.yofik.athena.common.data.api.ws.RxNotificationPublisher
+import ru.yofik.athena.common.data.api.ws.model.mappers.SubscribeNotificationMapper
+import ru.yofik.athena.common.data.api.ws.model.notifications.SubscribeNotification
+import ru.yofik.athena.common.domain.model.notification.MessageNotification
+import ru.yofik.athena.common.domain.repositories.NotificationRepository
 
-class NotificationRepositoryImpl @Inject constructor(
-    private val notificationWebSocket: WebSocket
-): NotificationRepository {
+class NotificationRepositoryImpl
+@Inject
+constructor(
+    private val notificationWebSocket: WebSocket,
+    private val subscribeNotificationMapper: SubscribeNotificationMapper
+) : NotificationRepository {
     override fun startNotificationChannel() {
-        val result = notificationWebSocket.send("{\"command\":\"SUBSCRIBE_ON_NOTIFICATIONS\"}")
-        Timber.d("In repository result: $result")
-        Timber.d("startNotificationChannel: $notificationWebSocket")
+        notificationWebSocket.send(
+            subscribeNotificationMapper.mapToApi(SubscribeNotification.build())
+        )
+    }
+
+    override fun subscribeOnNotifications(): Observable<MessageNotification> {
+        return RxNotificationPublisher.listen(RxNotificationEvent.Notification::class.java)
+            .map {  }
     }
 }

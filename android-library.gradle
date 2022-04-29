@@ -76,6 +76,11 @@ dependencies {
     implementation "com.jakewharton.threetenabp:threetenabp:$threetenabp_version"
     implementation "com.jakewharton.timber:timber:$timber_version"
 
+    // RxJava
+    implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"
+    implementation "io.reactivex.rxjava2:rxkotlin:$rxkotlin_version"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxandroid_version"
+
     // Testing dependencies
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test.ext:junit:$junit_ext_version"

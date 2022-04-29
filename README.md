@@ -22,6 +22,7 @@
 * Add functionality to buttons in actionbar
 * Think about creating several chats
 * Think about showing loaders in lists
+* Very bad realization of rx java, need to study more
 
 ---
 

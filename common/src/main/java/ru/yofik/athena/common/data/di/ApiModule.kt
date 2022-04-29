@@ -17,10 +17,10 @@ import ru.yofik.athena.common.data.api.ApiConstants
 import ru.yofik.athena.common.data.api.ApiParameters.AUTH_HEADER
 import ru.yofik.athena.common.data.api.ApiParameters.TOKEN_TYPE
 import ru.yofik.athena.common.data.api.interceptors.AuthenticationInterceptor
+import ru.yofik.athena.common.data.api.http.model.chat.ChatApi
+import ru.yofik.athena.common.data.api.http.model.user.UserApi
 import ru.yofik.athena.common.data.api.interceptors.NetworkStatusInterceptor
-import ru.yofik.athena.common.data.api.model.chat.ChatApi
-import ru.yofik.athena.common.data.api.model.user.UserApi
-import ru.yofik.athena.common.data.api.wsListeners.NotificationListener
+import ru.yofik.athena.common.data.api.ws.listeners.NotificationListener
 import ru.yofik.athena.common.data.preferences.Preferences
 import timber.log.Timber
 
@@ -53,8 +53,6 @@ object ApiModule {
         networkStatusInterceptor: NetworkStatusInterceptor,
         authenticationInterceptor: AuthenticationInterceptor
     ): OkHttpClient {
-//        Timber.d("Build config ${BuildConfig.CLIENT_TOKEN}")
-
         val builder =
             OkHttpClient.Builder()
                 .addInterceptor(networkStatusInterceptor)
@@ -68,12 +66,13 @@ object ApiModule {
     @Provides
     @Singleton
     fun provideNotificationWebsocket(
+        networkStatusInterceptor: NetworkStatusInterceptor,
         notificationListener: NotificationListener,
         preferences: Preferences
     ): WebSocket {
         val client =
             OkHttpClient.Builder()
-                .addNetworkInterceptor(StethoInterceptor())
+                .addInterceptor(networkStatusInterceptor)
                 .pingInterval(60, TimeUnit.SECONDS)
                 .build()
 

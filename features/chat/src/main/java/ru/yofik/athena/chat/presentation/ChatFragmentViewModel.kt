@@ -5,11 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 import kotlinx.coroutines.*
 import ru.yofik.athena.chat.domain.usecases.GetChat
 import ru.yofik.athena.chat.domain.usecases.SendMessage
-import ru.yofik.athena.common.domain.repositories.NotificationRepository
+import ru.yofik.athena.common.data.api.ws.RxNotificationEvent
+import ru.yofik.athena.common.data.api.ws.RxNotificationPublisher
 import timber.log.Timber
 
 @HiltViewModel
@@ -18,8 +22,6 @@ class ChatFragmentViewModel
 constructor(
     private val getChat: GetChat,
     private val sendMessage: SendMessage,
-    // todo extract to use case
-    private val notificationRepository: NotificationRepository
 ) : ViewModel() {
     private val _state = MutableLiveData(ChatFragmentState())
     val state: LiveData<ChatFragmentState>

@@ -2,11 +2,11 @@ package ru.yofik.athena.common.data.repositories
 
 import javax.inject.Inject
 import retrofit2.HttpException
-import ru.yofik.athena.common.data.api.model.chat.ChatApi
-import ru.yofik.athena.common.data.api.model.chat.mappers.ChatDtoMapper
-import ru.yofik.athena.common.data.api.model.chat.mappers.ChatWithDetailsDtoMapper
-import ru.yofik.athena.common.data.api.model.chat.requests.CreateChatRequest
-import ru.yofik.athena.common.data.api.model.chat.requests.SendMessageRequest
+import ru.yofik.athena.common.data.api.http.model.chat.ChatApi
+import ru.yofik.athena.common.data.api.http.model.chat.mappers.ChatApiMapper
+import ru.yofik.athena.common.data.api.http.model.chat.mappers.ChatWithDetailsApiMapper
+import ru.yofik.athena.common.data.api.http.model.chat.requests.CreateChatRequest
+import ru.yofik.athena.common.data.api.http.model.chat.requests.SendMessageRequest
 import ru.yofik.athena.common.data.preferences.Preferences
 import ru.yofik.athena.common.domain.model.NetworkException
 import ru.yofik.athena.common.domain.model.chat.Chat
@@ -18,8 +18,8 @@ class ChatRepositoryImpl
 @Inject
 constructor(
     private val chatApi: ChatApi,
-    private val chatDtoMapper: ChatDtoMapper,
-    private val chatWithDetailsDtoMapper: ChatWithDetailsDtoMapper,
+    private val chatDtoMapper: ChatApiMapper,
+    private val chatWithDetailsDtoMapper: ChatWithDetailsApiMapper,
     private val preferences: Preferences
 ) : ChatRepository {
     override suspend fun requestGetAllChats(): List<Chat> {

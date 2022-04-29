@@ -2,11 +2,11 @@ package ru.yofik.athena.common.data.repositories
 
 import javax.inject.Inject
 import retrofit2.HttpException
-import ru.yofik.athena.common.data.api.model.user.UserApi
-import ru.yofik.athena.common.data.api.model.user.mappers.AccessTokenDtoMapper
-import ru.yofik.athena.common.data.api.model.user.mappers.UserDtoMapper
-import ru.yofik.athena.common.data.api.model.user.requests.ActivateUserRequest
-import ru.yofik.athena.common.data.api.model.user.requests.AuthUserRequest
+import ru.yofik.athena.common.data.api.http.model.user.UserApi
+import ru.yofik.athena.common.data.api.http.model.user.mappers.AccessTokenApiMapper
+import ru.yofik.athena.common.data.api.http.model.user.mappers.UserApiMapper
+import ru.yofik.athena.common.data.api.http.model.user.requests.ActivateUserRequest
+import ru.yofik.athena.common.data.api.http.model.user.requests.AuthUserRequest
 import ru.yofik.athena.common.data.preferences.Preferences
 import ru.yofik.athena.common.domain.model.NetworkException
 import ru.yofik.athena.common.domain.model.user.User
@@ -18,8 +18,8 @@ class UserRepositoryImpl
 constructor(
     private val userApi: UserApi,
     private val preferences: Preferences,
-    private val accessTokenDtoMapper: AccessTokenDtoMapper,
-    private val userDtoMapper: UserDtoMapper
+    private val accessTokenDtoMapper: AccessTokenApiMapper,
+    private val userDtoMapper: UserApiMapper
 ) : UserRepository {
     override suspend fun requestActivateUser(code: String) {
         try {
