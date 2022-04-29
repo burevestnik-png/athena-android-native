@@ -11,16 +11,21 @@ import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 import kotlinx.coroutines.*
 import ru.yofik.athena.chatlist.domain.model.mappers.UiChatMapper
+import ru.yofik.athena.chatlist.domain.model.mappers.UiMessageMapper
 import ru.yofik.athena.chatlist.domain.usecases.GetAllChats
-import ru.yofik.athena.common.data.api.ws.RxNotificationEvent
-import ru.yofik.athena.common.data.api.ws.RxNotificationPublisher
+import ru.yofik.athena.chatlist.domain.usecases.SubscribeOnNotifications
+import ru.yofik.athena.common.domain.model.notification.MessageNotification
 import timber.log.Timber
 
 @HiltViewModel
 class ChatListFragmentViewModel
 @Inject
-constructor(private val getAllChats: GetAllChats, private val uiChatMapper: UiChatMapper) :
-    ViewModel() {
+constructor(
+    private val getAllChats: GetAllChats,
+    private val subscribeOnNotifications: SubscribeOnNotifications,
+    private val uiChatMapper: UiChatMapper,
+    private val uiMessageMapper: UiMessageMapper
+) : ViewModel() {
     private val _state = MutableLiveData<ChatListViewState>()
     val state: LiveData<ChatListViewState>
         get() = _state
@@ -45,15 +50,27 @@ constructor(private val getAllChats: GetAllChats, private val uiChatMapper: UiCh
     }
 
     private fun subscribeOnNotificationChannel() {
-        RxNotificationPublisher.listen(RxNotificationEvent.Notification::class.java)
+        subscribeOnNotifications()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                Timber.d(it.toString())
-            }
+            .subscribe { handleNewNotification(it) }
             .addTo(compositeDisposable)
     }
 
-    private fun handleNewNotification()
+    private fun handleNewNotification(notification: MessageNotification) {
+        Timber.d("Get new notification in chatList feature")
+
+        // todo update cache
+        val updatedList =
+            state.value!!.chats.map {
+                if (it.id == notification.message.chatId) {
+                    it.copy(message = uiMessageMapper.mapToView(notification.message))
+                } else {
+                    it
+                }
+            }
+
+        _state.value = state.value!!.copy(chats = updatedList)
+    }
 
     private fun requestAllChats() {
         setLoadingTrue()

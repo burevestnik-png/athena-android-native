@@ -23,7 +23,12 @@ constructor(
     }
 
     override fun subscribeOnNotifications(): Observable<MessageNotification> {
-        return RxNotificationPublisher.listen(RxNotificationEvent.Notification::class.java)
-            .map {  }
+        return RxNotificationPublisher.listen(RxNotificationEvent.Notification::class.java).map {
+            MessageNotification(message = it.message)
+        }
+    }
+
+    override fun subscribeOnTargetChatNotifications(chatId: Long): Observable<MessageNotification> {
+        return subscribeOnNotifications().filter { it.message.chatId == chatId }
     }
 }

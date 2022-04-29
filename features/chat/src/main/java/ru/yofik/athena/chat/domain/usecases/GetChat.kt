@@ -7,10 +7,8 @@ import ru.yofik.athena.common.domain.repositories.NotificationRepository
 
 class GetChat @Inject constructor(
     private val chatRepository: ChatRepository,
-    private val notificationRepository: NotificationRepository
 ) {
     suspend operator fun invoke(id: Long): ChatWithDetails {
-        notificationRepository.startNotificationChannel()
         return chatRepository.requestGetChat(id)
     }
 }

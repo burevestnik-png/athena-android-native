@@ -12,8 +12,8 @@ import javax.inject.Inject
 import kotlinx.coroutines.*
 import ru.yofik.athena.chat.domain.usecases.GetChat
 import ru.yofik.athena.chat.domain.usecases.SendMessage
-import ru.yofik.athena.common.data.api.ws.RxNotificationEvent
-import ru.yofik.athena.common.data.api.ws.RxNotificationPublisher
+import ru.yofik.athena.chat.domain.usecases.SubscribeOnNotifications
+import ru.yofik.athena.common.domain.model.notification.MessageNotification
 import timber.log.Timber
 
 @HiltViewModel
@@ -22,10 +22,13 @@ class ChatFragmentViewModel
 constructor(
     private val getChat: GetChat,
     private val sendMessage: SendMessage,
+    private val subscribeOnNotifications: SubscribeOnNotifications
 ) : ViewModel() {
     private val _state = MutableLiveData(ChatFragmentState())
     val state: LiveData<ChatFragmentState>
         get() = _state
+
+    private val compositeDisposable = CompositeDisposable()
 
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -54,6 +57,32 @@ constructor(
                     _state.value = state.value!!.copy(loading = false, chatWithDetails = chat)
                 }
             }
+
+        subscribeOnNotificationChannel(id)
+    }
+
+    private fun subscribeOnNotificationChannel(chatId: Long) {
+        subscribeOnNotifications(chatId)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { handleNotification(it) }
+            .addTo(compositeDisposable)
+    }
+
+    private fun handleNotification(notification: MessageNotification) {
+        Timber.d("New notification in chat feature")
+
+        val messages = state.value!!.chatWithDetails.details.messages.toMutableList()
+        val chat = state.value!!.chatWithDetails
+        val details = state.value!!.chatWithDetails.details
+
+        _state.value =
+            state.value!!.copy(
+                chatWithDetails =
+                    chat.copy(
+                        details =
+                            details.copy(messages = messages.apply { add(notification.message) })
+                    )
+            )
     }
 
     private fun handleSendMessage() {
@@ -61,15 +90,6 @@ constructor(
         job =
             CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
                 sendMessage(state.value!!.chatWithDetails.id, state.value!!.input)
-
-                val messages = state.value!!.chatWithDetails.details.messages.toMutableList()
-
-                //                messages.add(Message(
-                //                    id = -1,
-                //                    content = state.value!!.input,
-                //                    senderId =
-                //                ))
-
                 withContext(Dispatchers.Main) { _state.value = state.value!!.copy(loading = false) }
             }
     }
@@ -81,5 +101,6 @@ constructor(
     override fun onCleared() {
         super.onCleared()
         job = null
+        compositeDisposable.clear()
     }
 }
