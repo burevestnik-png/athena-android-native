@@ -6,7 +6,7 @@
 
 ---
 
-### v0.1.5
+### v0.2.0 - In progress
 
 ### Features
 
@@ -23,6 +23,8 @@
 * Think about creating several chats
 * Think about showing loaders in lists
 * Very bad realization of rx java, need to study more
+* Remake messages in chat
+* Not creating chat again if it exists, just reopen
 
 ---
 

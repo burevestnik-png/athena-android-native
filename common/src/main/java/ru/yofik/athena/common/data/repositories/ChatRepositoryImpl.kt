@@ -49,6 +49,7 @@ constructor(
     override suspend fun requestGetChat(id: Long): ChatWithDetails {
         try {
             val response = chatApi.getChat(id)
+            Timber.d("requestGetChat: ${response.payload}")
             return chatWithDetailsDtoMapper.mapToDomain(response.payload)
         } catch (exception: HttpException) {
             throw NetworkException(exception.message ?: "Code ${exception.code()}")

@@ -13,6 +13,8 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.chat.databinding.FragmentChatBinding
+import ru.yofik.athena.common.presentation.model.handleFailures
+import timber.log.Timber
 
 private const val ARG_ID = "id"
 
@@ -47,8 +49,10 @@ class ChatFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         setupUI()
         requestGetChat(id!!)
+        observeViewEffects()
     }
 
     override fun onDestroy() {
@@ -67,27 +71,50 @@ class ChatFragment : Fragment() {
         observeViewStateUpdates(adapter)
     }
 
+    private fun observeViewEffects() {
+        viewModel.effects.observe(viewLifecycleOwner) { reactTo(it) }
+    }
+
+    private fun reactTo(effect: ChatFragmentViewEffect) {
+        when (effect) {
+            is ChatFragmentViewEffect.SetChatName -> handleSetChatName(effect.name)
+            is ChatFragmentViewEffect.ClearInput -> handleClearInput()
+        }
+    }
+
+    private fun handleClearInput() {
+        binding.input.setText("")
+    }
+
+    private fun handleSetChatName(name: String) {
+        binding.toolbar.chatName.text = name
+    }
+
     private fun createAdapter(): MessageAdapter {
         return MessageAdapter()
     }
 
     private fun setupRecycleView(adapter: MessageAdapter) {
         binding.recyclerView.apply {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = LinearLayoutManager(context).apply { stackFromEnd = true }
             this.adapter = adapter
+
+            // this callback provide auto scroll messages
+            addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+                // todo think about useless scroll
+                //                if (bottom < oldBottom) {
+                postDelayed({ smoothScrollToPosition(adapter.itemCount - 1) }, 100)
+                //                }
+            }
         }
     }
 
     private fun listenToInput() {
-        binding.input.addTextChangedListener {
-            requestUpdateInput(it.toString())
-        }
+        binding.input.addTextChangedListener { requestUpdateInput(it.toString()) }
     }
 
     private fun listenToSubmitButton() {
-        binding.sendButton.setOnClickListener {
-            requestSendMessage()
-        }
+        binding.sendButton.setOnClickListener { requestSendMessage() }
     }
 
     private fun setupActionBar() {
@@ -97,14 +124,14 @@ class ChatFragment : Fragment() {
     }
 
     private fun observeViewStateUpdates(adapter: MessageAdapter) {
-        viewModel.state.observe(viewLifecycleOwner) {
-            updateScreenState(it, adapter)
-        }
+        viewModel.state.observe(viewLifecycleOwner) { updateScreenState(it, adapter) }
     }
 
     private fun updateScreenState(state: ChatFragmentState, adapter: MessageAdapter) {
-//        binding.progressBar.isVisible = state.loading
-
+        Timber.d("updateScreenState: $state")
+        binding.progressBar.isVisible = state.loading
+        adapter.submitList(state.messages)
+        handleFailures(state.failure)
     }
 
     private fun requestUpdateInput(value: String) {

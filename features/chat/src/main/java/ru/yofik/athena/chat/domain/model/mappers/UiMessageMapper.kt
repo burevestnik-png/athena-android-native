@@ -1,5 +1,6 @@
-package ru.yofik.athena.chat.domain.model
+package ru.yofik.athena.chat.domain.model.mappers
 
+import ru.yofik.athena.chat.domain.model.UiMessage
 import javax.inject.Inject
 import ru.yofik.athena.common.domain.model.message.Message
 import ru.yofik.athena.common.presentation.model.UiMapper

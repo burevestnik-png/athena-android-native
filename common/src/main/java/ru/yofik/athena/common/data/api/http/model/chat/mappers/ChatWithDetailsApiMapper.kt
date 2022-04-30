@@ -8,17 +8,19 @@ import ru.yofik.athena.common.data.api.mapping.MappingException
 import ru.yofik.athena.common.data.api.http.model.user.mappers.UserApiMapper
 import ru.yofik.athena.common.domain.model.chat.ChatWithDetails
 import ru.yofik.athena.common.domain.model.chat.details.Details
+import timber.log.Timber
 
 class ChatWithDetailsApiMapper
 @Inject
 constructor(private val userDtoMapper: UserApiMapper, private val detailsMapper: DetailsMapper) :
     ApiMapper<ChatWithDetailsDto?, ChatWithDetails> {
     override fun mapToDomain(entityDTO: ChatWithDetailsDto?): ChatWithDetails {
+        Timber.d("mapToDomain: mapping entity charWithDetailes $entityDTO")
         return ChatWithDetails(
             id = entityDTO?.id ?: throw MappingException("Chat Id cannot be null"),
             name = entityDTO.name.orEmpty(),
             users = entityDTO.users?.map(userDtoMapper::mapToDomain) ?: emptyList(),
-            details = detailsMapper.mapToDomain(entityDTO.message)
+            details = detailsMapper.mapToDomain(entityDTO.messages)
         )
     }
 }

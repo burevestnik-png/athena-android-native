@@ -8,6 +8,6 @@ import ru.yofik.athena.common.data.api.http.model.user.responses.dto.UserDto
 data class ChatWithDetailsDto(
     @field:Json(name = "id") val id: Long?,
     @field:Json(name = "name") val name: String?,
-    @field:Json(name = "userViews") val users: List<UserDto>?,
-    @field:Json(name = "lastMessage") val message: List<MessageDto>?
+    @field:Json(name = "users") val users: List<UserDto>?,
+    @field:Json(name = "messages") val messages: List<MessageDto>?
 )
