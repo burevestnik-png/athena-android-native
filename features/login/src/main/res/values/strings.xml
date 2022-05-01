@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="login_submit_button">Send</string>
+    <string name="login_submit_button">Sign in</string>
     <string name="login_code_input">Enter code</string>
     <string name="no_error" />
+    <string name="let_s_sign_you_in">Let\'s sign you in.</string>
+    <string name="welcome_back">Welcome back.</string>
+    <string name="you_ve_been_missed">You\'ve been missed!</string>
 </resources>

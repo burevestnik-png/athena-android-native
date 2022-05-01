@@ -60,7 +60,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun setOnCodeChangeListener() {
-        binding.codeInput.doAfterTextChanged { onCodeValueChange(it?.toString() ?: "") }
+        binding.codeInput.editText?.doAfterTextChanged { onCodeValueChange(it?.toString() ?: "") }
     }
 
     private fun observeViewStateUpdates() {
