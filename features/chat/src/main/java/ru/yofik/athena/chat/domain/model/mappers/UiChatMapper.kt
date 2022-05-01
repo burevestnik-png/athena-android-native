@@ -5,12 +5,14 @@ import ru.yofik.athena.common.domain.model.chat.ChatWithDetails
 import ru.yofik.athena.common.presentation.model.UiMapper
 import javax.inject.Inject
 
-class UiChatMapper @Inject constructor() : UiMapper<ChatWithDetails, UiChat> {
-    override fun mapToView(model: ChatWithDetails): UiChat {
+class UiChatMapper @Inject constructor() : UiMapper<Pair<ChatWithDetails, Long>, UiChat> {
+    override fun mapToView(model: Pair<ChatWithDetails, Long>): UiChat {
+        val (chat, chatHolderId) = model
         return UiChat(
-            id = model.id,
-            users = model.users,
-            name = model.name
+            id = chat.id,
+            users = chat.users,
+            name = chat.name,
+            chatHolderId = chatHolderId
         )
     }
 }

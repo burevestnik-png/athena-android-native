@@ -14,6 +14,7 @@ import ru.yofik.athena.chat.domain.model.UiChat
 import ru.yofik.athena.chat.domain.model.mappers.UiChatMapper
 import ru.yofik.athena.chat.domain.model.mappers.UiMessageMapper
 import ru.yofik.athena.chat.domain.usecases.GetChat
+import ru.yofik.athena.chat.domain.usecases.GetUserId
 import ru.yofik.athena.chat.domain.usecases.SendMessage
 import ru.yofik.athena.chat.domain.usecases.SubscribeOnNotifications
 import ru.yofik.athena.common.domain.model.chat.ChatWithDetails
@@ -27,6 +28,7 @@ constructor(
     private val getChat: GetChat,
     private val sendMessage: SendMessage,
     private val subscribeOnNotifications: SubscribeOnNotifications,
+    private val getUserId: GetUserId,
     private val uiMessageMapper: UiMessageMapper,
     private val uiChatMapper: UiChatMapper
 ) : ViewModel() {
@@ -49,7 +51,7 @@ constructor(
     }
 
     init {
-        uiChat.value = uiChatMapper.mapToView(ChatWithDetails.createNullChat())
+        uiChat.value = uiChatMapper.mapToView(Pair(ChatWithDetails.createNullChat(), getUserId()))
     }
 
     fun onEvent(event: ChatFragmentEvent) {
@@ -72,7 +74,7 @@ constructor(
                 Timber.d("handleGetChat: got chat from api $chat")
 
                 withContext(Dispatchers.Main) {
-                    uiChat.value = uiChatMapper.mapToView(chat)
+                    uiChat.value = uiChatMapper.mapToView(Pair(chat, getUserId()))
                     _state.value =
                         state.value!!.copy(
                             loading = false,

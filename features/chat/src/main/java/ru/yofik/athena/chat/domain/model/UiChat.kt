@@ -5,5 +5,6 @@ import ru.yofik.athena.common.domain.model.user.User
 data class UiChat(
     val id: Long,
     val name: String,
-    val users: List<User>
+    val users: List<User>,
+    val chatHolderId: Long
 )
