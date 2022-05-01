@@ -76,7 +76,9 @@ constructor(
                     _state.value =
                         state.value!!.copy(
                             loading = false,
-                            messages = chat.details.messages.map(uiMessageMapper::mapToView)
+                            messages = chat.details.messages.map {
+                                uiMessageMapper.mapToView(Pair(it, uiChat.value!!))
+                            }
                         )
 
                     _effects.value = ChatFragmentViewEffect.SetChatName(uiChat.value!!.name)
@@ -99,7 +101,16 @@ constructor(
 
         _state.value =
             state.value!!.copy(
-                messages = messages.apply { add(uiMessageMapper.mapToView(notification.message)) }
+                messages = messages.apply {
+                    add(
+                        uiMessageMapper.mapToView(
+                            Pair(
+                                notification.message,
+                                uiChat.value!!
+                            )
+                        )
+                    )
+                }
             )
     }
 

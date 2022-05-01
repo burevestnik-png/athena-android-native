@@ -103,7 +103,9 @@ class ChatFragment : Fragment() {
             addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
                 // todo think about useless scroll
                 //                if (bottom < oldBottom) {
-                postDelayed({ smoothScrollToPosition(adapter.itemCount - 1) }, 100)
+                if (adapter.itemCount > 0) {
+                    postDelayed({ smoothScrollToPosition(adapter.itemCount - 1) }, 100)
+                }
                 //                }
             }
         }
