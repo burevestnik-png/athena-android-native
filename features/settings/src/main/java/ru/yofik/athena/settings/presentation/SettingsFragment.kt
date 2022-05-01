@@ -7,10 +7,12 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import ru.yofik.athena.common.domain.model.user.User
 import ru.yofik.athena.common.utils.InternalDeepLink
 import ru.yofik.athena.settings.databinding.FragmentSettingsBinding
 
@@ -45,6 +47,7 @@ class SettingsFragment : Fragment() {
 
         setupUI()
         observeViewEffects()
+        observeViewStateUpdates()
     }
 
     override fun onDestroyView() {
@@ -68,6 +71,16 @@ class SettingsFragment : Fragment() {
         actionBar.title = ""
     }
 
+    private fun observeViewStateUpdates() {
+        viewModel.state.observe(viewLifecycleOwner) {
+            updateScreenState(it)
+        }
+    }
+
+    private fun updateScreenState(state: SettingsViewState) {
+        binding.progressBar.isVisible = state.loading
+    }
+
     private fun observeViewEffects() {
         viewModel.effects.observe(viewLifecycleOwner) { reactTo(it) }
     }
@@ -75,6 +88,15 @@ class SettingsFragment : Fragment() {
     private fun reactTo(effect: SettingsFragmentViewEffect) {
         when (effect) {
             is SettingsFragmentViewEffect.NavigateToLoginScreen -> navigateToLoginScreen()
+            is SettingsFragmentViewEffect.ProvideUserInfo -> handleProvidingUserInfo(effect.user)
+        }
+    }
+
+    private fun handleProvidingUserInfo(user: User) {
+        binding.apply {
+            userId.text = user.id.toString()
+            userName.text = user.name
+            userLogin.text = user.login
         }
     }
 

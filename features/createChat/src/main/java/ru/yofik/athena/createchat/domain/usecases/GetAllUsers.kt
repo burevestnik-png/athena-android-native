@@ -8,6 +8,9 @@ class GetAllUsers @Inject constructor(
     private val userRepository: UserRepository
 ) {
     suspend operator fun invoke(): List<User> {
-        return userRepository.requestGetAllUsers()
+        val currentUserId = userRepository.getCachedUser().id
+        return userRepository.requestGetAllUsers().filter {
+            it.id != currentUserId
+        }
     }
 }
