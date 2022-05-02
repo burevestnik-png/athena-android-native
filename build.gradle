@@ -46,6 +46,9 @@ buildscript {
         rxkotlin_version = "2.4.0"
         rxandroid_version = "2.1.1"
 
+        // Room cache
+        room_version = "2.2.6"
+
     }
 
     dependencies {
