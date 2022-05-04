@@ -6,7 +6,6 @@ import javax.inject.Inject
 import ru.yofik.athena.common.domain.model.message.Message
 import ru.yofik.athena.common.presentation.model.UiMapper
 import ru.yofik.athena.common.utils.toFormattedString
-import timber.log.Timber
 
 class UiMessageMapper @Inject constructor(
     private val uiSenderMapper: UiSenderMapper,
@@ -19,7 +18,7 @@ class UiMessageMapper @Inject constructor(
             id = message.id,
             sender = uiSenderMapper.mapToView(model),
             content = message.content,
-            time = message.dateTime.toFormattedString(),
+            time = message.creationDate.toFormattedString(),
             senderType = uiMessageSenderTypeMapper.mapToView(model)
         )
     }

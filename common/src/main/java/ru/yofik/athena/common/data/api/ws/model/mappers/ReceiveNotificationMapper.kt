@@ -5,7 +5,7 @@ import javax.inject.Inject
 import ru.yofik.athena.common.data.api.http.model.chat.mappers.MessageApiMapper
 import ru.yofik.athena.common.data.api.mapping.ApiMapper
 import ru.yofik.athena.common.data.api.mapping.MappingException
-import ru.yofik.athena.common.data.api.ws.model.notifications.ReceiveNotification
+import ru.yofik.athena.common.data.api.ws.model.messages.ReceiveNotification
 import ru.yofik.athena.common.domain.model.notification.MessageNotification
 
 class ReceiveNotificationMapper

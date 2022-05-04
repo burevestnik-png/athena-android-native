@@ -14,6 +14,18 @@ android {
             buildConfigField "String", "CLIENT_TOKEN", localProperties.getProperty("clientToken")
         }
     }
+
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += [
+                        "room.schemaLocation":"$projectDir/schemas".toString(),
+                        "room.incremental":"true",
+                        "room.expandProjection":"true"
+                ]
+            }
+        }
+    }
 }
 
 dependencies {

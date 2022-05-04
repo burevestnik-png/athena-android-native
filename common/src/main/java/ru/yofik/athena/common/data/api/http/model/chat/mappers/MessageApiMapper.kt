@@ -13,7 +13,8 @@ class MessageApiMapper @Inject constructor() : ApiMapper<MessageDto, Message> {
             content = entityDTO?.text.orEmpty(),
             senderId = entityDTO?.senderId ?: -1,
             chatId = entityDTO?.chatId ?: -1,
-            dateTime = TimeUtils.parseToLocalDateTime(entityDTO?.date ?: "")
+            creationDate = TimeUtils.parseToLocalDateTime(entityDTO?.creationDate ?: ""),
+            modificationDate = TimeUtils.parseToLocalDateTime(entityDTO?.modificationDate ?: "")
         )
     }
 }

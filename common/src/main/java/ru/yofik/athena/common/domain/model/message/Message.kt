@@ -7,7 +7,8 @@ data class Message(
     val content: String,
     val senderId: Long,
     val chatId: Long,
-    val dateTime: LocalDateTime
+    val creationDate: LocalDateTime,
+    val modificationDate: LocalDateTime
 ) {
     companion object {
         const val NULLABLE_MESSAGE_ID = -1L

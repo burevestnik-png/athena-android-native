@@ -10,7 +10,7 @@ class UiMessageMapper @Inject constructor() : UiMapper<Message, UiMessage> {
     override fun mapToView(model: Message): UiMessage {
         return UiMessage(
             content = model.content,
-            time = model.dateTime.toFormattedString()
+            time = model.creationDate.toFormattedString()
         )
     }
 }

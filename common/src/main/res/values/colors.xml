@@ -3,7 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!--    https://www.materialpalette.com/light-blue/light-blue-->
+    <!-- https://www.materialpalette.com/light-blue/light-blue -->
     <color name="primary">#03A9F4</color>
     <color name="accent">#03A9F4</color>
     <color name="primary_dark">#0288D1</color>

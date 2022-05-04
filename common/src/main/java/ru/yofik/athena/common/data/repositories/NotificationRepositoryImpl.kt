@@ -5,8 +5,7 @@ import javax.inject.Inject
 import okhttp3.WebSocket
 import ru.yofik.athena.common.data.api.ws.RxNotificationEvent
 import ru.yofik.athena.common.data.api.ws.RxNotificationPublisher
-import ru.yofik.athena.common.data.api.ws.model.mappers.SubscribeNotificationMapper
-import ru.yofik.athena.common.data.api.ws.model.notifications.SubscribeNotification
+import ru.yofik.athena.common.data.api.ws.model.messages.SubscribeNotification
 import ru.yofik.athena.common.domain.model.notification.MessageNotification
 import ru.yofik.athena.common.domain.repositories.NotificationRepository
 
