@@ -1,18 +1,18 @@
 package ru.yofik.athena.common.data.api.ws.model.messages
 
-import com.squareup.moshi.*
-import ru.yofik.athena.common.data.api.http.model.chat.responses.dto.MessageDto
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import ru.yofik.athena.common.data.api.ws.model.ArgumentType
 import ru.yofik.athena.common.data.api.ws.model.CommandType
 
 @JsonClass(generateAdapter = true)
-data class NewMessageWsMessage(
+data class DeleteMessageWsMessage(
     @field:Json(name = "type") val type: ArgumentType,
-    @field:Json(name = "message") val message: MessageDto
+    @field:Json(name = "deletedMessages") val messages: List<Long>
 )
 
 @JsonClass(generateAdapter = true)
-data class JsonNewMessage(
+data class JsonDeleteMessage(
     @field:Json(name = "command") val command: CommandType,
-    @field:Json(name = "argument") val argument: NewMessageWsMessage
+    @field:Json(name = "argument") val argument: DeleteMessageWsMessage
 )

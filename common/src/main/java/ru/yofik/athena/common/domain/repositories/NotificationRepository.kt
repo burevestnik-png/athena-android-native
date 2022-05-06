@@ -5,6 +5,6 @@ import io.reactivex.Observable
 interface NotificationRepository {
     fun startNotificationChannel()
 
-//    fun subscribeOnNotifications(): Observable<MessageNotification>
+//    fun subscribeOnNewMessageNotifications(): Observable<MessageNotification>
 //    fun subscribeOnTargetChatNotifications(chatId: Long): Observable<MessageNotification>
 }
