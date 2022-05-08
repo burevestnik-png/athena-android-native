@@ -65,9 +65,8 @@ class MessageAdapter : ListAdapter<UiMessage, RecyclerView.ViewHolder>(UI_MESSAG
         RecyclerView.ViewHolder(binding.root) {
         fun bind(message: UiMessage) {
             binding.apply {
-                owner.text = message.sender
                 time.text = message.time
-                content.text = message.content
+                this.message.text = message.content
             }
         }
     }
@@ -76,9 +75,8 @@ class MessageAdapter : ListAdapter<UiMessage, RecyclerView.ViewHolder>(UI_MESSAG
         RecyclerView.ViewHolder(binding.root) {
         fun bind(message: UiMessage) {
             binding.apply {
-                owner.text = message.sender
                 time.text = message.time
-                content.text = message.content
+                this.message.text = message.content
             }
         }
     }
