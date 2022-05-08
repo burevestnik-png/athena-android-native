@@ -83,7 +83,7 @@ object ApiModule {
                 .addHeader(AUTH_HEADER, "$TOKEN_TYPE ${BuildConfig.CLIENT_TOKEN} $accessToken")
                 .build()
 
-        Timber.d("provideNotificationWebsocket: before connecting")
+        Timber.d("Auth header: ${request.header(AUTH_HEADER)}")
         return client.newWebSocket(request, notificationListener)
     }
 
