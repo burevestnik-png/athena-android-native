@@ -5,9 +5,9 @@ import io.reactivex.subjects.PublishSubject
 
 // todo remade injectable
 object RxNotificationPublisher {
-    private val publisher = PublishSubject.create<Any>()
+    private val publisher = PublishSubject.create<RxNotificationEvent>()
 
-    fun publish(event: Any) {
+    fun publish(event: RxNotificationEvent) {
         publisher.onNext(event)
     }
 

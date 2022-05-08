@@ -1,6 +1,5 @@
 package ru.yofik.athena.common.data.api.ws.listeners
 
-import javax.inject.Inject
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
@@ -9,10 +8,10 @@ import ru.yofik.athena.common.data.api.ws.RxNotificationEvent
 import ru.yofik.athena.common.data.api.ws.RxNotificationPublisher
 import ru.yofik.athena.common.data.api.ws.model.mappers.MessageNotificationMapper
 import timber.log.Timber
+import javax.inject.Inject
 
 class NotificationListener
-@Inject
-constructor(private val messageNotificationMapper: MessageNotificationMapper) :
+@Inject constructor(private val messageNotificationMapper: MessageNotificationMapper) :
     WebSocketListener() {
     override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
         super.onClosed(webSocket, code, reason)
@@ -35,7 +34,7 @@ constructor(private val messageNotificationMapper: MessageNotificationMapper) :
         Timber.d("onMessage text: $text")
 
         RxNotificationPublisher.publish(
-            RxNotificationEvent.RxNotification(messageNotificationMapper.mapToDomain(text))
+            RxNotificationEvent.NewNotification(messageNotificationMapper.mapToDomain(text))
         )
     }
 

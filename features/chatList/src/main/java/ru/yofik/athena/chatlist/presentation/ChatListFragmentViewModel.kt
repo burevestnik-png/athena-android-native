@@ -13,8 +13,8 @@ import kotlinx.coroutines.*
 import ru.yofik.athena.chatlist.domain.model.mappers.UiChatMapper
 import ru.yofik.athena.chatlist.domain.model.mappers.UiMessageMapper
 import ru.yofik.athena.chatlist.domain.usecases.GetAllChats
-import ru.yofik.athena.chatlist.domain.usecases.SubscribeOnNotifications
-import ru.yofik.athena.common.domain.model.notification.MessageNotification
+import ru.yofik.athena.chatlist.domain.usecases.SubscribeOnNewMessageNotifications
+import ru.yofik.athena.common.domain.model.notification.NewMessageNotification
 import timber.log.Timber
 
 @HiltViewModel
@@ -22,7 +22,7 @@ class ChatListFragmentViewModel
 @Inject
 constructor(
     private val getAllChats: GetAllChats,
-    private val subscribeOnNotifications: SubscribeOnNotifications,
+    private val subscribeOnNotifications: SubscribeOnNewMessageNotifications,
     private val uiChatMapper: UiChatMapper,
     private val uiMessageMapper: UiMessageMapper
 ) : ViewModel() {
@@ -56,7 +56,7 @@ constructor(
             .addTo(compositeDisposable)
     }
 
-    private fun handleNewNotification(notification: MessageNotification) {
+    private fun handleNewNotification(notification: NewMessageNotification) {
         Timber.d("Get new notification in chatList feature")
 
         // todo update cache

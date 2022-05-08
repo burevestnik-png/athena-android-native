@@ -16,9 +16,9 @@ import ru.yofik.athena.chat.domain.model.mappers.UiMessageMapper
 import ru.yofik.athena.chat.domain.usecases.GetChat
 import ru.yofik.athena.chat.domain.usecases.GetUserId
 import ru.yofik.athena.chat.domain.usecases.SendMessage
-import ru.yofik.athena.chat.domain.usecases.SubscribeOnNotifications
+import ru.yofik.athena.chat.domain.usecases.SubscribeOnNewMessageNotifications
 import ru.yofik.athena.common.domain.model.chat.ChatWithDetails
-import ru.yofik.athena.common.domain.model.notification.MessageNotification
+import ru.yofik.athena.common.domain.model.notification.NewMessageNotification
 import timber.log.Timber
 
 @HiltViewModel
@@ -27,7 +27,7 @@ class ChatFragmentViewModel
 constructor(
     private val getChat: GetChat,
     private val sendMessage: SendMessage,
-    private val subscribeOnNotifications: SubscribeOnNotifications,
+    private val subscribeOnNewMessageNotifications: SubscribeOnNewMessageNotifications,
     private val getUserId: GetUserId,
     private val uiMessageMapper: UiMessageMapper,
     private val uiChatMapper: UiChatMapper
@@ -91,13 +91,13 @@ constructor(
     }
 
     private fun subscribeOnNotificationChannel(chatId: Long) {
-        subscribeOnNotifications(chatId)
+        subscribeOnNewMessageNotifications(chatId)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { handleNotification(it) }
             .addTo(compositeDisposable)
     }
 
-    private fun handleNotification(notification: MessageNotification) {
+    private fun handleNotification(notification: NewMessageNotification) {
         Timber.d("New notification in chat feature")
         val messages = state.value!!.messages.toMutableList()
 
