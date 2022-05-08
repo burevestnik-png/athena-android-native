@@ -25,6 +25,7 @@
 * Very bad realization of rx java, need to study more
 * Remake messages in chat
 * Not creating chat again if it exists, just reopen
+* Add a list of my name convention in fragment and activity
 
 ---
 

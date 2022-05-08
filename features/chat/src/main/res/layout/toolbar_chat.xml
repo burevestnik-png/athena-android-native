@@ -5,6 +5,7 @@
     style="@style/Toolbar">
 
     <ImageView
+        android:id="@+id/back_button"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_gravity="start"

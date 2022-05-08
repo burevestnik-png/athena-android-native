@@ -36,9 +36,12 @@ class UserAdapter : ListAdapter<UiUser, UserAdapter.UserViewHolder>(UI_USER_COMP
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(user: UiUser) {
-            binding.root.apply {
-                text = user.name
-                setOnClickListener { userClickListener?.onUserClick(user.id, user.name) }
+            binding.apply {
+                this.name.text = user.name
+                // todo rework
+                this.login.text = "@${user.login}"
+
+                root.setOnClickListener { userClickListener?.onUserClick(user.id, user.name) }
             }
         }
     }

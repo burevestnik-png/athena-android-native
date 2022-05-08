@@ -50,6 +50,8 @@ class CreateChatFragment : Fragment() {
         setupRecyclerView(adapter)
         setupSwipeRefreshLayout()
 
+        listenToBackButtonClick()
+
         observeViewStateUpdates(adapter)
     }
 
@@ -60,6 +62,12 @@ class CreateChatFragment : Fragment() {
     private fun reactTo(effect: CreateChatFragmentViewEffect) {
         when (effect) {
             is CreateChatFragmentViewEffect.NavigateToChatListScreen -> navigateToChatListScreen()
+        }
+    }
+
+    private fun listenToBackButtonClick() {
+        binding.toolbar.backButton.setOnClickListener {
+            findNavController().popBackStack()
         }
     }
 
