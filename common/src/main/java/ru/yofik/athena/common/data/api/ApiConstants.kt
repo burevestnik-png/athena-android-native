@@ -1,6 +1,8 @@
 package ru.yofik.athena.common.data.api
 
 object ApiConstants {
+//    const val BASE_ENDPOINT = "http://192.168.0.13:8080/api/"
+//    const val WS_BASE_ENDPOINT = "ws://192.168.0.13:8080/ws-api/"
     const val BASE_ENDPOINT = "http://10.0.2.2:8080/api/"
     const val WS_BASE_ENDPOINT = "ws://10.0.2.2:8080/ws-api/"
 
