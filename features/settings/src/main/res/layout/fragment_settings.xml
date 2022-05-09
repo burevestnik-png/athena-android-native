@@ -29,6 +29,12 @@
             android:layout_height="100dp"
             android:background="@drawable/ic_baseline_account_circle_24" />
 
+       <!-- <ru.yofik.athena.common.presentation.views.AvatarView
+            android:layout_width="50dp"
+            app:textSize="20sp"
+            app:text="sdsada"
+            android:layout_height="50dp" />-->
+
         <TextView
             android:id="@+id/user_name"
             android:layout_width="match_parent"
