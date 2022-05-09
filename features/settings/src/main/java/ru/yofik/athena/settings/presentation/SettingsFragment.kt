@@ -16,10 +16,6 @@ import ru.yofik.athena.common.domain.model.user.User
 import ru.yofik.athena.common.utils.InternalDeepLink
 import ru.yofik.athena.settings.databinding.FragmentSettingsBinding
 
-/**
- * A simple [Fragment] subclass. Use the [SettingsFragment.newInstance] factory method to create an
- * instance of this fragment.
- */
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
     private var _binding: FragmentSettingsBinding? = null
@@ -94,9 +90,9 @@ class SettingsFragment : Fragment() {
 
     private fun handleProvidingUserInfo(user: User) {
         binding.apply {
-            userId.text = user.id.toString()
             userName.text = user.name
-            userLogin.text = user.login
+            //todo rework
+            userLogin.text = "@${user.login}"
         }
     }
 

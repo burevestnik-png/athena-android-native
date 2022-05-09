@@ -21,65 +21,58 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.16">
 
-        <TextView
-            android:text="ID:"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:layout_margin="10dp" />
-
-        <TextView
-            android:id="@+id/user_id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:layout_margin="10dp" />
-
-        <TextView
-            android:text="Name:"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:layout_margin="10dp" />
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/ic_baseline_account_circle_24" />
 
         <TextView
             android:id="@+id/user_name"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:textSize="20sp"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp" />
-
-        <TextView
-            android:text="Login:"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textSize="20sp"
-            android:layout_margin="10dp" />
+            tools:text="\@yarki" />
 
         <TextView
             android:id="@+id/user_login"
             android:layout_width="match_parent"
-            android:textSize="20sp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
             android:gravity="center"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp" />
-
-        <Button
-            android:id="@+id/logout_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="@string/logout" />
-
+            android:textColor="@color/text_primary"
+            android:textSize="20sp"
+            tools:text="Yarki yarki" />
 
     </LinearLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/left_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".15" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/rigth_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".85" />
+
+    <Button
+        android:id="@+id/logout_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="@color/error"
+        android:text="@string/logout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/rigth_guideline"
+        app:layout_constraintStart_toStartOf="@+id/left_guideline" />
 
 
     <ProgressBar
