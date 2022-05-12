@@ -2,4 +2,6 @@
 <resources>
     <string name="chat_toolbar_back_desc">Return to chats</string>
     <string name="chat_toolbar_profile_desc">Return to chats</string>
+
+    <string name="nav_chat_label">ChatFragment</string>
 </resources>

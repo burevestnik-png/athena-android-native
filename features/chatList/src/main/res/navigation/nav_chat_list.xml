@@ -4,11 +4,10 @@
     android:id="@+id/nav_chat_list"
     app:startDestination="@id/chatListFragment">
 
-    <!--    todo add label resource    -->
     <fragment
         android:id="@+id/chatListFragment"
         android:name="ru.yofik.athena.chatlist.presentation.ChatListFragment"
-        android:label="ChatListFragment">
+        android:label="@string/nav_chat_list_label">
         <deepLink
             android:id="@+id/deepLink"
             app:uri="athena://chatList" />

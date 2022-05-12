@@ -3,4 +3,6 @@
     <string name="chat_list_toolbar_edit_desc">Edit chats</string>
     <string name="chat_list_toolbar_create_desc">Create new chat</string>
     <string name="chat_list_toolbar_title_chats">Chats</string>
+
+    <string name="nav_chat_list_label">ChatListFragment</string>
 </resources>

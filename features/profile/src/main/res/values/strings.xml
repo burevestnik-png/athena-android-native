@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile_toolbar_title">Profile</string>
+    <string name="logout">Log out</string>
+
+    <string name="nav_profile_fragment">ProfileFragment</string>
+</resources>

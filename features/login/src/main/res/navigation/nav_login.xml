@@ -5,11 +5,10 @@
     android:id="@+id/nav_login"
     app:startDestination="@id/loginFragment">
 
-    <!--    todo add label resource    -->
     <fragment
         android:id="@+id/loginFragment"
         android:name="ru.yofik.athena.login.presentation.LoginFragment"
-        android:label="fragment_login"
+        android:label="@string/nav_login_fragment"
         tools:layout="@layout/fragment_login">
         <deepLink
             android:id="@+id/deepLink"
