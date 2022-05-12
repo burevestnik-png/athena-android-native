@@ -7,7 +7,7 @@
     tools:context=".presentation.SettingsFragment">
 
     <include
-        android:id="@+id/toolbar"
+        android:id="@+id/toolbar_wrapper"
         layout="@layout/toolbar_settings"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -21,19 +21,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_wrapper"
         app:layout_constraintVertical_bias="0.16">
 
-        <androidx.appcompat.widget.AppCompatImageButton
+        <ru.yofik.athena.common.presentation.views.AvatarView
+            android:id="@+id/avatar"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:background="@drawable/ic_baseline_account_circle_24" />
-
-       <!-- <ru.yofik.athena.common.presentation.views.AvatarView
-            android:layout_width="50dp"
+            android:layout_marginBottom="10dp"
             app:textSize="20sp"
-            app:text="sdsada"
-            android:layout_height="50dp" />-->
+            tools:text="Yaroslav Kulinich" />
 
         <TextView
             android:id="@+id/user_name"
@@ -51,7 +48,7 @@
             android:gravity="center"
             android:textColor="@color/text_primary"
             android:textSize="20sp"
-            tools:text="Yarki yarki" />
+            tools:text="Yarki Kulinich" />
 
     </LinearLayout>
 

@@ -8,12 +8,15 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
+import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.common.domain.model.user.User
+import ru.yofik.athena.common.presentation.views.AvatarView
 import ru.yofik.athena.common.utils.InternalDeepLink
+import ru.yofik.athena.settings.R
 import ru.yofik.athena.settings.databinding.FragmentSettingsBinding
 
 @AndroidEntryPoint
@@ -63,7 +66,7 @@ class SettingsFragment : Fragment() {
     }
 
     private fun setupActionBar() {
-        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar.toolbar)
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbarWrapper.toolbar)
         actionBar.title = ""
     }
 
@@ -93,6 +96,7 @@ class SettingsFragment : Fragment() {
             userName.text = user.name
             //todo rework
             userLogin.text = "@${user.login}"
+            avatar.setText(user.name)
         }
     }
 

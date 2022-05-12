@@ -1,9 +1,5 @@
 # Athena android native app
 
-## Useful links
-
-* [draw.io](https://drive.google.com/file/d/1p9IgGZiMAArOcVkxSPel_lH3QpAl-Y8h/view?usp=sharing)
-
 ---
 
 ### v0.2.0 - In progress
@@ -11,6 +7,7 @@
 ### Features
 
 * Added force refresh for users and messages
+* 
 
 ### Plans
 
@@ -26,6 +23,8 @@
 * Remake messages in chat
 * Not creating chat again if it exists, just reopen
 * Add a list of my name convention in fragment and activity
+* rename settings
+* add chat to chat list
 
 ---
 

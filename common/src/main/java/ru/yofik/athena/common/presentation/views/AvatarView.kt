@@ -6,6 +6,9 @@ import android.view.LayoutInflater
 import android.widget.RelativeLayout
 import ru.yofik.athena.common.R
 import ru.yofik.athena.common.databinding.ViewAvatarBinding
+import timber.log.Timber
+import java.util.*
+import kotlin.math.absoluteValue
 
 class AvatarView(context: Context, attrs: AttributeSet? = null) : RelativeLayout(context, attrs) {
     companion object {
@@ -19,9 +22,14 @@ class AvatarView(context: Context, attrs: AttributeSet? = null) : RelativeLayout
     private val binding: ViewAvatarBinding
 
     init {
-        binding = ViewAvatarBinding.inflate(LayoutInflater.from(context), this, false)
+        binding = ViewAvatarBinding.inflate(LayoutInflater.from(context), this, true)
 
         setupAttributes(attrs)
+        setupUI()
+    }
+
+    fun setText(text: String) {
+        this.text = text
         setupUI()
     }
 
@@ -37,9 +45,45 @@ class AvatarView(context: Context, attrs: AttributeSet? = null) : RelativeLayout
     }
 
     private fun setupUI() {
+        Timber.d("setupUI: $text")
+        if (text.isEmpty()) return
+
         binding.iconText.apply {
-            text = this@AvatarView.text
+            text = extractInitials(this@AvatarView.text)
             textSize = this@AvatarView.textSize
         }
+
+        binding.icon.apply {
+            setColorFilter(context.getColor(BackgroundGenerator.get(text)))
+        }
+    }
+}
+
+private fun extractInitials(name: String): String {
+    return name.trim().split(" ").joinToString("") {
+        it.first().uppercase()
+    }
+}
+
+object BackgroundGenerator {
+    private val colors = listOf(
+        R.color.cyan,
+        R.color.teal,
+        R.color.yellow,
+        R.color.amber,
+        R.color.deep_purple,
+        R.color.purple,
+        R.color.green
+    )
+
+    private val size
+        get() = colors.size
+
+    fun get(name: String): Int {
+        return colors[getIndex(name)]
+    }
+
+    private fun getIndex(name: String): Int {
+        return Objects.hash(name).absoluteValue % size
     }
 }

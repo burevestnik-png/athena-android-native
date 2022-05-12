@@ -6,15 +6,15 @@
     android:layout_height="wrap_content"
     android:padding="8dp">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ru.yofik.athena.common.presentation.views.AvatarView
         android:id="@+id/logo"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/ic_baseline_face_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/text_primary" />
+        app:textSize="11sp"
+        tools:text="Lesha Egoshin" />
 
     <TextView
         android:id="@+id/chat_name"
@@ -39,11 +39,11 @@
         tools:text="Англ надоел(((" />
 
     <com.google.android.material.divider.MaterialDivider
-        android:layout_marginStart="8dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/logo"
         app:layout_constraintTop_toBottomOf="@+id/message" />
 

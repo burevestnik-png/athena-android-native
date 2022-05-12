@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/icon_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:tint="@color/primary"
         android:src="@drawable/bg_avatar" />
 
     <TextView
@@ -15,6 +18,6 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:textColor="@android:color/white"
-        android:text="A"
-        android:textSize="30sp" />
+        android:textSize="30sp"
+        tools:text="A" />
 </RelativeLayout>

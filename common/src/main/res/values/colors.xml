@@ -13,4 +13,14 @@
     <color name="divider">#BDBDBD</color>
     <color name="text_or_icons">#FFFFFF</color>
     <color name="error">#FF5252</color>
+
+    <!--  AvatarView  -->
+    <color name="purple">#AB47BC</color>
+    <color name="deep_purple">#7E57C2</color>
+    <color name="green">#66BB6A</color>
+    <color name="amber">#FFC107</color>
+    <color name="yellow">#FFEB3B</color>
+    <color name="cyan">#26C6DA</color>
+    <color name="teal">#26A69A</color>
+
 </resources>

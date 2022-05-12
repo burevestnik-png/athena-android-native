@@ -8,7 +8,7 @@ import ru.yofik.athena.common.data.api.ws.model.CommandType
 @JsonClass(generateAdapter = true)
 data class DeleteMessageWsMessage(
     @field:Json(name = "type") val type: ArgumentType,
-    @field:Json(name = "deletedMessages") val messages: List<Long>
+    @field:Json(name = "payload") val messages: List<Long>
 )
 
 @JsonClass(generateAdapter = true)

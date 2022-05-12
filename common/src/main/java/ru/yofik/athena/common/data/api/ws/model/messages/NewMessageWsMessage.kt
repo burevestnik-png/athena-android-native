@@ -8,7 +8,7 @@ import ru.yofik.athena.common.data.api.ws.model.CommandType
 @JsonClass(generateAdapter = true)
 data class NewMessageWsMessage(
     @field:Json(name = "type") val type: ArgumentType,
-    @field:Json(name = "message") val message: MessageDto
+    @field:Json(name = "payload") val message: MessageDto
 )
 
 @JsonClass(generateAdapter = true)
