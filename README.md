@@ -7,7 +7,9 @@
 ### Features
 
 * Added force refresh for users and messages
-* 
+* Added simple messaging via ws
+* Reworked settings page to profile page
+* Redesigned login page
 
 ### Plans
 
@@ -16,14 +18,9 @@
 * Coroutines :]
 * TextInputLayout rewrite on
 * Add validation on Login screen like on Onboarding
-* Add functionality to buttons in actionbar
 * Think about creating several chats
-* Think about showing loaders in lists
 * Very bad realization of rx java, need to study more
-* Remake messages in chat
-* Not creating chat again if it exists, just reopen
 * Add a list of my name convention in fragment and activity
-* rename settings
 * add chat to chat list
 
 ---
