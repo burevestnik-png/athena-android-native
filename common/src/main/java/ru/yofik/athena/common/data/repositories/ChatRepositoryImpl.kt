@@ -34,7 +34,7 @@ constructor(
 
     override suspend fun requestCreateChat(name: String, userId: Long): Chat {
         try {
-            val fromUserId = preferences.getUser().id
+            val fromUserId = preferences.getCurrentUser().id
             val request = CreateChatRequest(name = name, users = listOf(fromUserId, userId))
 
             val response = chatApi.createChat(request)

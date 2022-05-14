@@ -10,6 +10,7 @@ import kotlinx.coroutines.*
 import ru.yofik.athena.createchat.domain.model.UiUserMapper
 import ru.yofik.athena.createchat.domain.usecases.CreateChat
 import ru.yofik.athena.createchat.domain.usecases.GetAllUsers
+//import ru.yofik.athena.createchat.domain.usecases.RequestGetAllUsers
 import timber.log.Timber
 
 @HiltViewModel
@@ -18,6 +19,7 @@ class CreateChatFragmentViewModel
 constructor(
     private val getAllUsers: GetAllUsers,
     private val createChat: CreateChat,
+//    private val requestGetAllUsers: RequestGetAllUsers,
     private val uiUserMapper: UiUserMapper
 ) : ViewModel() {
     private var _state = MutableLiveData<CreateChatViewState>()
@@ -42,6 +44,7 @@ constructor(
         when (event) {
             is CreateChatEvent.GetAllUsers -> handleGetAllUsers()
             is CreateChatEvent.CreateChat -> handleCreateChat(event.id, event.name)
+            is CreateChatEvent.RequestGetAllUsers -> handleRequestGetAllUsers()
         }
     }
 
@@ -58,12 +61,33 @@ constructor(
             }
     }
 
+    // todo think how refactor
+    private fun handleRequestGetAllUsers() {
+        _state.value = state.value!!.copy(loading = true)
+        job =
+            CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+//                val users = requestGetAllUsers()
+
+                withContext(Dispatchers.Main) {
+                    _state.value =
+                        state.value!!.copy(
+                            loading = false,
+//                            users = users.map(uiUserMapper::mapToView)
+                        )
+                }
+            }
+    }
+
     private fun handleGetAllUsers() {
         _state.value = state.value!!.copy(loading = true)
         job =
             CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-                val users = getAllUsers()
+                var users = getAllUsers()
                 Timber.d("requestGetAllUsers: ${users.joinToString("\n")}")
+
+                if (users.isEmpty()) {
+//                    users = requestGetAllUsers()
+                }
 
                 withContext(Dispatchers.Main) {
                     _state.value =

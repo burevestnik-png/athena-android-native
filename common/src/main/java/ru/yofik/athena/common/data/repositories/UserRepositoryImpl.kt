@@ -7,6 +7,8 @@ import ru.yofik.athena.common.data.api.http.model.user.mappers.ApiAccessTokenMap
 import ru.yofik.athena.common.data.api.http.model.user.mappers.ApiUserMapper
 import ru.yofik.athena.common.data.api.http.model.user.requests.ActivateUserRequest
 import ru.yofik.athena.common.data.api.http.model.user.requests.AuthUserRequest
+import ru.yofik.athena.common.data.cache.Cache
+import ru.yofik.athena.common.data.cache.model.CachedUser
 import ru.yofik.athena.common.data.preferences.Preferences
 import ru.yofik.athena.common.domain.model.NetworkException
 import ru.yofik.athena.common.domain.model.user.User
@@ -19,7 +21,8 @@ constructor(
     private val userApi: UserApi,
     private val preferences: Preferences,
     private val accessTokenDtoMapper: ApiAccessTokenMapper,
-    private val userDtoMapper: ApiUserMapper
+    private val userDtoMapper: ApiUserMapper,
+//    private val cache: Cache
 ) : UserRepository {
     override suspend fun requestActivateUser(code: String) {
         try {
@@ -42,9 +45,9 @@ constructor(
             val response = userApi.auth(request)
 
             val user = userDtoMapper.mapToDomain(response.payload)
-            preferences.putUserInfo(user)
+            preferences.putCurrentUser(user)
 
-            Timber.d("requestAuthUser: ${preferences.getUser()}")
+            Timber.d("requestAuthUser: ${preferences.getCurrentUser()}")
         } catch (exception: HttpException) {
             throw NetworkException(exception.message ?: "Code ${exception.code()}")
         }
@@ -59,13 +62,26 @@ constructor(
         }
     }
 
-    override fun getCachedUser(): User {
-        return preferences.getUser()
+    override suspend fun getCachedUsers(): List<User> {
+//        return cache.getUsers().map(CachedUser::toDomain)
+        return emptyList()
+    }
+
+    override suspend fun storeUsers(users: List<User>) {
+//        cache.storeUsers(users.map(CachedUser::fromDomain))
+    }
+
+    override fun storeCurrentUser(user: User) {
+        preferences.putCurrentUser(user)
+    }
+
+    override fun getCachedCurrentUser(): User {
+        return preferences.getCurrentUser()
     }
 
     override fun hasAccess(): Boolean {
         return with(preferences) {
-            val cachedUser = getCachedUser()
+            val cachedUser = getCachedCurrentUser()
             getAccessToken().isNotEmpty() &&
                 cachedUser.login.isNotEmpty() &&
                 cachedUser.name.isNotEmpty() &&
@@ -74,7 +90,7 @@ constructor(
     }
 
     override fun removeCachedUser() {
-        preferences.deleteUserInfo()
+        preferences.deleteCurrentUser()
     }
 
     override fun removeUserAccessToken() {

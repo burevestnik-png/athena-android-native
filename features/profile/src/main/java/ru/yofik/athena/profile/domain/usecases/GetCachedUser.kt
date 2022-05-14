@@ -8,6 +8,6 @@ class GetCachedUser @Inject constructor(
     private val userRepository: UserRepository
 ) {
     operator fun invoke(): User {
-        return userRepository.getCachedUser()
+        return userRepository.getCachedCurrentUser()
     }
 }

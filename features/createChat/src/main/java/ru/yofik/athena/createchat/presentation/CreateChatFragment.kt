@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -35,6 +34,7 @@ class CreateChatFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         setupUI()
         requestGetAllUsers()
         observeViewEffects()
@@ -99,7 +99,7 @@ class CreateChatFragment : Fragment() {
     }
 
     private fun setupSwipeRefreshLayout() {
-        binding.swipeLayout.apply { setOnRefreshListener { requestGetAllUsers() } }
+        binding.swipeLayout.apply { setOnRefreshListener { requestGetAllUsersRequest() } }
     }
 
     private fun createAdapter(): UserAdapter {
@@ -110,6 +110,10 @@ class CreateChatFragment : Fragment() {
 
     private fun requestGetAllUsers() {
         viewModel.onEvent(CreateChatEvent.GetAllUsers)
+    }
+
+    private fun requestGetAllUsersRequest() {
+        viewModel.onEvent(CreateChatEvent.RequestGetAllUsers)
     }
 
     private fun requestCreateChat(id: Long, name: String) {

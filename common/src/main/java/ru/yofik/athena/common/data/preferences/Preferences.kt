@@ -7,7 +7,7 @@ interface Preferences {
     fun getAccessToken(): String
     fun deleteAccessToken()
 
-    fun putUserInfo(user: User)
-    fun getUser(): User
-    fun deleteUserInfo()
+    fun putCurrentUser(user: User)
+    fun getCurrentUser(): User
+    fun deleteCurrentUser()
 }
