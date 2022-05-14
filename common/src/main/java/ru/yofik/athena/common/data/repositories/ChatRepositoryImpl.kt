@@ -3,8 +3,8 @@ package ru.yofik.athena.common.data.repositories
 import javax.inject.Inject
 import retrofit2.HttpException
 import ru.yofik.athena.common.data.api.http.model.chat.ChatApi
-import ru.yofik.athena.common.data.api.http.model.chat.mappers.ChatApiMapper
-import ru.yofik.athena.common.data.api.http.model.chat.mappers.ChatWithDetailsApiMapper
+import ru.yofik.athena.common.data.api.http.model.chat.mappers.ApiChatMapper
+import ru.yofik.athena.common.data.api.http.model.chat.mappers.ApiChatWithDetailsMapper
 import ru.yofik.athena.common.data.api.http.model.chat.requests.CreateChatRequest
 import ru.yofik.athena.common.data.api.http.model.chat.requests.SendMessageRequest
 import ru.yofik.athena.common.data.preferences.Preferences
@@ -18,8 +18,8 @@ class ChatRepositoryImpl
 @Inject
 constructor(
     private val chatApi: ChatApi,
-    private val chatDtoMapper: ChatApiMapper,
-    private val chatWithDetailsDtoMapper: ChatWithDetailsApiMapper,
+    private val chatDtoMapper: ApiChatMapper,
+    private val chatWithDetailsDtoMapper: ApiChatWithDetailsMapper,
     private val preferences: Preferences
 ) : ChatRepository {
     override suspend fun requestGetAllChats(): List<Chat> {

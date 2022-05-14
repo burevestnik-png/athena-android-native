@@ -21,14 +21,7 @@ class CreateChat @Inject constructor(private val chatRepository: ChatRepository)
                     id = chat.id,
                     name = chat.name,
                     users = chat.users,
-                    lastMessage = Message(
-                        id = Message.NULLABLE_MESSAGE_ID,
-                        content = "sd",
-                        senderId = 1,
-                        chatId = 1,
-                        creationDate = LocalDateTime.now(),
-                        modificationDate = LocalDateTime.now()
-                    )
+                    lastMessage = Message.nullable()
                 )
             }
         }

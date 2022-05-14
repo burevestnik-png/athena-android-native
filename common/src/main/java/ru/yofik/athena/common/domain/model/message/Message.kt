@@ -10,7 +10,21 @@ data class Message(
     val creationDate: LocalDateTime,
     val modificationDate: LocalDateTime
 ) {
+    val isNullable
+        get() = id == NULLABLE_ID
+
     companion object {
-        const val NULLABLE_MESSAGE_ID = -1L
+        private const val NULLABLE_ID = -1L
+
+        fun nullable(): Message {
+            return Message(
+                id = NULLABLE_ID,
+                content = "",
+                senderId = NULLABLE_ID,
+                chatId = NULLABLE_ID,
+                creationDate = LocalDateTime.now(),
+                modificationDate = LocalDateTime.now()
+            )
+        }
     }
 }

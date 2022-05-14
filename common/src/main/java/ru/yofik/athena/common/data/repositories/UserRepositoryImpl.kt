@@ -3,8 +3,8 @@ package ru.yofik.athena.common.data.repositories
 import javax.inject.Inject
 import retrofit2.HttpException
 import ru.yofik.athena.common.data.api.http.model.user.UserApi
-import ru.yofik.athena.common.data.api.http.model.user.mappers.AccessTokenApiMapper
-import ru.yofik.athena.common.data.api.http.model.user.mappers.UserApiMapper
+import ru.yofik.athena.common.data.api.http.model.user.mappers.ApiAccessTokenMapper
+import ru.yofik.athena.common.data.api.http.model.user.mappers.ApiUserMapper
 import ru.yofik.athena.common.data.api.http.model.user.requests.ActivateUserRequest
 import ru.yofik.athena.common.data.api.http.model.user.requests.AuthUserRequest
 import ru.yofik.athena.common.data.preferences.Preferences
@@ -18,8 +18,8 @@ class UserRepositoryImpl
 constructor(
     private val userApi: UserApi,
     private val preferences: Preferences,
-    private val accessTokenDtoMapper: AccessTokenApiMapper,
-    private val userDtoMapper: UserApiMapper
+    private val accessTokenDtoMapper: ApiAccessTokenMapper,
+    private val userDtoMapper: ApiUserMapper
 ) : UserRepository {
     override suspend fun requestActivateUser(code: String) {
         try {

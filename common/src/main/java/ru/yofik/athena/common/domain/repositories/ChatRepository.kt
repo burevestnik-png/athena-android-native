@@ -2,7 +2,6 @@ package ru.yofik.athena.common.domain.repositories
 
 import ru.yofik.athena.common.domain.model.chat.Chat
 import ru.yofik.athena.common.domain.model.chat.ChatWithDetails
-import ru.yofik.athena.common.domain.model.message.Message
 
 interface ChatRepository {
     suspend fun requestGetAllChats(): List<Chat>

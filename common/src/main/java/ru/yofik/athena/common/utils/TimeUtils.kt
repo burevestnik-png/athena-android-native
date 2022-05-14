@@ -13,9 +13,8 @@ fun LocalDateTime.toFormattedString(format: String = "HH:mm"): String {
 }
 
 object TimeUtils {
-    fun parseToLocalDateTime(dateTimeString: String): LocalDateTime {
-        // todo kostil
-        if (dateTimeString == "") {
+    fun parseToLocalDateTime(dateTimeString: String?): LocalDateTime {
+        if (dateTimeString == null || dateTimeString.isEmpty()) {
             return LocalDateTime.now()
         }
 

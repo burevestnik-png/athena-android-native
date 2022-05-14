@@ -1,10 +1,10 @@
-package ru.yofik.athena.common.data.api.http.model.chat.responses.dto
+package ru.yofik.athena.common.data.api.mappers.dto
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class MessageDto(
+data class ApiMessage(
     @field:Json(name = "id") val id: Long?,
     @field:Json(name = "text") val text: String?,
     @field:Json(name = "senderId") val senderId: Long?,

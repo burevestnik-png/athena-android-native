@@ -51,7 +51,7 @@ constructor(
     }
 
     init {
-        uiChat.value = uiChatMapper.mapToView(Pair(ChatWithDetails.createNullChat(), getUserId()))
+        uiChat.value = uiChatMapper.mapToView(Pair(ChatWithDetails.nullable(), getUserId()))
     }
 
     fun onEvent(event: ChatFragmentEvent) {
@@ -78,7 +78,7 @@ constructor(
                     _state.value =
                         state.value!!.copy(
                             loading = false,
-                            messages = chat.details.messages.map {
+                            messages = chat.messages.map {
                                 uiMessageMapper.mapToView(Pair(it, uiChat.value!!))
                             }
                         )

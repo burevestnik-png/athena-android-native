@@ -4,7 +4,7 @@ import io.reactivex.Observable
 import okhttp3.WebSocket
 import ru.yofik.athena.common.data.api.ws.RxNotificationEvent
 import ru.yofik.athena.common.data.api.ws.RxNotificationPublisher
-import ru.yofik.athena.common.data.api.ws.model.messages.SubscribeOnNotificationsWsMessage
+import ru.yofik.athena.common.data.api.ws.model.messages.ApiSubscribeOnNotificationsMessage
 import ru.yofik.athena.common.domain.model.notification.DeleteMessageNotification
 import ru.yofik.athena.common.domain.model.notification.NewMessageNotification
 import ru.yofik.athena.common.domain.model.notification.NotificationType
@@ -20,7 +20,7 @@ class NotificationRepositoryImpl
         RxNotificationPublisher.listen(RxNotificationEvent.NewNotification::class.java)
 
     override fun startNotificationChannel() {
-        val initialMessage = SubscribeOnNotificationsWsMessage.toJson()
+        val initialMessage = ApiSubscribeOnNotificationsMessage.toJson()
         notificationWebSocket.send(
             initialMessage
         )
