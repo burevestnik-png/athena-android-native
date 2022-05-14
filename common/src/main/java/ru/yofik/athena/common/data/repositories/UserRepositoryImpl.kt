@@ -22,7 +22,7 @@ constructor(
     private val preferences: Preferences,
     private val accessTokenDtoMapper: ApiAccessTokenMapper,
     private val userDtoMapper: ApiUserMapper,
-//    private val cache: Cache
+    private val cache: Cache
 ) : UserRepository {
     override suspend fun requestActivateUser(code: String) {
         try {
@@ -54,6 +54,7 @@ constructor(
     }
 
     override suspend fun requestGetAllUsers(): List<User> {
+        Timber.d("requestGetAllUsers: ")
         try {
             val response = userApi.getAllUsers()
             return response.payload.map(userDtoMapper::mapToDomain)
@@ -63,12 +64,13 @@ constructor(
     }
 
     override suspend fun getCachedUsers(): List<User> {
-//        return cache.getUsers().map(CachedUser::toDomain)
-        return emptyList()
+        Timber.d("getCachedUsers: ")
+        return cache.getUsers().map(CachedUser::toDomain)
     }
 
     override suspend fun storeUsers(users: List<User>) {
-//        cache.storeUsers(users.map(CachedUser::fromDomain))
+        Timber.d("storeUsers: ")
+        cache.storeUsers(users.map(CachedUser::fromDomain))
     }
 
     override fun storeCurrentUser(user: User) {

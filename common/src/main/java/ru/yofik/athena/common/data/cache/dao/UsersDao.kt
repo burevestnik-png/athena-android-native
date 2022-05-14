@@ -11,4 +11,7 @@ interface UsersDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insert(users: List<CachedUser>)
 
     @Query("SELECT * FROM users") suspend fun getAll(): List<CachedUser>
+
+    @Query("DELETE FROM users")
+    suspend fun deleteAll()
 }

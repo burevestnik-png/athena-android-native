@@ -7,6 +7,8 @@ import ru.yofik.athena.common.utils.TimeUtils
 
 class ApiMessageMapper @Inject constructor() : ApiMapper<ApiMessage, Message> {
     override fun mapToDomain(apiEntity: ApiMessage?): Message {
+        // todo delete
+        if (apiEntity == null) return Message.nullable()
         return Message(
             id = apiEntity?.id ?: throw MappingException("Message id cannot be null"),
             content = apiEntity.text.orEmpty(),

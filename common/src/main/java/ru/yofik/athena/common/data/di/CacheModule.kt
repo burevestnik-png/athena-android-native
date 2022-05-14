@@ -18,18 +18,20 @@ import ru.yofik.athena.common.data.cache.dao.UsersDao
 @InstallIn(SingletonComponent::class)
 abstract class CacheModule {
 
-//    @Binds abstract fun bindCache(cache: RoomCache): Cache
+    @Binds abstract fun bindCache(cache: RoomCache): Cache
 
     companion object {
-//        @Provides
-//        @Singleton
-//        fun provideDatabase(@ApplicationContext context: Context): AthenaDatabase {
-//            return Room.databaseBuilder(context, AthenaDatabase::class.java, "athena.db").build()
-//        }
+        @Provides
+        @Singleton
+        fun provideDatabase(
+            @ApplicationContext context: Context,
+        ): AthenaDatabase {
+            return Room.databaseBuilder(context, AthenaDatabase::class.java, "athena.db").build()
+        }
 
-//        @Provides
-//        fun provideUsersDao(athenaDatabase: AthenaDatabase): UsersDao {
-//            return athenaDatabase.usersDao()
-//        }
+        @Provides
+        fun provideUsersDao(athenaDatabase: AthenaDatabase): UsersDao {
+            return athenaDatabase.usersDao()
+        }
     }
 }

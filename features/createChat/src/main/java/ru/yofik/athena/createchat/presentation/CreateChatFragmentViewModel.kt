@@ -10,7 +10,7 @@ import kotlinx.coroutines.*
 import ru.yofik.athena.createchat.domain.model.UiUserMapper
 import ru.yofik.athena.createchat.domain.usecases.CreateChat
 import ru.yofik.athena.createchat.domain.usecases.GetAllUsers
-//import ru.yofik.athena.createchat.domain.usecases.RequestGetAllUsers
+import ru.yofik.athena.createchat.domain.usecases.RequestGetAllUsers
 import timber.log.Timber
 
 @HiltViewModel
@@ -19,7 +19,7 @@ class CreateChatFragmentViewModel
 constructor(
     private val getAllUsers: GetAllUsers,
     private val createChat: CreateChat,
-//    private val requestGetAllUsers: RequestGetAllUsers,
+    private val requestGetAllUsers: RequestGetAllUsers,
     private val uiUserMapper: UiUserMapper
 ) : ViewModel() {
     private var _state = MutableLiveData<CreateChatViewState>()
@@ -66,13 +66,13 @@ constructor(
         _state.value = state.value!!.copy(loading = true)
         job =
             CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-//                val users = requestGetAllUsers()
+                val users = requestGetAllUsers()
 
                 withContext(Dispatchers.Main) {
                     _state.value =
                         state.value!!.copy(
                             loading = false,
-//                            users = users.map(uiUserMapper::mapToView)
+                            users = users.map(uiUserMapper::mapToView)
                         )
                 }
             }
@@ -86,7 +86,7 @@ constructor(
                 Timber.d("requestGetAllUsers: ${users.joinToString("\n")}")
 
                 if (users.isEmpty()) {
-//                    users = requestGetAllUsers()
+                    users = requestGetAllUsers()
                 }
 
                 withContext(Dispatchers.Main) {
