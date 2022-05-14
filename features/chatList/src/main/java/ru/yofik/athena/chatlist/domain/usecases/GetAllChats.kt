@@ -1,29 +1,19 @@
 package ru.yofik.athena.chatlist.domain.usecases
 
+import javax.inject.Inject
 import ru.yofik.athena.common.domain.model.chat.Chat
 import ru.yofik.athena.common.domain.repositories.ChatRepository
 import ru.yofik.athena.common.domain.repositories.NotificationRepository
-import ru.yofik.athena.common.domain.repositories.UserRepository
-import javax.inject.Inject
 
-class GetAllChats @Inject constructor(
+class GetAllChats
+@Inject
+constructor(
     private val chatRepository: ChatRepository,
-    private val userRepository: UserRepository,
     private val notificationRepository: NotificationRepository
 ) {
     suspend operator fun invoke(): List<Chat> {
-        // todo rework crutch
+        // todo think about start
         notificationRepository.startNotificationChannel()
-        val chats = chatRepository.requestGetAllChats()
-        val currentUserName = userRepository.getCachedUser().name
-
-        return chats.map { chat ->
-            val companion = chat.users.first { it.name != currentUserName }.name
-            if (chat.name == companion) {
-                chat
-            } else {
-                chat.copy(name = companion)
-            }
-        }
+        return chatRepository.requestGetAllChats()
     }
 }

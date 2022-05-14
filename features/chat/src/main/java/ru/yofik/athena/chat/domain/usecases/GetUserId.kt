@@ -7,6 +7,6 @@ class GetUserId @Inject constructor(
     private val userRepository: UserRepository
 ) {
     operator fun invoke(): Long {
-        return userRepository.getCachedUser().id
+        return userRepository.getCachedCurrentUser().id
     }
 }

@@ -7,10 +7,13 @@ interface UserRepository {
     suspend fun requestAuthUser()
     suspend fun requestGetAllUsers(): List<User>
 
-    fun getCachedUser(): User
-    fun removeCachedUser()
-    fun removeUserAccessToken()
+    suspend fun getCachedUsers(): List<User>
+    suspend fun storeUsers(users: List<User>)
 
-    // TODO refactor
+    fun storeCurrentUser(user: User)
+    fun getCachedCurrentUser(): User
+    fun removeCachedUser()
+
     fun hasAccess(): Boolean
+    fun removeUserAccessToken()
 }

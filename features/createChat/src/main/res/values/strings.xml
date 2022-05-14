@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="create_chat_toolbar_title">Add chat</string>
-    <string name="chat_toolbar_back_desc">Desc)</string>
+    <string name="chat_toolbar_back_desc">Go back</string>
+
+    <string name="nav_create_chat">CreateChatFragment</string>
 </resources>

@@ -37,6 +37,7 @@ class ChatAdapter : ListAdapter<UiChat, ChatAdapter.ViewHolder>(UI_CHAT_COMPARAT
                 chatName.text = chat.name
                 message.text = chat.message.content
                 time.text = chat.message.time
+                logo.setText(chat.name)
             }
 
             binding.root.apply {

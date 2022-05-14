@@ -45,7 +45,7 @@ dependencies {
     implementation project(":common")
     implementation project(":features:createChat")
     implementation project(":features:chat")
-    implementation project(":features:settings")
+    implementation project(':features:profile')
     implementation project(":features:login")
     implementation project(":features:chatList")
 

@@ -40,6 +40,7 @@ class UserAdapter : ListAdapter<UiUser, UserAdapter.UserViewHolder>(UI_USER_COMP
                 this.name.text = user.name
                 // todo rework
                 this.login.text = "@${user.login}"
+                logo.setText(user.name)
 
                 root.setOnClickListener { userClickListener?.onUserClick(user.id, user.name) }
             }

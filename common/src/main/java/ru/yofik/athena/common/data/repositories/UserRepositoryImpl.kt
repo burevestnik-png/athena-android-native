@@ -3,10 +3,12 @@ package ru.yofik.athena.common.data.repositories
 import javax.inject.Inject
 import retrofit2.HttpException
 import ru.yofik.athena.common.data.api.http.model.user.UserApi
-import ru.yofik.athena.common.data.api.http.model.user.mappers.AccessTokenApiMapper
-import ru.yofik.athena.common.data.api.http.model.user.mappers.UserApiMapper
+import ru.yofik.athena.common.data.api.http.model.user.mappers.ApiAccessTokenMapper
+import ru.yofik.athena.common.data.api.http.model.user.mappers.ApiUserMapper
 import ru.yofik.athena.common.data.api.http.model.user.requests.ActivateUserRequest
 import ru.yofik.athena.common.data.api.http.model.user.requests.AuthUserRequest
+import ru.yofik.athena.common.data.cache.Cache
+import ru.yofik.athena.common.data.cache.model.CachedUser
 import ru.yofik.athena.common.data.preferences.Preferences
 import ru.yofik.athena.common.domain.model.NetworkException
 import ru.yofik.athena.common.domain.model.user.User
@@ -18,8 +20,9 @@ class UserRepositoryImpl
 constructor(
     private val userApi: UserApi,
     private val preferences: Preferences,
-    private val accessTokenDtoMapper: AccessTokenApiMapper,
-    private val userDtoMapper: UserApiMapper
+    private val accessTokenDtoMapper: ApiAccessTokenMapper,
+    private val userDtoMapper: ApiUserMapper,
+    private val cache: Cache
 ) : UserRepository {
     override suspend fun requestActivateUser(code: String) {
         try {
@@ -42,15 +45,16 @@ constructor(
             val response = userApi.auth(request)
 
             val user = userDtoMapper.mapToDomain(response.payload)
-            preferences.putUserInfo(user)
+            preferences.putCurrentUser(user)
 
-            Timber.d("requestAuthUser: ${preferences.getUser()}")
+            Timber.d("requestAuthUser: ${preferences.getCurrentUser()}")
         } catch (exception: HttpException) {
             throw NetworkException(exception.message ?: "Code ${exception.code()}")
         }
     }
 
     override suspend fun requestGetAllUsers(): List<User> {
+        Timber.d("requestGetAllUsers: ")
         try {
             val response = userApi.getAllUsers()
             return response.payload.map(userDtoMapper::mapToDomain)
@@ -59,13 +63,27 @@ constructor(
         }
     }
 
-    override fun getCachedUser(): User {
-        return preferences.getUser()
+    override suspend fun getCachedUsers(): List<User> {
+        Timber.d("getCachedUsers: ")
+        return cache.getUsers().map(CachedUser::toDomain)
+    }
+
+    override suspend fun storeUsers(users: List<User>) {
+        Timber.d("storeUsers: ")
+        cache.storeUsers(users.map(CachedUser::fromDomain))
+    }
+
+    override fun storeCurrentUser(user: User) {
+        preferences.putCurrentUser(user)
+    }
+
+    override fun getCachedCurrentUser(): User {
+        return preferences.getCurrentUser()
     }
 
     override fun hasAccess(): Boolean {
         return with(preferences) {
-            val cachedUser = getCachedUser()
+            val cachedUser = getCachedCurrentUser()
             getAccessToken().isNotEmpty() &&
                 cachedUser.login.isNotEmpty() &&
                 cachedUser.name.isNotEmpty() &&
@@ -74,7 +92,7 @@ constructor(
     }
 
     override fun removeCachedUser() {
-        preferences.deleteUserInfo()
+        preferences.deleteCurrentUser()
     }
 
     override fun removeUserAccessToken() {

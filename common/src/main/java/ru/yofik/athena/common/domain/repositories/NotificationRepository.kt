@@ -9,7 +9,9 @@ interface NotificationRepository {
     fun startNotificationChannel()
 
     fun subscribeOnNewMessageNotifications(): Observable<NewMessageNotification>
-    fun subscribeOnTargetChatNewMessageNotifications(chatId: Long): Observable<NewMessageNotification>
+    fun subscribeOnTargetChatNewMessageNotifications(
+        chatId: Long
+    ): Observable<NewMessageNotification>
 
     fun subscribeOnUpdatedMessageNotifications(): Observable<UpdateMessageNotification>
     fun subscribeOnDeletedMessagesNotifications(): Observable<DeleteMessageNotification>

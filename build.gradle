@@ -47,8 +47,7 @@ buildscript {
         rxandroid_version = "2.1.1"
 
         // Room cache
-        room_version = "2.2.6"
-
+        room_version = "2.4.1"
     }
 
     dependencies {
