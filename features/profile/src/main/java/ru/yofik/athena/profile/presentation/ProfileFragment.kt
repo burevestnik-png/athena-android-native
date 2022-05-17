@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.common.domain.model.user.User
 import ru.yofik.athena.common.utils.InternalDeepLink
+import ru.yofik.athena.profile.R
 import ru.yofik.athena.profile.databinding.FragmentSettingsBinding
 
 @AndroidEntryPoint
@@ -68,9 +69,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun observeViewStateUpdates() {
-        viewModel.state.observe(viewLifecycleOwner) {
-            updateScreenState(it)
-        }
+        viewModel.state.observe(viewLifecycleOwner) { updateScreenState(it) }
     }
 
     private fun updateScreenState(state: ProfileViewState) {
@@ -91,8 +90,7 @@ class ProfileFragment : Fragment() {
     private fun handleProvidingUserInfo(user: User) {
         binding.apply {
             userName.text = user.name
-            //todo rework
-            userLogin.text = "@${user.login}"
+            userLogin.text = getString(R.string.user_login, user.login)
             avatar.setText(user.name)
         }
     }

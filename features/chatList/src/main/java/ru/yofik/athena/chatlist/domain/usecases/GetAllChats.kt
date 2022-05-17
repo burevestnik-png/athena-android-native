@@ -12,7 +12,6 @@ constructor(
     private val notificationRepository: NotificationRepository
 ) {
     suspend operator fun invoke(): List<Chat> {
-        // todo think about start
         notificationRepository.startNotificationChannel()
         return chatRepository.requestGetAllChats()
     }

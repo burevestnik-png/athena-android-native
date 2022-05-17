@@ -5,8 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.*
-import ru.yofik.athena.R
+import ru.yofik.athena.R as ChatListR
 import ru.yofik.athena.login.R as RLogin
 import ru.yofik.athena.main.domain.usecases.HasAccess
 
@@ -24,10 +23,9 @@ class MainActivityViewModel @Inject constructor(private val hasAccess: HasAccess
     }
 
     private fun defineStartDestination() {
-        // TODO smth wrong with R classes
         val destination =
             if (hasAccess()) {
-                R.id.nav_chat_list
+                ChatListR.id.nav_chat_list
             } else {
                 RLogin.id.nav_login
             }

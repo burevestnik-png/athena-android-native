@@ -7,7 +7,9 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.*
+import ru.yofik.athena.common.presentation.FailureEvent
 import ru.yofik.athena.createchat.domain.model.UiUserMapper
+import ru.yofik.athena.createchat.domain.model.exceptions.ChatAlreadyCreatedException
 import ru.yofik.athena.createchat.domain.usecases.CreateChat
 import ru.yofik.athena.createchat.domain.usecases.GetAllUsers
 import ru.yofik.athena.createchat.domain.usecases.RequestGetAllUsers
@@ -100,7 +102,11 @@ constructor(
     }
 
     private fun onFailure(throwable: Throwable) {
-        // todo add
+        when (throwable) {
+            is ChatAlreadyCreatedException ->
+                _state.value =
+                    state.value!!.copy(loading = false, failure = FailureEvent(throwable))
+        }
     }
 
     override fun onCleared() {
