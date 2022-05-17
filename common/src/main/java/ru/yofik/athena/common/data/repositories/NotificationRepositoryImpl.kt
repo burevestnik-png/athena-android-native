@@ -4,7 +4,7 @@ import io.reactivex.Observable
 import okhttp3.WebSocket
 import ru.yofik.athena.common.data.api.ws.RxNotificationEvent
 import ru.yofik.athena.common.data.api.ws.RxNotificationPublisher
-import ru.yofik.athena.common.data.api.ws.model.messages.ApiSubscribeOnNotificationsMessage
+import ru.yofik.athena.common.data.api.ws.model.messages.output.ApiSubscribeOnNotificationsMessage
 import ru.yofik.athena.common.domain.model.notification.DeleteMessageNotification
 import ru.yofik.athena.common.domain.model.notification.NewMessageNotification
 import ru.yofik.athena.common.domain.model.notification.NotificationType

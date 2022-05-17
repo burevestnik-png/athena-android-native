@@ -5,6 +5,6 @@ import ru.yofik.athena.common.domain.repositories.UserRepository
 
 class RequestUserInfo @Inject constructor(private val userRepository: UserRepository) {
     suspend operator fun invoke() {
-        userRepository.requestAuthUser()
+        userRepository.requestGetCurrentUserInfo()
     }
 }

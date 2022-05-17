@@ -39,7 +39,7 @@ constructor(
     }
 
     // todo add custom exceptions
-    override suspend fun requestAuthUser() {
+    override suspend fun requestGetCurrentUserInfo() {
         try {
             val request = AuthUserRequest(preferences.getAccessToken())
             val response = userApi.auth(request)
@@ -68,12 +68,12 @@ constructor(
         return cache.getUsers().map(CachedUser::toDomain)
     }
 
-    override suspend fun storeUsers(users: List<User>) {
+    override suspend fun cacheUsers(users: List<User>) {
         Timber.d("storeUsers: ")
         cache.storeUsers(users.map(CachedUser::fromDomain))
     }
 
-    override fun storeCurrentUser(user: User) {
+    override fun cacheCurrentUser(user: User) {
         preferences.putCurrentUser(user)
     }
 
@@ -91,7 +91,7 @@ constructor(
         }
     }
 
-    override fun removeCachedUser() {
+    override fun removeCachedCurrentUser() {
         preferences.deleteCurrentUser()
     }
 

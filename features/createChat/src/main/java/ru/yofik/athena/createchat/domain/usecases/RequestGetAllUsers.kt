@@ -9,7 +9,7 @@ class RequestGetAllUsers @Inject constructor(private val userRepository: UserRep
         val currentUserId = userRepository.getCachedCurrentUser().id
         val requestedUsers = userRepository.requestGetAllUsers().filter { it.id != currentUserId }
 
-        userRepository.storeUsers(requestedUsers)
+        userRepository.cacheUsers(requestedUsers)
 
         return requestedUsers
     }

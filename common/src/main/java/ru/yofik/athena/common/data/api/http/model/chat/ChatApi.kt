@@ -4,7 +4,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
-import ru.yofik.athena.common.data.api.ApiConstants.CHATS_ENDPOINT
+import ru.yofik.athena.common.data.api.ApiHttpConstants.CHATS_ENDPOINT
 import ru.yofik.athena.common.data.api.http.model.chat.requests.CreateChatRequest
 import ru.yofik.athena.common.data.api.http.model.chat.requests.SendMessageRequest
 import ru.yofik.athena.common.data.api.http.model.chat.responses.CreateChatResponse

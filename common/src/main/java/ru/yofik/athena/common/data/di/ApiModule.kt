@@ -13,7 +13,7 @@ import okhttp3.WebSocket
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import ru.yofik.athena.common.BuildConfig
-import ru.yofik.athena.common.data.api.ApiConstants
+import ru.yofik.athena.common.data.api.ApiHttpConstants
 import ru.yofik.athena.common.data.api.ApiParameters.AUTH_HEADER
 import ru.yofik.athena.common.data.api.ApiParameters.TOKEN_TYPE
 import ru.yofik.athena.common.data.api.interceptors.AuthenticationInterceptor
@@ -43,7 +43,7 @@ object ApiModule {
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit.Builder {
         return Retrofit.Builder()
-            .baseUrl(ApiConstants.BASE_ENDPOINT)
+            .baseUrl(ApiHttpConstants.BASE_ENDPOINT)
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create())
     }
@@ -79,7 +79,7 @@ object ApiModule {
         val accessToken = preferences.getAccessToken()
         val request =
             Request.Builder()
-                .url(ApiConstants.WS_NOTIFICATION_ENDPOINT)
+                .url(ApiHttpConstants.WS_NOTIFICATION_ENDPOINT)
                 .addHeader(AUTH_HEADER, "$TOKEN_TYPE ${BuildConfig.CLIENT_TOKEN} $accessToken")
                 .build()
 

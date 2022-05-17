@@ -1,4 +1,4 @@
-package ru.yofik.athena.common.data.api.ws.model.messages
+package ru.yofik.athena.common.data.api.ws.model.messages.input
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -8,6 +8,7 @@ import ru.yofik.athena.common.data.api.ws.model.CommandType
 @JsonClass(generateAdapter = true)
 data class ApiDeleteMessage(
     @field:Json(name = "type") val type: ArgumentType,
+    @field:Json(name = "targetChatId") val chatId: Long,
     @field:Json(name = "payload") val messages: List<Long>
 )
 

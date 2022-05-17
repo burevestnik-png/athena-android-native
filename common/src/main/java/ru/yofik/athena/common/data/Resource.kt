@@ -1,4 +1,4 @@
-package ru.yofik.athena.common.data.repositories
+package ru.yofik.athena.common.data
 
 import kotlinx.coroutines.flow.flow
 import java.util.*

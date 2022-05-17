@@ -45,15 +45,15 @@ class MessengerPreferences @Inject constructor(@ApplicationContext context: Cont
         }
     }
 
-    private fun getUserId(): Long {
+    override fun getUserId(): Long {
         return preferences.getLong(KEY_USER_ID, -1)
     }
 
-    private fun getUserLogin(): String {
+    override fun getUserLogin(): String {
         return preferences.getString(KEY_USER_LOGIN, "").orEmpty()
     }
 
-    private fun getUserName(): String {
+    override fun getUserName(): String {
         return preferences.getString(KEY_USER_NAME, "").orEmpty()
     }
 

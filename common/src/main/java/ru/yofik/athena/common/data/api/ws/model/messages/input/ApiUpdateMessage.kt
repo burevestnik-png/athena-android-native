@@ -1,4 +1,4 @@
-package ru.yofik.athena.common.data.api.ws.model.messages
+package ru.yofik.athena.common.data.api.ws.model.messages.input
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
