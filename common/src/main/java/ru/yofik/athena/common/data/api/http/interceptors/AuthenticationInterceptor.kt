@@ -1,4 +1,4 @@
-package ru.yofik.athena.common.data.api.interceptors
+package ru.yofik.athena.common.data.api.http.interceptors
 
 import javax.inject.Inject
 import okhttp3.Interceptor

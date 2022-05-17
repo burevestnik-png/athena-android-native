@@ -16,7 +16,7 @@ import ru.yofik.athena.common.BuildConfig
 import ru.yofik.athena.common.data.api.ApiHttpConstants
 import ru.yofik.athena.common.data.api.ApiParameters.AUTH_HEADER
 import ru.yofik.athena.common.data.api.ApiParameters.TOKEN_TYPE
-import ru.yofik.athena.common.data.api.interceptors.AuthenticationInterceptor
+import ru.yofik.athena.common.data.api.http.interceptors.AuthenticationInterceptor
 import ru.yofik.athena.common.data.api.http.model.chat.ChatApi
 import ru.yofik.athena.common.data.api.http.model.user.UserApi
 import ru.yofik.athena.common.data.api.interceptors.NetworkStatusInterceptor
