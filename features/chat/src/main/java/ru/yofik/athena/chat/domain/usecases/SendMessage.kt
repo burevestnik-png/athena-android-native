@@ -1,12 +1,13 @@
 package ru.yofik.athena.chat.domain.usecases
 
 import ru.yofik.athena.common.domain.repositories.ChatRepository
+import ru.yofik.athena.common.domain.repositories.MessageRepository
 import javax.inject.Inject
 
 class SendMessage @Inject constructor(
-    private val chatRepository: ChatRepository
+    private val messageRepository: MessageRepository
 ) {
     suspend operator fun invoke(chatId: Long, text: String) {
-        chatRepository.requestSendMessage(chatId, text)
+        messageRepository.requestSendMessage(chatId, text)
     }
 }

@@ -1,13 +1,14 @@
 package ru.yofik.athena.profile.domain.usecases
 
+import ru.yofik.athena.common.domain.repositories.CurrentUserRepository
 import javax.inject.Inject
 import ru.yofik.athena.common.domain.repositories.UserRepository
 
-class LogoutUser @Inject constructor(private val userRepository: UserRepository) {
+class LogoutUser @Inject constructor(private val currentUserRepository: CurrentUserRepository) {
     operator fun invoke() {
-        userRepository.apply {
-            removeCachedCurrentUser()
-            removeUserAccessToken()
+        currentUserRepository.apply {
+            removeAccessToken()
+            removeCache()
         }
     }
 }
