@@ -1,14 +1,14 @@
 package ru.yofik.athena.common.data.repositories
 
-import javax.inject.Inject
 import retrofit2.HttpException
+import ru.yofik.athena.common.data.api.http.model.mappers.ApiUserMapper
 import ru.yofik.athena.common.data.api.http.model.user.UserApi
-import ru.yofik.athena.common.data.api.http.model.user.mappers.ApiUserMapper
 import ru.yofik.athena.common.data.cache.Cache
 import ru.yofik.athena.common.data.cache.model.CachedUser
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
 import ru.yofik.athena.common.domain.model.user.User
 import ru.yofik.athena.common.domain.repositories.UserRepository
+import javax.inject.Inject
 
 class UserRepositoryImpl
 @Inject

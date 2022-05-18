@@ -11,7 +11,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class NotificationListener
-@Inject constructor(private val messageNotificationMapper: MessageNotificationMapper) :
+@Inject
+constructor(private val messageNotificationMapper: MessageNotificationMapper) :
     WebSocketListener() {
     override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
         super.onClosed(webSocket, code, reason)

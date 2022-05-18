@@ -1,10 +1,10 @@
 package ru.yofik.athena.common.data.api.interceptors
 
-import javax.inject.Inject
 import okhttp3.Interceptor
 import okhttp3.Response
 import ru.yofik.athena.common.data.api.ConnectionManager
 import ru.yofik.athena.common.domain.model.exceptions.NetworkUnavailableException
+import javax.inject.Inject
 
 class NetworkStatusInterceptor
 @Inject

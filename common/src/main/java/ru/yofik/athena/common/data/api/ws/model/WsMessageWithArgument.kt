@@ -4,7 +4,9 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 enum class ArgumentType {
-    NEW_MESSAGE, UPDATED_MESSAGE, DELETED_MESSAGES
+    NEW_MESSAGE,
+    UPDATED_MESSAGE,
+    DELETED_MESSAGES
 }
 
 @JsonClass(generateAdapter = true)

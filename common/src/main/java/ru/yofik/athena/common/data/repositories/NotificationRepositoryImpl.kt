@@ -13,7 +13,8 @@ import ru.yofik.athena.common.domain.repositories.NotificationRepository
 import javax.inject.Inject
 
 class NotificationRepositoryImpl
-@Inject constructor(
+@Inject
+constructor(
     private val notificationWebSocket: WebSocket,
 ) : NotificationRepository {
     private val notificationStream =
@@ -21,9 +22,7 @@ class NotificationRepositoryImpl
 
     override fun startNotificationChannel() {
         val initialMessage = ApiSubscribeOnNotificationsMessage.toJson()
-        notificationWebSocket.send(
-            initialMessage
-        )
+        notificationWebSocket.send(initialMessage)
     }
 
     override fun subscribeOnDeletedMessagesNotifications(): Observable<DeleteMessageNotification> {
@@ -35,12 +34,18 @@ class NotificationRepositoryImpl
     }
 
     override fun subscribeOnNewMessageNotifications(): Observable<NewMessageNotification> {
-        return notificationStream.filter { it.notification.type == NotificationType.NEW_MESSAGE }
-            .map { NewMessageNotification(message = (it.notification as NewMessageNotification).message) }
+        return notificationStream
+            .filter { it.notification.type == NotificationType.NEW_MESSAGE }
+            .map {
+                NewMessageNotification(
+                    message = (it.notification as NewMessageNotification).message
+                )
+            }
     }
 
-    override fun subscribeOnTargetChatNewMessageNotifications(chatId: Long): Observable<NewMessageNotification> {
-        return subscribeOnNewMessageNotifications()
-            .filter { it.message.chatId == chatId }
+    override fun subscribeOnTargetChatNewMessageNotifications(
+        chatId: Long
+    ): Observable<NewMessageNotification> {
+        return subscribeOnNewMessageNotifications().filter { it.message.chatId == chatId }
     }
 }

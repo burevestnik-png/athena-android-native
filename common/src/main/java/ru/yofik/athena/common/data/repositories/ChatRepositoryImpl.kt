@@ -6,11 +6,12 @@ import ru.yofik.athena.common.data.api.http.model.chat.ChatApi
 import ru.yofik.athena.common.data.api.http.model.chat.mappers.ApiChatMapper
 import ru.yofik.athena.common.data.api.http.model.chat.mappers.ApiChatWithDetailsMapper
 import ru.yofik.athena.common.data.api.http.model.chat.requests.CreateChatRequest
-import ru.yofik.athena.common.data.api.http.model.chat.requests.SendMessageRequest
+import ru.yofik.athena.common.data.api.http.model.chat.requests.GetPaginatedChatsRequest
 import ru.yofik.athena.common.data.preferences.Preferences
 import ru.yofik.athena.common.domain.model.chat.Chat
-import ru.yofik.athena.common.domain.model.chat.ChatWithDetails
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
+import ru.yofik.athena.common.domain.model.pagination.PaginatedChats
+import ru.yofik.athena.common.domain.model.pagination.Pagination
 import ru.yofik.athena.common.domain.repositories.ChatRepository
 import timber.log.Timber
 
@@ -19,7 +20,6 @@ class ChatRepositoryImpl
 constructor(
     private val chatApi: ChatApi,
     private val apiChatMapper: ApiChatMapper,
-    private val apiChatWithDetailsMapper: ApiChatWithDetailsMapper,
     private val preferences: Preferences
 ) : ChatRepository {
 
@@ -27,10 +27,20 @@ constructor(
     // NETWORK
     ///////////////////////////////////////////////////////////////////////////
 
-    override suspend fun requestGetAllChats(): List<Chat> {
+    override suspend fun requestGetPaginatedChats(pageNumber: Int, pageSize: Int): PaginatedChats {
+        val request = GetPaginatedChatsRequest(pageNumber, pageSize)
+
         try {
-            val response = chatApi.getAllChats()
-            return response.payload.map(apiChatMapper::mapToDomain)
+            val response = chatApi.getPaginatedChats(request)
+
+            return PaginatedChats(
+                chats = response.payload.map(apiChatMapper::mapToDomain),
+                pagination =
+                    Pagination(
+                        currentPage = pageNumber + 1,
+                        currentAmountOfItems = response.payload.size
+                    )
+            )
         } catch (exception: HttpException) {
             // TODO add exception parse
             throw NetworkException(exception.message ?: "Code ${exception.code()}")
@@ -52,11 +62,9 @@ constructor(
         }
     }
 
-    override suspend fun requestGetChat(id: Long): ChatWithDetails {
+    override suspend fun requestDeleteChat(chatId: Long) {
         try {
-            val response = chatApi.getChat(id)
-            Timber.d("requestGetChat: ${response.payload}")
-            return apiChatWithDetailsMapper.mapToDomain(response.payload)
+            chatApi.deleteChat(chatId)
         } catch (exception: HttpException) {
             // TODO add exception parse
             throw NetworkException(exception.message ?: "Code ${exception.code()}")

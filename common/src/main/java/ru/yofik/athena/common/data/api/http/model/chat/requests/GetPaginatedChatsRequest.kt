@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class SendMessageRequest(
-    @field:Json(name = "chatId") val chatId: Long,
-    @field:Json(name = "text") val text: String
+data class GetPaginatedChatsRequest(
+    @field:Json(name = "sequentialNumber") val pageNumber: Int,
+    @field:Json(name = "size") val pageSize: Int
 )

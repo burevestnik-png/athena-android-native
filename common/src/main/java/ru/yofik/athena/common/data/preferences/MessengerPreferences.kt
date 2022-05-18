@@ -3,12 +3,12 @@ package ru.yofik.athena.common.data.preferences
 import android.content.Context
 import android.content.SharedPreferences
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_ACCESS_TOKEN
 import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_USER_ID
 import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_USER_LOGIN
 import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_USER_NAME
 import ru.yofik.athena.common.domain.model.user.User
+import javax.inject.Inject
 
 class MessengerPreferences @Inject constructor(@ApplicationContext context: Context) : Preferences {
     private val preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
@@ -34,7 +34,11 @@ class MessengerPreferences @Inject constructor(@ApplicationContext context: Cont
     }
 
     override fun getCurrentUser(): User {
-        return User(id = getCurrentUserId(), name = getCurrentUserName(), login = getCurrentUserLogin())
+        return User(
+            id = getCurrentUserId(),
+            name = getCurrentUserName(),
+            login = getCurrentUserLogin()
+        )
     }
 
     override fun removeCurrentUser() {

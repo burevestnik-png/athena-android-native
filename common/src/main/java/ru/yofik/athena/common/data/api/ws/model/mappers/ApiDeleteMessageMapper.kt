@@ -1,11 +1,11 @@
 package ru.yofik.athena.common.data.api.ws.model.mappers
 
 import com.squareup.moshi.Moshi
-import javax.inject.Inject
 import ru.yofik.athena.common.data.api.common.ApiMapper
 import ru.yofik.athena.common.data.api.common.MappingException
 import ru.yofik.athena.common.data.api.ws.model.messages.input.RawDeleteMessage
 import ru.yofik.athena.common.domain.model.notification.DeleteMessageNotification
+import javax.inject.Inject
 
 class ApiDeleteMessageMapper @Inject constructor() : ApiMapper<String, DeleteMessageNotification> {
     private val adapter = Moshi.Builder().build().adapter(RawDeleteMessage::class.java)

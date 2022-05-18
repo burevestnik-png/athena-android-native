@@ -1,7 +1,6 @@
 package ru.yofik.athena.common.data.api.ws.model.mappers
 
 import com.squareup.moshi.Moshi
-import javax.inject.Inject
 import ru.yofik.athena.common.data.api.common.ApiMapper
 import ru.yofik.athena.common.data.api.common.MappingException
 import ru.yofik.athena.common.data.api.ws.model.ArgumentType
@@ -9,6 +8,7 @@ import ru.yofik.athena.common.data.api.ws.model.CommandType
 import ru.yofik.athena.common.data.api.ws.model.WsMessage
 import ru.yofik.athena.common.data.api.ws.model.WsMessageWithArgument
 import ru.yofik.athena.common.domain.model.notification.Notification
+import javax.inject.Inject
 
 class MessageNotificationMapper
 @Inject

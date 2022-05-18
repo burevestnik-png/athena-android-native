@@ -53,28 +53,25 @@ class AvatarView(context: Context, attrs: AttributeSet? = null) : RelativeLayout
             textSize = this@AvatarView.textSize
         }
 
-        binding.icon.apply {
-            setColorFilter(context.getColor(BackgroundGenerator.get(text)))
-        }
+        binding.icon.apply { setColorFilter(context.getColor(BackgroundGenerator.get(text))) }
     }
 }
 
 private fun extractInitials(name: String): String {
-    return name.trim().split(" ").joinToString("") {
-        it.first().uppercase()
-    }
+    return name.trim().split(" ").joinToString("") { it.first().uppercase() }
 }
 
 object BackgroundGenerator {
-    private val colors = listOf(
-        R.color.cyan,
-        R.color.teal,
-        R.color.yellow,
-        R.color.amber,
-        R.color.deep_purple,
-        R.color.purple,
-        R.color.green
-    )
+    private val colors =
+        listOf(
+            R.color.cyan,
+            R.color.teal,
+            R.color.yellow,
+            R.color.amber,
+            R.color.deep_purple,
+            R.color.purple,
+            R.color.green
+        )
 
     private val size
         get() = colors.size

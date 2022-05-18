@@ -1,24 +1,20 @@
 package ru.yofik.athena.common.data.api.http.model.chat
 
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
-import ru.yofik.athena.common.data.api.ApiHttpConstants.CHATS_ENDPOINT
+import retrofit2.http.*
+import ru.yofik.athena.common.data.api.ApiHttpConstants
 import ru.yofik.athena.common.data.api.http.model.chat.requests.CreateChatRequest
-import ru.yofik.athena.common.data.api.http.model.chat.requests.SendMessageRequest
+import ru.yofik.athena.common.data.api.http.model.chat.requests.GetPaginatedChatsRequest
 import ru.yofik.athena.common.data.api.http.model.chat.responses.CreateChatResponse
 import ru.yofik.athena.common.data.api.http.model.chat.responses.GetAllChatsResponse
-import ru.yofik.athena.common.data.api.http.model.chat.responses.GetChatResponse
 
 interface ChatApi {
-    @GET(CHATS_ENDPOINT) suspend fun getAllChats(): GetAllChatsResponse
+    @GET(ApiHttpConstants.CHATS_ENDPOINT)
+    suspend fun getPaginatedChats(
+        @Body getPaginatedChatsRequest: GetPaginatedChatsRequest
+    ): GetAllChatsResponse
 
-    @POST(CHATS_ENDPOINT)
+    @POST(ApiHttpConstants.CHATS_ENDPOINT)
     suspend fun createChat(@Body createChatRequest: CreateChatRequest): CreateChatResponse
 
-    @GET("$CHATS_ENDPOINT/{id}/fullView") suspend fun getChat(@Path("id") id: Long): GetChatResponse
-
-    @POST("$CHATS_ENDPOINT/{id}/messages")
-    suspend fun sendMessage(@Path("id") id: Long, @Body sendMessageRequest: SendMessageRequest)
+    @DELETE("${ApiHttpConstants.CHATS_ENDPOINT}/{id}") suspend fun deleteChat(@Path("id") id: Long)
 }

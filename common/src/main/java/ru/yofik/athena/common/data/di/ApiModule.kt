@@ -5,12 +5,11 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import java.util.concurrent.TimeUnit
-import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.WebSocket
 import retrofit2.Retrofit
+import retrofit2.Retrofit.Builder
 import retrofit2.converter.moshi.MoshiConverterFactory
 import ru.yofik.athena.common.BuildConfig
 import ru.yofik.athena.common.data.api.ApiHttpConstants
@@ -19,11 +18,15 @@ import ru.yofik.athena.common.data.api.ApiParameters.TOKEN_TYPE
 import ru.yofik.athena.common.data.api.ApiWsConstants
 import ru.yofik.athena.common.data.api.http.interceptors.AuthenticationInterceptor
 import ru.yofik.athena.common.data.api.http.model.chat.ChatApi
+import ru.yofik.athena.common.data.api.http.model.currentUser.CurrentUserApi
+import ru.yofik.athena.common.data.api.http.model.message.MessageApi
 import ru.yofik.athena.common.data.api.http.model.user.UserApi
 import ru.yofik.athena.common.data.api.interceptors.NetworkStatusInterceptor
 import ru.yofik.athena.common.data.api.ws.listeners.NotificationListener
 import ru.yofik.athena.common.data.preferences.Preferences
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -39,6 +42,18 @@ object ApiModule {
     @Singleton
     fun provideUserApi(builder: Retrofit.Builder): UserApi {
         return builder.build().create(UserApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCurrentUserApi(builder: Builder): CurrentUserApi {
+        return builder.build().create(CurrentUserApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMessageApi(builder: Builder): MessageApi {
+        return builder.build().create(MessageApi::class.java)
     }
 
     @Provides

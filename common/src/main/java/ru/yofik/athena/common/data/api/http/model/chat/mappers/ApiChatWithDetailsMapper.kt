@@ -1,12 +1,12 @@
 package ru.yofik.athena.common.data.api.http.model.chat.mappers
 
-import javax.inject.Inject
-import ru.yofik.athena.common.data.api.http.model.chat.apiEntity.ApiChatWithDetails
-import ru.yofik.athena.common.data.api.http.model.user.mappers.ApiUserMapper
 import ru.yofik.athena.common.data.api.common.ApiMapper
-import ru.yofik.athena.common.data.api.common.mappers.ApiMessageMapper
 import ru.yofik.athena.common.data.api.common.MappingException
+import ru.yofik.athena.common.data.api.common.mappers.ApiMessageMapper
+import ru.yofik.athena.common.data.api.http.model.chat.apiEntity.ApiChatWithDetails
+import ru.yofik.athena.common.data.api.http.model.mappers.ApiUserMapper
 import ru.yofik.athena.common.domain.model.chat.ChatWithDetails
+import javax.inject.Inject
 
 class ApiChatWithDetailsMapper
 @Inject

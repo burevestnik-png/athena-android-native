@@ -13,6 +13,6 @@ constructor(
 ) {
     suspend operator fun invoke(): List<Chat> {
         notificationRepository.startNotificationChannel()
-        return chatRepository.requestGetAllChats()
+        return chatRepository.requestGetPaginatedChats()
     }
 }

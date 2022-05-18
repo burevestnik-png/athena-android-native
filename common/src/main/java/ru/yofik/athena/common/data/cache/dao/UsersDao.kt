@@ -12,6 +12,5 @@ interface UsersDao {
 
     @Query("SELECT * FROM users") suspend fun getAll(): List<CachedUser>
 
-    @Query("DELETE FROM users")
-    suspend fun deleteAll()
+    @Query("DELETE FROM users") suspend fun deleteAll()
 }

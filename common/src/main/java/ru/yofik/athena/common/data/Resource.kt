@@ -11,15 +11,14 @@ class Resource<in Input, out Output>(
     private val deleteCache: suspend () -> Unit,
     private val refreshStrategy: RefreshStrategy = NoRefreshStrategy()
 ) {
-    suspend fun query(args: Input, force: Boolean = false) = flow<Output> {
-        if (!force) {
+    suspend fun query(args: Input, force: Boolean = false) =
+        flow<Output> {
+            if (!force) {}
 
+            if (force || refreshStrategy.isExpired()) {
+                kotlin.runCatching {}
+            }
         }
-
-        if (force || refreshStrategy.isExpired()) {
-            kotlin.runCatching {  }
-        }
-    }
 }
 
 sealed interface RefreshStrategy {

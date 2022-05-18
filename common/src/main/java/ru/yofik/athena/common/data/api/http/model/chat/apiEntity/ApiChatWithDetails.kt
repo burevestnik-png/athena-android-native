@@ -2,8 +2,8 @@ package ru.yofik.athena.common.data.api.http.model.chat.apiEntity
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import ru.yofik.athena.common.data.api.http.model.user.apiEntity.ApiUser
 import ru.yofik.athena.common.data.api.common.apiEntity.ApiMessage
+import ru.yofik.athena.common.data.api.http.model.apiEntity.ApiUser
 
 @JsonClass(generateAdapter = true)
 data class ApiChatWithDetails(

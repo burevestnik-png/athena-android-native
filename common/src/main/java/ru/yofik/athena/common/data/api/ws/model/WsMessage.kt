@@ -4,7 +4,8 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 enum class CommandType {
-    SUBSCRIBE_ON_NOTIFICATIONS, RECEIVE_NOTIFICATION
+    SUBSCRIBE_ON_NOTIFICATIONS,
+    RECEIVE_NOTIFICATION
 }
 
 @JsonClass(generateAdapter = true)
