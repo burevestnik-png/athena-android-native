@@ -8,9 +8,9 @@ import ru.yofik.athena.common.data.api.http.model.chat.mappers.ApiChatWithDetail
 import ru.yofik.athena.common.data.api.http.model.chat.requests.CreateChatRequest
 import ru.yofik.athena.common.data.api.http.model.chat.requests.SendMessageRequest
 import ru.yofik.athena.common.data.preferences.Preferences
-import ru.yofik.athena.common.domain.model.NetworkException
 import ru.yofik.athena.common.domain.model.chat.Chat
 import ru.yofik.athena.common.domain.model.chat.ChatWithDetails
+import ru.yofik.athena.common.domain.model.exceptions.NetworkException
 import ru.yofik.athena.common.domain.repositories.ChatRepository
 import timber.log.Timber
 
@@ -18,30 +18,36 @@ class ChatRepositoryImpl
 @Inject
 constructor(
     private val chatApi: ChatApi,
-    private val chatDtoMapper: ApiChatMapper,
-    private val chatWithDetailsDtoMapper: ApiChatWithDetailsMapper,
+    private val apiChatMapper: ApiChatMapper,
+    private val apiChatWithDetailsMapper: ApiChatWithDetailsMapper,
     private val preferences: Preferences
 ) : ChatRepository {
+
+    ///////////////////////////////////////////////////////////////////////////
+    // NETWORK
+    ///////////////////////////////////////////////////////////////////////////
+
     override suspend fun requestGetAllChats(): List<Chat> {
         try {
             val response = chatApi.getAllChats()
-
-            return response.payload.map(chatDtoMapper::mapToDomain)
+            return response.payload.map(apiChatMapper::mapToDomain)
         } catch (exception: HttpException) {
+            // TODO add exception parse
             throw NetworkException(exception.message ?: "Code ${exception.code()}")
         }
     }
 
     override suspend fun requestCreateChat(name: String, userId: Long): Chat {
         try {
-            val fromUserId = preferences.getCurrentUser().id
-            val request = CreateChatRequest(name = name, users = listOf(fromUserId, userId))
+            val initiatorId = preferences.getCurrentUserId()
+            val request = CreateChatRequest(name = name, users = listOf(initiatorId, userId))
 
             val response = chatApi.createChat(request)
             Timber.d("requestCreateChat: ${response.payload}")
 
-            return chatDtoMapper.mapToDomain(response.payload)
+            return apiChatMapper.mapToDomain(response.payload)
         } catch (exception: HttpException) {
+            // TODO add exception parse
             throw NetworkException(exception.message ?: "Code ${exception.code()}")
         }
     }
@@ -50,17 +56,9 @@ constructor(
         try {
             val response = chatApi.getChat(id)
             Timber.d("requestGetChat: ${response.payload}")
-            return chatWithDetailsDtoMapper.mapToDomain(response.payload)
+            return apiChatWithDetailsMapper.mapToDomain(response.payload)
         } catch (exception: HttpException) {
-            throw NetworkException(exception.message ?: "Code ${exception.code()}")
-        }
-    }
-
-    override suspend fun requestSendMessage(chatId: Long, text: String) {
-        try {
-            val request = SendMessageRequest(chatId, text)
-            chatApi.sendMessage(chatId, request)
-        } catch (exception: HttpException) {
+            // TODO add exception parse
             throw NetworkException(exception.message ?: "Code ${exception.code()}")
         }
     }

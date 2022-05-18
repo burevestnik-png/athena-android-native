@@ -39,12 +39,8 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.hilt.android.scopes.ActivityRetainedScoped
-import ru.yofik.athena.common.data.repositories.ChatRepositoryImpl
-import ru.yofik.athena.common.data.repositories.NotificationRepositoryImpl
-import ru.yofik.athena.common.data.repositories.UserRepositoryImpl
-import ru.yofik.athena.common.domain.repositories.ChatRepository
-import ru.yofik.athena.common.domain.repositories.NotificationRepository
-import ru.yofik.athena.common.domain.repositories.UserRepository
+import ru.yofik.athena.common.data.repositories.*
+import ru.yofik.athena.common.domain.repositories.*
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
@@ -60,5 +56,17 @@ abstract class ActivityRetainedModule {
 
     @Binds
     @ActivityRetainedScoped
-    abstract fun bindNotificationRepository(repository: NotificationRepositoryImpl): NotificationRepository
+    abstract fun bindNotificationRepository(
+        repository: NotificationRepositoryImpl
+    ): NotificationRepository
+
+    @Binds
+    @ActivityRetainedScoped
+    abstract fun bindCurrentUserRepository(
+        repository: CurrentUserRepositoryImpl
+    ): CurrentUserRepository
+
+    @Binds
+    @ActivityRetainedScoped
+    abstract fun bindMessageRepository(repository: MessageRepositoryImpl): MessageRepository
 }

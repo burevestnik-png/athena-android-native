@@ -21,7 +21,7 @@ class MessengerPreferences @Inject constructor(@ApplicationContext context: Cont
         return preferences.getString(KEY_ACCESS_TOKEN, "").orEmpty()
     }
 
-    override fun deleteAccessToken() {
+    override fun removeAccessToken() {
         edit { remove(KEY_ACCESS_TOKEN) }
     }
 
@@ -34,10 +34,10 @@ class MessengerPreferences @Inject constructor(@ApplicationContext context: Cont
     }
 
     override fun getCurrentUser(): User {
-        return User(id = getUserId(), name = getUserName(), login = getUserLogin())
+        return User(id = getCurrentUserId(), name = getCurrentUserName(), login = getCurrentUserLogin())
     }
 
-    override fun deleteCurrentUser() {
+    override fun removeCurrentUser() {
         edit {
             remove(KEY_USER_ID)
             remove(KEY_USER_NAME)
@@ -45,15 +45,15 @@ class MessengerPreferences @Inject constructor(@ApplicationContext context: Cont
         }
     }
 
-    override fun getUserId(): Long {
+    override fun getCurrentUserId(): Long {
         return preferences.getLong(KEY_USER_ID, -1)
     }
 
-    override fun getUserLogin(): String {
+    override fun getCurrentUserLogin(): String {
         return preferences.getString(KEY_USER_LOGIN, "").orEmpty()
     }
 
-    override fun getUserName(): String {
+    override fun getCurrentUserName(): String {
         return preferences.getString(KEY_USER_NAME, "").orEmpty()
     }
 

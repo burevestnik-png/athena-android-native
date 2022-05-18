@@ -1,3 +1,3 @@
-package ru.yofik.athena.common.data.api.mappers
+package ru.yofik.athena.common.data.api.common
 
 class MappingException(message: String) : Exception(message)

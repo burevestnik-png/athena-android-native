@@ -1,7 +1,9 @@
-package ru.yofik.athena.common.data.api.mappers
+package ru.yofik.athena.common.data.api.common.mappers
 
+import ru.yofik.athena.common.data.api.common.ApiMapper
+import ru.yofik.athena.common.data.api.common.MappingException
 import javax.inject.Inject
-import ru.yofik.athena.common.data.api.mappers.apiEntity.ApiMessage
+import ru.yofik.athena.common.data.api.common.apiEntity.ApiMessage
 import ru.yofik.athena.common.domain.model.message.Message
 import ru.yofik.athena.common.utils.TimeUtils
 

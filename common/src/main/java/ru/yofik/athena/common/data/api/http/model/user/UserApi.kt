@@ -8,8 +8,8 @@ import ru.yofik.athena.common.data.api.ApiHttpConstants
 import ru.yofik.athena.common.data.api.ApiParameters.NO_AUTH_HEADER_FULL
 import ru.yofik.athena.common.data.api.http.model.user.requests.ActivateUserRequest
 import ru.yofik.athena.common.data.api.http.model.user.requests.AuthUserRequest
-import ru.yofik.athena.common.data.api.model.responses.ActivateUserResponse
-import ru.yofik.athena.common.data.api.model.responses.AuthUserResponse
+import ru.yofik.athena.common.data.api.http.model.user.responses.ActivateUserResponse
+import ru.yofik.athena.common.data.api.http.model.user.responses.AuthUserResponse
 import ru.yofik.athena.common.data.api.http.model.user.responses.GetAllUsersResponse
 
 interface UserApi {

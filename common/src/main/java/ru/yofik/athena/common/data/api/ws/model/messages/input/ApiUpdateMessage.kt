@@ -2,7 +2,7 @@ package ru.yofik.athena.common.data.api.ws.model.messages.input
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import ru.yofik.athena.common.data.api.mappers.apiEntity.ApiMessage
+import ru.yofik.athena.common.data.api.common.apiEntity.ApiMessage
 import ru.yofik.athena.common.data.api.ws.model.ArgumentType
 import ru.yofik.athena.common.data.api.ws.model.CommandType
 

@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.*
-import ru.yofik.athena.common.domain.model.NetworkException
-import ru.yofik.athena.common.domain.model.NetworkUnavailableException
+import ru.yofik.athena.common.domain.model.exceptions.NetworkException
+import ru.yofik.athena.common.domain.model.exceptions.NetworkUnavailableException
 import ru.yofik.athena.common.presentation.FailureEvent
 import ru.yofik.athena.login.domain.usecases.RequestUserActivation
 import ru.yofik.athena.login.domain.usecases.RequestUserInfo

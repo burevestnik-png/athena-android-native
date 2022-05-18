@@ -1,8 +1,8 @@
 package ru.yofik.athena.common.data.api.http.model.user.mappers
 
 import javax.inject.Inject
-import ru.yofik.athena.common.data.api.mappers.ApiMapper
-import ru.yofik.athena.common.data.api.mappers.MappingException
+import ru.yofik.athena.common.data.api.common.ApiMapper
+import ru.yofik.athena.common.data.api.common.MappingException
 import ru.yofik.athena.common.data.api.http.model.user.apiEntity.ApiUser
 import ru.yofik.athena.common.domain.model.user.User
 

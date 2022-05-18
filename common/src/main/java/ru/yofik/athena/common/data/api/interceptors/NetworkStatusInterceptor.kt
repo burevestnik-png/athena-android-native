@@ -4,7 +4,7 @@ import javax.inject.Inject
 import okhttp3.Interceptor
 import okhttp3.Response
 import ru.yofik.athena.common.data.api.ConnectionManager
-import ru.yofik.athena.common.domain.model.NetworkUnavailableException
+import ru.yofik.athena.common.domain.model.exceptions.NetworkUnavailableException
 
 class NetworkStatusInterceptor
 @Inject

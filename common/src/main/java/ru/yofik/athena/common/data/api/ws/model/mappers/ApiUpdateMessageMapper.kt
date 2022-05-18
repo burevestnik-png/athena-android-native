@@ -2,9 +2,9 @@ package ru.yofik.athena.common.data.api.ws.model.mappers
 
 import com.squareup.moshi.Moshi
 import javax.inject.Inject
-import ru.yofik.athena.common.data.api.mappers.ApiMapper
-import ru.yofik.athena.common.data.api.mappers.ApiMessageMapper
-import ru.yofik.athena.common.data.api.mappers.MappingException
+import ru.yofik.athena.common.data.api.common.ApiMapper
+import ru.yofik.athena.common.data.api.common.mappers.ApiMessageMapper
+import ru.yofik.athena.common.data.api.common.MappingException
 import ru.yofik.athena.common.data.api.ws.model.messages.input.RawUpdateMessage
 import ru.yofik.athena.common.domain.model.notification.UpdateMessageNotification
 

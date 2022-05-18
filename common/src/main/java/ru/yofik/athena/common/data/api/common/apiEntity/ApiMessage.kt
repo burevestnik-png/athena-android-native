@@ -1,4 +1,4 @@
-package ru.yofik.athena.common.data.api.mappers.apiEntity
+package ru.yofik.athena.common.data.api.common.apiEntity
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

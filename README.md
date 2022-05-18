@@ -89,6 +89,7 @@
 - [ ] Very bad realization of rx java, need to study more
 - [ ] Add a list of my name convention in fragment and activity
 - [ ] add chat to chat list module
+- [ ] added response error parsing
 
 ---
 
