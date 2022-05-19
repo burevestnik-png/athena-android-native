@@ -8,20 +8,20 @@
     tools:context=".presentation.LoginFragment">
 
     <TextView
-        android:layout_marginTop="30dp"
         android:id="@+id/invitation1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:text="@string/let_s_sign_you_in"
         android:textSize="40sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:layout_marginTop="10dp"
         android:id="@+id/invitation2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="@string/welcome_back"
         android:textSize="35sp"
         app:layout_constraintTop_toBottomOf="@+id/invitation1" />
@@ -42,6 +42,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/login_code_input"
+        app:boxStrokeErrorColor="@color/error"
+        app:errorEnabled="true"
+        app:errorTextColor="@color/error"
         app:layout_constraintBottom_toTopOf="@+id/submit_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +53,8 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

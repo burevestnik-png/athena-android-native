@@ -4,24 +4,25 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import ru.yofik.athena.profile.domain.usecases.GetCachedUser
 import ru.yofik.athena.profile.domain.usecases.LogoutUser
-import javax.inject.Inject
 
 @HiltViewModel
-class ProfileFragmentViewModel @Inject constructor(
-    private val logoutUser: LogoutUser, private val getCachedUser: GetCachedUser
-) :
+class ProfileFragmentViewModel
+@Inject
+constructor(private val logoutUser: LogoutUser, private val getCachedUser: GetCachedUser) :
     ViewModel() {
     private val _effects = MutableLiveData<ProfileFragmentViewEffect>()
     val effects: LiveData<ProfileFragmentViewEffect>
         get() = _effects
 
-    private val _state = MutableLiveData<ProfileViewState>(ProfileViewState())
+    private val _state = MutableLiveData<ProfileViewState>()
     val state: LiveData<ProfileViewState>
         get() = _state
 
     init {
+        _state.value = ProfileViewState()
         provideUserInfo()
     }
 

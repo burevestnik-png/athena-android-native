@@ -16,10 +16,6 @@ import ru.yofik.athena.common.utils.InternalDeepLink
 import ru.yofik.athena.login.databinding.FragmentLoginBinding
 import timber.log.Timber
 
-/**
- * A simple [Fragment] subclass. Use the [LoginFragment.newInstance] factory method to create an
- * instance of this fragment.
- */
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
@@ -27,6 +23,10 @@ class LoginFragment : Fragment() {
         get() = _binding!!
 
     private val viewModel by viewModels<LoginFragmentViewModel>()
+
+    ///////////////////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    ///////////////////////////////////////////////////////////////////////////
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,6 +50,10 @@ class LoginFragment : Fragment() {
         _binding = null
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // SETUPING UI
+    ///////////////////////////////////////////////////////////////////////////
+
     private fun setupUI() {
         setOnCodeChangeListener()
         listenToSubmitButton()
@@ -63,15 +67,37 @@ class LoginFragment : Fragment() {
         binding.codeInput.editText?.doAfterTextChanged { onCodeValueChange(it?.toString() ?: "") }
     }
 
+    private fun requestUserActivation() {
+        viewModel.onEvent(LoginEvent.RequestUserActivation)
+    }
+
+    private fun onCodeValueChange(value: String) {
+        viewModel.onEvent(LoginEvent.OnCodeValueChange(value))
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // STATE OBSERVING
+    ///////////////////////////////////////////////////////////////////////////
+
     private fun observeViewStateUpdates() {
         viewModel.state.observe(viewLifecycleOwner) { updateScreenState(it) }
     }
 
     private fun updateScreenState(state: LoginViewState) {
         Timber.d("updateScreenState: $state")
-        binding.progressBar.isVisible = state.loading
+
+        with(binding) {
+            progressBar.isVisible = state.loading
+            codeInput.error = resources.getString(state.codeError)
+            submitButton.isEnabled = state.isSubmitButtonActive
+        }
+
         handleFailures(state.failure)
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // EFFECT OBSERVING
+    ///////////////////////////////////////////////////////////////////////////
 
     private fun observeViewEffects() {
         viewModel.effects.observe(viewLifecycleOwner) { reactTo(it) }
@@ -86,17 +112,5 @@ class LoginFragment : Fragment() {
     private fun navigateToChatListScreen() {
         val deepLink = InternalDeepLink.CHAT_LIST.toUri()
         findNavController().navigate(deepLink)
-    }
-
-    private fun onCodeValueChange(value: String) {
-        viewModel.onEvent(LoginEvent.OnCodeValueChange(value))
-    }
-
-    private fun requestUserActivation() {
-        viewModel.onEvent(LoginEvent.RequestUserActivation)
-    }
-
-    companion object {
-        @JvmStatic fun newInstance() = LoginFragment()
     }
 }

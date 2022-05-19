@@ -30,6 +30,10 @@ class ProfileFragment : Fragment() {
             (activity as AppCompatActivity).supportActionBar
                 ?: throw RuntimeException("View was initialized wrong")
 
+    ///////////////////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    ///////////////////////////////////////////////////////////////////////////
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -52,6 +56,10 @@ class ProfileFragment : Fragment() {
         _binding = null
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // SETUPING UI
+    ///////////////////////////////////////////////////////////////////////////
+
     private fun setupUI() {
         setupActionBar()
         listenToLogoutButton()
@@ -68,6 +76,10 @@ class ProfileFragment : Fragment() {
         actionBar.title = ""
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // OBSERVE STATE
+    ///////////////////////////////////////////////////////////////////////////
+
     private fun observeViewStateUpdates() {
         viewModel.state.observe(viewLifecycleOwner) { updateScreenState(it) }
     }
@@ -75,6 +87,10 @@ class ProfileFragment : Fragment() {
     private fun updateScreenState(state: ProfileViewState) {
         binding.progressBar.isVisible = state.loading
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // OBSERVE EFFECTS
+    ///////////////////////////////////////////////////////////////////////////
 
     private fun observeViewEffects() {
         viewModel.effects.observe(viewLifecycleOwner) { reactTo(it) }

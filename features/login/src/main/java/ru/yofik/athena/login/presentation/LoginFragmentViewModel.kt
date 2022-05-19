@@ -10,6 +10,7 @@ import kotlinx.coroutines.*
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
 import ru.yofik.athena.common.domain.model.exceptions.NetworkUnavailableException
 import ru.yofik.athena.common.presentation.FailureEvent
+import ru.yofik.athena.login.R
 import ru.yofik.athena.login.domain.usecases.RequestUserActivation
 import ru.yofik.athena.login.domain.usecases.RequestUserInfo
 import timber.log.Timber
@@ -21,6 +22,10 @@ constructor(
     private val requestUserActivation: RequestUserActivation,
     private val requestUserInfo: RequestUserInfo
 ) : ViewModel() {
+
+    companion object {
+        const val MAX_CODE_LENGTH = 3
+    }
 
     private val _state = MutableLiveData<LoginViewState>()
     private val _effects = MutableLiveData<LoginViewEffect>()
@@ -41,7 +46,6 @@ constructor(
     }
 
     fun onEvent(event: LoginEvent) {
-        Timber.d("onEvent: $event")
         when (event) {
             is LoginEvent.RequestUserActivation -> onUserActivation()
             is LoginEvent.OnCodeValueChange -> onCodeValueChange(event.value)
@@ -49,11 +53,20 @@ constructor(
     }
 
     private fun onCodeValueChange(newValue: String) {
-        _state.value = state.value!!.copy(code = newValue)
+        val isCodeValid = newValue.length == MAX_CODE_LENGTH
+
+        val codeError =
+            if (isCodeValid || newValue.isEmpty()) {
+                R.string.no_error
+            } else {
+                R.string.code_error
+            }
+
+        _state.value = state.value!!.copy(code = newValue, codeError = codeError)
     }
 
     private fun onUserActivation() {
-        setLoadingTrue()
+        _state.value = state.value!!.copy(loading = true)
 
         job =
             CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
@@ -67,11 +80,8 @@ constructor(
             }
     }
 
-    private fun setLoadingTrue() {
-        _state.value = state.value!!.copy(loading = true)
-    }
-
     private fun onFailure(failure: Throwable) {
+        Timber.d("onFailure: $failure")
         when (failure) {
             is NetworkUnavailableException, is NetworkException -> {
                 _state.value = state.value!!.copy(loading = false, failure = FailureEvent(failure))
