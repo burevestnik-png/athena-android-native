@@ -1,4 +1,4 @@
-package ru.yofik.athena.common.data.api.http.model.currentUser.responses
+package ru.yofik.athena.common.data.api.http.model.user.responses
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -7,8 +7,8 @@ import ru.yofik.athena.common.data.api.http.model.common.responses.ResponseStatu
 import ru.yofik.athena.common.data.api.http.model.common.apiEntity.ApiUser
 
 @JsonClass(generateAdapter = true)
-class AuthUserResponse(
-    @field:Json(name = "payload") val payload: ApiUser,
+class GetDefiniteUserResponse(
     code: String,
-    status: ResponseStatus
+    status: ResponseStatus,
+    @field:Json(name = "payload") val user: ApiUser
 ) : Response(code, status)

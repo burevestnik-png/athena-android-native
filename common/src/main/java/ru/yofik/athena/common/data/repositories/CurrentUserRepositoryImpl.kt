@@ -5,7 +5,7 @@ import ru.yofik.athena.common.data.api.http.model.currentUser.CurrentUserApi
 import ru.yofik.athena.common.data.api.http.model.currentUser.mappers.ApiAccessTokenMapper
 import ru.yofik.athena.common.data.api.http.model.currentUser.requests.ActivateUserRequest
 import ru.yofik.athena.common.data.api.http.model.currentUser.requests.AuthUserRequest
-import ru.yofik.athena.common.data.api.http.model.mappers.ApiUserMapper
+import ru.yofik.athena.common.data.api.http.model.common.mappers.ApiUserMapper
 import ru.yofik.athena.common.data.preferences.Preferences
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
 import ru.yofik.athena.common.domain.model.user.User

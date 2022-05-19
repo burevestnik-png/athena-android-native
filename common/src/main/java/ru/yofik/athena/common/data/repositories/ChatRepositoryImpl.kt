@@ -4,9 +4,8 @@ import javax.inject.Inject
 import retrofit2.HttpException
 import ru.yofik.athena.common.data.api.http.model.chat.ChatApi
 import ru.yofik.athena.common.data.api.http.model.chat.mappers.ApiChatMapper
-import ru.yofik.athena.common.data.api.http.model.chat.mappers.ApiChatWithDetailsMapper
 import ru.yofik.athena.common.data.api.http.model.chat.requests.CreateChatRequest
-import ru.yofik.athena.common.data.api.http.model.chat.requests.GetPaginatedChatsRequest
+import ru.yofik.athena.common.data.api.http.model.common.requests.RequestWithPagination
 import ru.yofik.athena.common.data.preferences.Preferences
 import ru.yofik.athena.common.domain.model.chat.Chat
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
@@ -28,7 +27,7 @@ constructor(
     ///////////////////////////////////////////////////////////////////////////
 
     override suspend fun requestGetPaginatedChats(pageNumber: Int, pageSize: Int): PaginatedChats {
-        val request = GetPaginatedChatsRequest(pageNumber, pageSize)
+        val request = RequestWithPagination(pageNumber, pageSize)
 
         try {
             val response = chatApi.getPaginatedChats(request)

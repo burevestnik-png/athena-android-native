@@ -1,4 +1,4 @@
-package ru.yofik.athena.common.data.api.http.model
+package ru.yofik.athena.common.data.api.http.model.common.responses
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

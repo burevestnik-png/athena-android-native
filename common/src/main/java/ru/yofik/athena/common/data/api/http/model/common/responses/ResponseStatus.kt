@@ -1,4 +1,4 @@
-package ru.yofik.athena.common.data.api.http.model
+package ru.yofik.athena.common.data.api.http.model.common.responses
 
 enum class ResponseStatus(val code: Int, val status: String) {
     DEV_ONLY(100, "DEV_ONLY"),
