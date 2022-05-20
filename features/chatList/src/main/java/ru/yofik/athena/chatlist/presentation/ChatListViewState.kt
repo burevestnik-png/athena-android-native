@@ -6,6 +6,7 @@ import ru.yofik.athena.common.presentation.FailureEvent
 
 data class ChatListViewState(
     val loading: Boolean = false,
+    val noMoreChatsAnymore: Boolean = false,
     val chats: List<UiChat> = emptyList(),
     val failure: FailureEvent? = null
 )

@@ -10,12 +10,16 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import ru.yofik.athena.chatlist.domain.model.mappers.UiChatMapper
 import ru.yofik.athena.chatlist.domain.model.mappers.UiMessageMapper
 import ru.yofik.athena.chatlist.domain.usecases.GetChats
 import ru.yofik.athena.chatlist.domain.usecases.ListenNewMessageNotifications
 import ru.yofik.athena.chatlist.domain.usecases.RequestNextChatsPage
 import ru.yofik.athena.chatlist.domain.usecases.SubscribeOnNotifications
+import ru.yofik.athena.common.domain.model.chat.Chat
 import ru.yofik.athena.common.domain.model.notification.NewMessageNotification
 import timber.log.Timber
 
@@ -42,17 +46,32 @@ constructor(
         viewModelScope.launch { onFailure(throwable) }
     }
 
+    private var isLastPage = false
+    private var currentPage = 0
+
     init {
         _state.value = ChatListViewState()
 
         subscribeOnNotifications()
         listenNotifications()
+
+        subscribeOnChatsUpdates()
     }
 
-    fun onEvent(event: ChatListEvent) {
-        when (event) {
-            is ChatListEvent.GetAllChats -> requestAllChats()
-        }
+    private fun subscribeOnChatsUpdates() {
+        viewModelScope.launch { getChats().onEach {
+            if (hasNoAnimalsStoredButCanLoadMore(it)) {
+
+            }
+        }.catch {}.collect {} }
+    }
+
+    private fun loadNextChatPage() {
+
+    }
+
+    private fun hasNoAnimalsStoredButCanLoadMore(chats: List<Chat>): Boolean {
+        return chats.isEmpty() && !state.value!!.noMoreChatsAnymore
     }
 
     private fun listenNotifications() {
@@ -76,6 +95,11 @@ constructor(
             }
 
         _state.value = state.value!!.copy(chats = updatedList)
+    }
+
+    fun onEvent(event: ChatListEvent) {
+        when (event) {
+        }
     }
 
     private fun requestAllChats() {
