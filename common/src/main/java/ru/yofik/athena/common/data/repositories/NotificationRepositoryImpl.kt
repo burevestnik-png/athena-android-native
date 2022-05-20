@@ -20,20 +20,20 @@ constructor(
     private val notificationStream =
         RxNotificationPublisher.listen(RxNotificationEvent.NewNotification::class.java)
 
-    override fun startNotificationChannel() {
+    override fun subscribeOnNotificationWebsocket() {
         val initialMessage = ApiSubscribeOnNotificationsMessage.toJson()
         notificationWebSocket.send(initialMessage)
     }
 
-    override fun subscribeOnDeletedMessagesNotifications(): Observable<DeleteMessageNotification> {
+    override fun listenDeletedMessagesNotifications(): Observable<DeleteMessageNotification> {
         TODO("Not yet implemented")
     }
 
-    override fun subscribeOnUpdatedMessageNotifications(): Observable<UpdateMessageNotification> {
+    override fun listenUpdatedMessageNotifications(): Observable<UpdateMessageNotification> {
         TODO("Not yet implemented")
     }
 
-    override fun subscribeOnNewMessageNotifications(): Observable<NewMessageNotification> {
+    override fun listenNewMessageNotifications(): Observable<NewMessageNotification> {
         return notificationStream
             .filter { it.notification.type == NotificationType.NEW_MESSAGE }
             .map {
@@ -43,9 +43,9 @@ constructor(
             }
     }
 
-    override fun subscribeOnTargetChatNewMessageNotifications(
+    override fun listenTargetChatNewMessageNotifications(
         chatId: Long
     ): Observable<NewMessageNotification> {
-        return subscribeOnNewMessageNotifications().filter { it.message.chatId == chatId }
+        return listenNewMessageNotifications().filter { it.message.chatId == chatId }
     }
 }

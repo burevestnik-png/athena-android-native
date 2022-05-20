@@ -6,13 +6,13 @@ import ru.yofik.athena.common.domain.model.notification.NewMessageNotification
 import ru.yofik.athena.common.domain.model.notification.UpdateMessageNotification
 
 interface NotificationRepository {
-    fun startNotificationChannel()
+    fun subscribeOnNotificationWebsocket()
 
-    fun subscribeOnNewMessageNotifications(): Observable<NewMessageNotification>
-    fun subscribeOnTargetChatNewMessageNotifications(
+    fun listenNewMessageNotifications(): Observable<NewMessageNotification>
+    fun listenTargetChatNewMessageNotifications(
         chatId: Long
     ): Observable<NewMessageNotification>
 
-    fun subscribeOnUpdatedMessageNotifications(): Observable<UpdateMessageNotification>
-    fun subscribeOnDeletedMessagesNotifications(): Observable<DeleteMessageNotification>
+    fun listenUpdatedMessageNotifications(): Observable<UpdateMessageNotification>
+    fun listenDeletedMessagesNotifications(): Observable<DeleteMessageNotification>
 }

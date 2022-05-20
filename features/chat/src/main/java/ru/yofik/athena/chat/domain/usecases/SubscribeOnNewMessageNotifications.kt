@@ -9,6 +9,6 @@ class SubscribeOnNewMessageNotifications @Inject constructor(
     private val notificationRepository: NotificationRepository
 ) {
     operator fun invoke(chatId: Long): Observable<NewMessageNotification> {
-        return notificationRepository.subscribeOnTargetChatNewMessageNotifications(chatId)
+        return notificationRepository.listenTargetChatNewMessageNotifications(chatId)
     }
 }

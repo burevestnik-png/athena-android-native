@@ -11,6 +11,7 @@ import dagger.hilt.components.SingletonComponent
 import ru.yofik.athena.common.data.cache.AthenaDatabase
 import ru.yofik.athena.common.data.cache.Cache
 import ru.yofik.athena.common.data.cache.RoomCache
+import ru.yofik.athena.common.data.cache.dao.ChatsDao
 import ru.yofik.athena.common.data.cache.dao.UsersDao
 import javax.inject.Singleton
 
@@ -32,6 +33,11 @@ abstract class CacheModule {
         @Provides
         fun provideUsersDao(athenaDatabase: AthenaDatabase): UsersDao {
             return athenaDatabase.usersDao()
+        }
+
+        @Provides
+        fun provideChatsDao(athenaDatabase: AthenaDatabase): ChatsDao {
+            return athenaDatabase.chatsDao()
         }
     }
 }

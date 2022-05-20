@@ -1,11 +1,15 @@
 package ru.yofik.athena.common.data.repositories
 
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import retrofit2.HttpException
 import ru.yofik.athena.common.data.api.http.model.chat.ChatApi
 import ru.yofik.athena.common.data.api.http.model.chat.mappers.ApiChatMapper
 import ru.yofik.athena.common.data.api.http.model.chat.requests.CreateChatRequest
 import ru.yofik.athena.common.data.api.http.model.common.requests.RequestWithPagination
+import ru.yofik.athena.common.data.cache.Cache
+import ru.yofik.athena.common.data.cache.model.CachedChat
 import ru.yofik.athena.common.data.preferences.Preferences
 import ru.yofik.athena.common.domain.model.chat.Chat
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
@@ -19,7 +23,8 @@ class ChatRepositoryImpl
 constructor(
     private val chatApi: ChatApi,
     private val apiChatMapper: ApiChatMapper,
-    private val preferences: Preferences
+    private val preferences: Preferences,
+    private val cache: Cache
 ) : ChatRepository {
 
     ///////////////////////////////////////////////////////////////////////////
@@ -67,6 +72,16 @@ constructor(
         } catch (exception: HttpException) {
             // TODO add exception parse
             throw NetworkException(exception.message ?: "Code ${exception.code()}")
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // CACHE
+    ///////////////////////////////////////////////////////////////////////////
+
+    override fun getAllChats(): Flow<List<Chat>> {
+        return cache.getChats().map { chats ->
+            chats.map { CachedChat.toDomain(it.chat, it.users, it.lastMessage) }
         }
     }
 }

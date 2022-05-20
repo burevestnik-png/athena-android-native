@@ -12,8 +12,10 @@ import javax.inject.Inject
 import kotlinx.coroutines.*
 import ru.yofik.athena.chatlist.domain.model.mappers.UiChatMapper
 import ru.yofik.athena.chatlist.domain.model.mappers.UiMessageMapper
-import ru.yofik.athena.chatlist.domain.usecases.GetAllChats
-import ru.yofik.athena.chatlist.domain.usecases.SubscribeOnNewMessageNotifications
+import ru.yofik.athena.chatlist.domain.usecases.GetChats
+import ru.yofik.athena.chatlist.domain.usecases.ListenNewMessageNotifications
+import ru.yofik.athena.chatlist.domain.usecases.RequestNextChatsPage
+import ru.yofik.athena.chatlist.domain.usecases.SubscribeOnNotifications
 import ru.yofik.athena.common.domain.model.notification.NewMessageNotification
 import timber.log.Timber
 
@@ -21,8 +23,10 @@ import timber.log.Timber
 class ChatListFragmentViewModel
 @Inject
 constructor(
-    private val getAllChats: GetAllChats,
-    private val subscribeOnNotifications: SubscribeOnNewMessageNotifications,
+    private val getChats: GetChats,
+    private val listenNewMessageNotifications: ListenNewMessageNotifications,
+    private val subscribeOnNotifications: SubscribeOnNotifications,
+    private val requestNextChatsPage: RequestNextChatsPage,
     private val uiChatMapper: UiChatMapper,
     private val uiMessageMapper: UiMessageMapper
 ) : ViewModel() {
@@ -40,7 +44,9 @@ constructor(
 
     init {
         _state.value = ChatListViewState()
-        subscribeOnNotificationChannel()
+
+        subscribeOnNotifications()
+        listenNotifications()
     }
 
     fun onEvent(event: ChatListEvent) {
@@ -49,8 +55,8 @@ constructor(
         }
     }
 
-    private fun subscribeOnNotificationChannel() {
-        subscribeOnNotifications()
+    private fun listenNotifications() {
+        listenNewMessageNotifications()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { handleNewNotification(it) }
             .addTo(compositeDisposable)
