@@ -10,6 +10,7 @@ import ru.yofik.athena.common.data.api.http.model.chat.requests.CreateChatReques
 import ru.yofik.athena.common.data.api.http.model.common.requests.RequestWithPagination
 import ru.yofik.athena.common.data.cache.Cache
 import ru.yofik.athena.common.data.cache.model.CachedChat
+import ru.yofik.athena.common.data.cache.model.CachedChatAggregate
 import ru.yofik.athena.common.data.preferences.Preferences
 import ru.yofik.athena.common.domain.model.chat.Chat
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
@@ -83,5 +84,9 @@ constructor(
         return cache.getChats().map { chats ->
             chats.map { CachedChat.toDomain(it.chat, it.users, it.lastMessage) }
         }
+    }
+
+    override suspend fun cacheChats(chats: List<Chat>) {
+        cache.insertChats(chats.map { CachedChatAggregate.fromDomain(it) })
     }
 }

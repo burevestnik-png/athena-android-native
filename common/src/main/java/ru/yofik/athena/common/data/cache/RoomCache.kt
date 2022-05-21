@@ -10,7 +10,7 @@ import ru.yofik.athena.common.data.cache.model.CachedUser
 class RoomCache
 @Inject
 constructor(private val usersDao: UsersDao, private val chatsDao: ChatsDao) : Cache {
-    override suspend fun storeUsers(users: List<CachedUser>) {
+    override suspend fun insertUsers(users: List<CachedUser>) {
         usersDao.insert(users)
     }
 

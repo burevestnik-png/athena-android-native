@@ -51,6 +51,6 @@ constructor(
     }
 
     override suspend fun cacheUsers(users: List<User>) {
-        cache.storeUsers(users.map(CachedUser::fromDomain))
+        cache.insertUsers(users.map(CachedUser::fromDomain))
     }
 }
