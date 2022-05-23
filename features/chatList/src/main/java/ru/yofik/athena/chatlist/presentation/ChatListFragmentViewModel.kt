@@ -59,11 +59,20 @@ constructor(
     }
 
     private fun subscribeOnChatsUpdates() {
-        viewModelScope.launch { getChats().onEach {
-            if (hasNoAnimalsStoredButCanLoadMore(it)) {
+        viewModelScope.launch {
+            getChats()
+                .onEach {
+                    if (hasNoAnimalsStoredButCanLoadMore(it)) {
+                        withContext(Dispatchers.IO) { loadNextChatPage() }
+                    }
+                }
+                .catch { Timber.d("subscribeOnChatsUpdates: exception") }
+                .collect { onNewChatList(it) }
+        }
+    }
 
-            }
-        }.catch {}.collect {} }
+    private fun onNewChatList(chats: List<Chat>) {
+        _state.value = state.value!!.copy(chats = chats.map(uiChatMapper::mapToView))
     }
 
     private fun loadNextChatPage() {
@@ -98,8 +107,7 @@ constructor(
     }
 
     fun onEvent(event: ChatListEvent) {
-        when (event) {
-        }
+        when (event) {}
     }
 
     private fun requestAllChats() {
@@ -107,15 +115,8 @@ constructor(
 
         job =
             CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-                val chats = getAllChats()
+//                val chats = getAllChats()
 
-                withContext(Dispatchers.Main) {
-                    _state.value =
-                        state.value!!.copy(
-                            loading = false,
-                            chats = chats.map(uiChatMapper::mapToView)
-                        )
-                }
             }
     }
 

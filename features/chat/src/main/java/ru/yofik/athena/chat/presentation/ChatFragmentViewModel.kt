@@ -70,17 +70,17 @@ constructor(
         _state.value = state.value!!.copy(loading = true)
         job =
             CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-                val chat = getChat(id)
-                Timber.d("handleGetChat: got chat from api $chat")
+//                val chat = getChat(id)
+//                Timber.d("handleGetChat: got chat from api $chat")
 
                 withContext(Dispatchers.Main) {
-                    uiChat.value = uiChatMapper.mapToView(Pair(chat, getUserId()))
+//                    uiChat.value = uiChatMapper.mapToView(Pair(chat, getUserId()))
                     _state.value =
                         state.value!!.copy(
                             loading = false,
-                            messages = chat.messages.map {
-                                uiMessageMapper.mapToView(Pair(it, uiChat.value!!))
-                            }
+//                            messages = chat.messages.map {
+//                                uiMessageMapper.mapToView(Pair(it, uiChat.value!!))
+//                            }
                         )
 
                     _effects.value = ChatFragmentViewEffect.SetChatName(uiChat.value!!.name)

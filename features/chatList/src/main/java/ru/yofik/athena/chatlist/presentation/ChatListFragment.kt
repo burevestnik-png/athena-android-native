@@ -110,6 +110,6 @@ class ChatListFragment : Fragment() {
     }
 
     private fun requestGetAllChats() {
-        viewModel.onEvent(ChatListEvent.GetAllChats)
+//        viewModel.onEvent(ChatListEvent.GetAllChats)
     }
 }

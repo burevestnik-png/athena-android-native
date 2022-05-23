@@ -9,7 +9,7 @@ class GetChat
 constructor(
     private val chatRepository: ChatRepository,
 ) {
-    suspend operator fun invoke(id: Long): ChatWithDetails {
-        return chatRepository.requestGetChat(id)
-    }
+//    suspend operator fun invoke(id: Long): ChatWithDetails {
+//        return chatRepository.requestGetChat(id)
+//    }
 }

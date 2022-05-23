@@ -90,6 +90,7 @@
 - [ ] Add a list of my name convention in fragment and activity
 - [ ] add chat to chat list module
 - [ ] added response error parsing
+- Вопрос, где лучше инитить - в фрагменте или в вм
 
 ---
 
