@@ -1,11 +1,13 @@
 package ru.yofik.athena.common.domain.repositories
 
+import kotlinx.coroutines.flow.Flow
+import ru.yofik.athena.common.domain.model.pagination.PaginatedUsers
 import ru.yofik.athena.common.domain.model.user.User
 
 interface UserRepository {
-    suspend fun requestGetAllUsers(): List<User>
+    suspend fun requestGetPaginatedUsers(pageNumber: Int, pageSize: Int): PaginatedUsers
     suspend fun requestGetDefiniteUser(id: Long): User
 
-    suspend fun getCachedUsers(): List<User>
+    fun getCachedUsers(): Flow<List<User>>
     suspend fun cacheUsers(users: List<User>)
 }

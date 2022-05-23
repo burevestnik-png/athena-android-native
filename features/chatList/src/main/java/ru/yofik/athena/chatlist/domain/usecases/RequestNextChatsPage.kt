@@ -16,7 +16,7 @@ constructor(
     ): Pagination {
         val (chats, pagination) = chatRepository.requestGetPaginatedChats(pageNumber, pageSize)
 
-        if (pagination.canLoadMore) {
+        if (!pagination.canLoadMore) {
             throw NoMoreItemsExceptions("No more chats available")
         }
 

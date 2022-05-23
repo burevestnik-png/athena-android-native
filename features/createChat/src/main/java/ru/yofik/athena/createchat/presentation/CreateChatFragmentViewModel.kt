@@ -11,17 +11,17 @@ import ru.yofik.athena.common.presentation.model.FailureEvent
 import ru.yofik.athena.createchat.domain.model.UiUserMapper
 import ru.yofik.athena.createchat.domain.model.exceptions.ChatAlreadyCreatedException
 import ru.yofik.athena.createchat.domain.usecases.CreateChat
-import ru.yofik.athena.createchat.domain.usecases.GetAllUsers
-import ru.yofik.athena.createchat.domain.usecases.RequestGetAllUsers
+import ru.yofik.athena.createchat.domain.usecases.GetUsers
+import ru.yofik.athena.createchat.domain.usecases.RequestNextUsersPage
 import timber.log.Timber
 
 @HiltViewModel
 class CreateChatFragmentViewModel
 @Inject
 constructor(
-    private val getAllUsers: GetAllUsers,
+    private val getUsers: GetUsers,
     private val createChat: CreateChat,
-    private val requestGetAllUsers: RequestGetAllUsers,
+    private val requestNextUsersPage: RequestNextUsersPage,
     private val uiUserMapper: UiUserMapper
 ) : ViewModel() {
     private var _state = MutableLiveData<CreateChatViewState>()
@@ -68,7 +68,7 @@ constructor(
         _state.value = state.value!!.copy(loading = true)
         job =
             CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-                val users = requestGetAllUsers()
+                val users = requestNextUsersPage()
 
                 withContext(Dispatchers.Main) {
                     _state.value =
@@ -84,11 +84,11 @@ constructor(
         _state.value = state.value!!.copy(loading = true)
         job =
             CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-                var users = getAllUsers()
+                var users = getUsers()
                 Timber.d("requestGetAllUsers: ${users.joinToString("\n")}")
 
                 if (users.isEmpty()) {
-                    users = requestGetAllUsers()
+                    users = requestNextUsersPage()
                 }
 
                 withContext(Dispatchers.Main) {

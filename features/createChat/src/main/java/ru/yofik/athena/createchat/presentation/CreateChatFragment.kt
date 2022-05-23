@@ -10,8 +10,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import ru.yofik.athena.common.presentation.handleFailures
-import ru.yofik.athena.common.utils.InternalDeepLink
+import ru.yofik.athena.common.presentation.components.handleFailures
+import ru.yofik.athena.common.utils.Routes
 import ru.yofik.athena.createchat.databinding.FragmentCreateChatBinding
 import timber.log.Timber
 
@@ -72,7 +72,7 @@ class CreateChatFragment : Fragment() {
     }
 
     private fun navigateToChatListScreen() {
-        val deepLink = InternalDeepLink.CHAT_LIST.toUri()
+        val deepLink = Routes.CHAT_LIST.toUri()
         findNavController().navigate(deepLink)
     }
 

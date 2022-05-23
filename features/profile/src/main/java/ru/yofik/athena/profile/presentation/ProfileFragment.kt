@@ -13,7 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.common.domain.model.user.User
-import ru.yofik.athena.common.utils.InternalDeepLink
+import ru.yofik.athena.common.utils.Routes
 import ru.yofik.athena.profile.R
 import ru.yofik.athena.profile.databinding.FragmentSettingsBinding
 
@@ -112,7 +112,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun navigateToLoginScreen() {
-        val deepLink = InternalDeepLink.LOGIN.toUri()
+        val deepLink = Routes.LOGIN.toUri()
         findNavController().navigate(deepLink)
     }
 }

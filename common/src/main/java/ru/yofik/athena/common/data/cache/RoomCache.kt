@@ -10,12 +10,12 @@ import ru.yofik.athena.common.data.cache.model.CachedUser
 class RoomCache
 @Inject
 constructor(private val usersDao: UsersDao, private val chatsDao: ChatsDao) : Cache {
-    override suspend fun insertUsers(users: List<CachedUser>) {
-        usersDao.insert(users)
+    override fun getUsers(): Flow<List<CachedUser>> {
+        return usersDao.getAll()
     }
 
-    override suspend fun getUsers(): List<CachedUser> {
-        return usersDao.getAll()
+    override suspend fun insertUsers(users: List<CachedUser>) {
+        usersDao.insert(users)
     }
 
     override fun getChats(): Flow<List<CachedChatAggregate>> {

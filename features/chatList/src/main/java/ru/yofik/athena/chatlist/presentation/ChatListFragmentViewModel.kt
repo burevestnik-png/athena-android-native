@@ -10,10 +10,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import ru.yofik.athena.chatlist.domain.model.mappers.UiChatMapper
 import ru.yofik.athena.chatlist.domain.model.mappers.UiMessageMapper
 import ru.yofik.athena.chatlist.domain.usecases.GetChats
@@ -30,14 +27,13 @@ class ChatListFragmentViewModel
 constructor(
     private val getChats: GetChats,
     private val listenNewMessageNotifications: ListenNewMessageNotifications,
-    private val subscribeOnNotifications: SubscribeOnNotifications,
     private val requestNextChatsPage: RequestNextChatsPage,
     private val uiChatMapper: UiChatMapper,
-    private val uiMessageMapper: UiMessageMapper
+    private val uiMessageMapper: UiMessageMapper,
+    subscribeOnNotifications: SubscribeOnNotifications
 ) : ViewModel() {
-    private val _state = MutableLiveData<ChatListViewState>()
-    val state: LiveData<ChatListViewState>
-        get() = _state
+    private val _state = MutableStateFlow(ChatListViewState())
+    val state: StateFlow<ChatListViewState> = _state
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -50,11 +46,8 @@ constructor(
     private var currentPage = 0
 
     init {
-        _state.value = ChatListViewState()
-
         subscribeOnNotifications()
         listenNotifications()
-
         subscribeOnChatsUpdates()
     }
 
@@ -80,27 +73,27 @@ constructor(
     private fun onNewChatList(chats: List<Chat>) {
         val chatFromServer = chats.map(uiChatMapper::mapToView)
 
-        val currentChats = state.value!!.chats
+        val currentChats = state.value.chats
         val newChats = chatFromServer.subtract(currentChats.toSet())
         val updatedList = currentChats + newChats
 
-        _state.value = state.value!!.copy(chats = updatedList)
+        _state.value = state.value.copy(chats = updatedList)
     }
 
     private fun loadNextChatPage() {
-        _state.value = state.value!!.copy(loading = true)
+        _state.value = state.value.copy(loading = true)
 
         viewModelScope.launch(exceptionHandler) {
             val pagination = withContext(Dispatchers.IO) { requestNextChatsPage(++currentPage) }
 
             isLastPage = !pagination.canLoadMore
             currentPage = pagination.currentPage
-            _state.value = state.value!!.copy(loading = false)
+            _state.value = state.value.copy(loading = false)
         }
     }
 
     private fun hasNoChatsStoredButCanLoadMore(chats: List<Chat>): Boolean {
-        return chats.isEmpty() && !state.value!!.noMoreChatsAnymore
+        return chats.isEmpty() && !state.value.noMoreChatsAnymore
     }
 
     private fun listenNotifications() {
@@ -115,7 +108,7 @@ constructor(
 
         // todo update cache
         val updatedList =
-            state.value!!.chats.map {
+            state.value.chats.map {
                 if (it.id == notification.message.chatId) {
                     it.copy(message = uiMessageMapper.mapToView(notification.message))
                 } else {
@@ -123,15 +116,17 @@ constructor(
                 }
             }
 
-        _state.value = state.value!!.copy(chats = updatedList)
+        _state.value = state.value.copy(chats = updatedList)
     }
 
     fun onEvent(event: ChatListEvent) {
-        when (event) {}
+        when (event) {
+            is ChatListEvent.ForceGetAllChats -> handleForceGetAllChats()
+        }
     }
 
-    private fun setLoadingTrue() {
-        _state.value = state.value!!.copy(loading = true)
+    private fun handleForceGetAllChats() {
+
     }
 
     private fun onFailure(throwable: Throwable) {}

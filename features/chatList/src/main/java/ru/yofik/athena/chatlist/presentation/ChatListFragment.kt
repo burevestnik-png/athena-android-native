@@ -2,17 +2,21 @@ package ru.yofik.athena.chatlist.presentation
 
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import ru.yofik.athena.chatList.R
 import ru.yofik.athena.chatList.databinding.FragmentChatListBinding
 import ru.yofik.athena.common.presentation.components.BaseFragment
-import ru.yofik.athena.common.presentation.handleFailures
-import ru.yofik.athena.common.utils.InternalDeepLink
+import ru.yofik.athena.common.presentation.components.handleFailures
+import ru.yofik.athena.common.presentation.components.launchStateFlow
+import ru.yofik.athena.common.presentation.components.navigate
+import ru.yofik.athena.common.utils.Routes
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -26,29 +30,42 @@ class ChatListFragment :
             (activity as AppCompatActivity).supportActionBar
                 ?: throw RuntimeException("View was initialized wrong")
 
+    private lateinit var adapter: ChatAdapter
+
+    ///////////////////////////////////////////////////////////////////////////
+    // SETUPING UI
+    ///////////////////////////////////////////////////////////////////////////
+
     override fun setupUI() {
         setupActionBar()
-        listenToAddButton()
         setupSwipeRefreshLayout()
 
-        val adapter = createAdapter()
+        listenToAddButton()
+
+        adapter = createAdapter()
         setupRecyclerView(adapter)
-        observeViewStateUpdates(adapter)
     }
 
-    private fun observeViewStateUpdates(adapter: ChatAdapter) {
-        viewModel.state.observe(viewLifecycleOwner) { updateScreenState(it, adapter) }
+    private fun setupActionBar() {
+        // Adding Toolbar & removing showing app name in title
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar.root)
+        actionBar.title = ""
     }
 
-    private fun updateScreenState(state: ChatListViewState, adapter: ChatAdapter) {
-        Timber.d("updateScreenState: $state")
-        binding.swipeLayout.isRefreshing = state.loading
-        adapter.submitList(state.chats)
-        handleFailures(state.failure)
+    private fun listenToAddButton() {
+        binding.toolbar.addButton.setOnClickListener { navigate(Routes.CREATE_CHAT) }
+    }
+
+    private fun setupSwipeRefreshLayout() {
+        binding.swipeLayout.setOnRefreshListener { requestForceGetAllChats() }
+    }
+
+    private fun requestForceGetAllChats() {
+        viewModel.onEvent(ChatListEvent.ForceGetAllChats)
     }
 
     private fun createAdapter(): ChatAdapter {
-        return ChatAdapter().apply { setChatClickListener { navigateToChatScreen(it) } }
+        return ChatAdapter().apply { setChatClickListener { id -> navigate(Routes.CHAT(id)) } }
     }
 
     private fun setupRecyclerView(adapter: ChatAdapter) {
@@ -60,32 +77,20 @@ class ChatListFragment :
         }
     }
 
-    private fun setupSwipeRefreshLayout() {
-        binding.swipeLayout.setOnRefreshListener { requestGetAllChats() }
+    ///////////////////////////////////////////////////////////////////////////
+    // STATE OBSERVING
+    ///////////////////////////////////////////////////////////////////////////
+
+    override fun observeViewState() {
+        launchStateFlow {
+            viewModel.state.collect { updateScreenState(it) }
+        }
     }
 
-    private fun navigateToChatScreen(id: Long) {
-        val deepLink = InternalDeepLink.createChatDeepLink(id)
-        Timber.d("navigateToChatScreen: $deepLink")
-        findNavController().navigate(deepLink)
-    }
-
-    private fun listenToAddButton() {
-        binding.toolbar.addButton.setOnClickListener { navigateToCreateChatScreen() }
-    }
-
-    private fun setupActionBar() {
-        // Adding Toolbar & removing showing app name in title
-        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar.root)
-        actionBar.title = ""
-    }
-
-    private fun navigateToCreateChatScreen() {
-        val deepLink = InternalDeepLink.CREATE_CHAT.toUri()
-        findNavController().navigate(deepLink)
-    }
-
-    private fun requestGetAllChats() {
-        //        viewModel.onEvent(ChatListEvent.GetAllChats)
+    private fun updateScreenState(state: ChatListViewState) {
+        Timber.d("updateScreenState: $state")
+        binding.swipeLayout.isRefreshing = state.loading
+        adapter.submitList(state.chats)
+        handleFailures(state.failure)
     }
 }

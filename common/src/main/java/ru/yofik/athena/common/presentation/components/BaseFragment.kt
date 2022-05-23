@@ -16,10 +16,16 @@ abstract class BaseFragment<VM : ViewModel, Binding : ViewBinding>(@LayoutRes la
         super.onViewCreated(view, savedInstanceState)
 
         setupUI()
+        observeViewState()
+        observeViewEffects()
         processInitialRequests()
     }
 
     protected open fun processInitialRequests() {}
 
     protected open fun setupUI() {}
+
+    protected open fun observeViewState() {}
+
+    protected open fun observeViewEffects() {}
 }
