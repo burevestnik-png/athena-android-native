@@ -24,7 +24,7 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar_wrapper"
         app:layout_constraintVertical_bias="0.16">
 
-        <ru.yofik.athena.common.presentation.views.AvatarView
+        <ru.yofik.athena.common.presentation.customViews.AvatarView
             android:id="@+id/avatar"
             android:layout_width="100dp"
             android:layout_height="100dp"

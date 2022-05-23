@@ -17,7 +17,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class CacheModule {
+internal abstract class CacheModule {
 
     @Binds abstract fun bindCache(cache: RoomCache): Cache
 

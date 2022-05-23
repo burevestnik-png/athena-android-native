@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:padding="8dp">
 
-    <ru.yofik.athena.common.presentation.views.AvatarView
+    <ru.yofik.athena.common.presentation.customViews.AvatarView
         android:id="@+id/logo"
         android:layout_width="55dp"
         android:layout_height="55dp"

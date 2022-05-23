@@ -10,7 +10,7 @@ import ru.yofik.athena.common.data.api.ws.model.mappers.MessageNotificationMappe
 import timber.log.Timber
 import javax.inject.Inject
 
-class NotificationListener
+internal class NotificationListener
 @Inject
 constructor(private val messageNotificationMapper: MessageNotificationMapper) :
     WebSocketListener() {

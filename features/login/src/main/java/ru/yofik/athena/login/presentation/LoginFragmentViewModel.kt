@@ -9,7 +9,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.*
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
 import ru.yofik.athena.common.domain.model.exceptions.NetworkUnavailableException
-import ru.yofik.athena.common.presentation.FailureEvent
+import ru.yofik.athena.common.presentation.model.FailureEvent
 import ru.yofik.athena.login.R
 import ru.yofik.athena.login.domain.usecases.RequestUserActivation
 import ru.yofik.athena.login.domain.usecases.RequestUserInfo

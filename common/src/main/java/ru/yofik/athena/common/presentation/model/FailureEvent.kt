@@ -1,4 +1,4 @@
-package ru.yofik.athena.common.presentation
+package ru.yofik.athena.common.presentation.model
 
 /**
  * Wrapper class for presentation layer. Due to one way flow of data in presentation and preventing

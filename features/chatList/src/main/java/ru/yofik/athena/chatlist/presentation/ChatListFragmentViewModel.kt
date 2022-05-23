@@ -12,6 +12,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.onEach
 import ru.yofik.athena.chatlist.domain.model.mappers.UiChatMapper
 import ru.yofik.athena.chatlist.domain.model.mappers.UiMessageMapper
@@ -40,7 +41,6 @@ constructor(
 
     private val compositeDisposable = CompositeDisposable()
 
-    private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Timber.d("exceptionHandler: ${throwable.message}")
         viewModelScope.launch { onFailure(throwable) }
@@ -62,24 +62,44 @@ constructor(
         viewModelScope.launch {
             getChats()
                 .onEach {
-                    if (hasNoAnimalsStoredButCanLoadMore(it)) {
-                        withContext(Dispatchers.IO) { loadNextChatPage() }
+                    Timber.d("subscribeOnChatsUpdates: onEach")
+                    if (hasNoChatsStoredButCanLoadMore(it)) {
+                        Timber.d("subscribeOnChatsUpdates: in has no chat")
+                        loadNextChatPage()
                     }
                 }
-                .catch { Timber.d("subscribeOnChatsUpdates: exception") }
+                .filter { it.isNotEmpty() }
+                .catch {
+                    Timber.d("subscribeOnChatsUpdates: exception ${it.message}")
+                    onFailure(it)
+                }
                 .collect { onNewChatList(it) }
         }
     }
 
     private fun onNewChatList(chats: List<Chat>) {
-        _state.value = state.value!!.copy(chats = chats.map(uiChatMapper::mapToView))
+        val chatFromServer = chats.map(uiChatMapper::mapToView)
+
+        val currentChats = state.value!!.chats
+        val newChats = chatFromServer.subtract(currentChats.toSet())
+        val updatedList = currentChats + newChats
+
+        _state.value = state.value!!.copy(chats = updatedList)
     }
 
     private fun loadNextChatPage() {
+        _state.value = state.value!!.copy(loading = true)
 
+        viewModelScope.launch(exceptionHandler) {
+            val pagination = withContext(Dispatchers.IO) { requestNextChatsPage(++currentPage) }
+
+            isLastPage = !pagination.canLoadMore
+            currentPage = pagination.currentPage
+            _state.value = state.value!!.copy(loading = false)
+        }
     }
 
-    private fun hasNoAnimalsStoredButCanLoadMore(chats: List<Chat>): Boolean {
+    private fun hasNoChatsStoredButCanLoadMore(chats: List<Chat>): Boolean {
         return chats.isEmpty() && !state.value!!.noMoreChatsAnymore
     }
 
@@ -110,16 +130,6 @@ constructor(
         when (event) {}
     }
 
-    private fun requestAllChats() {
-        setLoadingTrue()
-
-        job =
-            CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-//                val chats = getAllChats()
-
-            }
-    }
-
     private fun setLoadingTrue() {
         _state.value = state.value!!.copy(loading = true)
     }
@@ -128,7 +138,6 @@ constructor(
 
     override fun onCleared() {
         super.onCleared()
-        job = null
         compositeDisposable.clear()
     }
 }

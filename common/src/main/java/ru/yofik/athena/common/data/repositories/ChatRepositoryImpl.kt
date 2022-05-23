@@ -33,10 +33,8 @@ constructor(
     ///////////////////////////////////////////////////////////////////////////
 
     override suspend fun requestGetPaginatedChats(pageNumber: Int, pageSize: Int): PaginatedChats {
-        val request = RequestWithPagination(pageNumber, pageSize)
-
         try {
-            val response = chatApi.getPaginatedChats(request)
+            val response = chatApi.getPaginatedChats(pageNumber, pageSize)
 
             return PaginatedChats(
                 chats = response.payload.map(apiChatMapper::mapToDomain),

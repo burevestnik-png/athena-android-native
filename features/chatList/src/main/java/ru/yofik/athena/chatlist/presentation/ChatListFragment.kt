@@ -1,56 +1,32 @@
 package ru.yofik.athena.chatlist.presentation
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
+import ru.yofik.athena.chatList.R
 import ru.yofik.athena.chatList.databinding.FragmentChatListBinding
-import ru.yofik.athena.common.presentation.model.handleFailures
+import ru.yofik.athena.common.presentation.components.BaseFragment
+import ru.yofik.athena.common.presentation.handleFailures
 import ru.yofik.athena.common.utils.InternalDeepLink
 import timber.log.Timber
 
 @AndroidEntryPoint
-class ChatListFragment : Fragment() {
-    private var _binding: FragmentChatListBinding? = null
-    private val binding
-        get() = _binding!!
+class ChatListFragment :
+    BaseFragment<ChatListFragmentViewModel, FragmentChatListBinding>(R.layout.fragment_chat_list) {
+    override val binding: FragmentChatListBinding by viewBinding(FragmentChatListBinding::bind)
+    override val viewModel: ChatListFragmentViewModel by viewModels()
 
     private val actionBar: ActionBar
         get() =
             (activity as AppCompatActivity).supportActionBar
                 ?: throw RuntimeException("View was initialized wrong")
 
-    private val viewModel: ChatListFragmentViewModel by viewModels()
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentChatListBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupUI()
-        requestGetAllChats()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    private fun setupUI() {
+    override fun setupUI() {
         setupActionBar()
         listenToAddButton()
         setupSwipeRefreshLayout()
@@ -110,6 +86,6 @@ class ChatListFragment : Fragment() {
     }
 
     private fun requestGetAllChats() {
-//        viewModel.onEvent(ChatListEvent.GetAllChats)
+        //        viewModel.onEvent(ChatListEvent.GetAllChats)
     }
 }

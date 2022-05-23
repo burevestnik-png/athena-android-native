@@ -1,4 +1,4 @@
-package ru.yofik.athena.common.presentation.views
+package ru.yofik.athena.common.presentation.customViews
 
 import android.content.Context
 import android.util.AttributeSet
@@ -61,7 +61,7 @@ private fun extractInitials(name: String): String {
     return name.trim().split(" ").joinToString("") { it.first().uppercase() }
 }
 
-object BackgroundGenerator {
+private object BackgroundGenerator {
     private val colors =
         listOf(
             R.color.cyan,

@@ -1,6 +1,6 @@
 package ru.yofik.athena.createchat.presentation
 
-import ru.yofik.athena.common.presentation.FailureEvent
+import ru.yofik.athena.common.presentation.model.FailureEvent
 import ru.yofik.athena.createchat.domain.model.UiUser
 
 data class CreateChatViewState(

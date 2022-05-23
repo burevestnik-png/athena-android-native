@@ -10,7 +10,7 @@ import ru.yofik.athena.common.data.api.ws.model.WsMessageWithArgument
 import ru.yofik.athena.common.domain.model.notification.Notification
 import javax.inject.Inject
 
-class MessageNotificationMapper
+internal class MessageNotificationMapper
 @Inject
 constructor(
     private val apiDeleteMessageMapper: ApiDeleteMessageMapper,

@@ -14,7 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.chat.databinding.FragmentChatBinding
-import ru.yofik.athena.common.presentation.model.handleFailures
+import ru.yofik.athena.common.presentation.handleFailures
 import timber.log.Timber
 
 private const val ARG_ID = "id"

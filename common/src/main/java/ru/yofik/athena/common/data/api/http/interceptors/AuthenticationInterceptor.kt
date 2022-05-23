@@ -11,7 +11,7 @@ import ru.yofik.athena.common.data.preferences.Preferences
 import timber.log.Timber
 import javax.inject.Inject
 
-class AuthenticationInterceptor @Inject constructor(private val preferences: Preferences) :
+internal class AuthenticationInterceptor @Inject constructor(private val preferences: Preferences) :
     Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val accessToken = preferences.getAccessToken()

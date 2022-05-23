@@ -10,7 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import ru.yofik.athena.common.presentation.model.handleFailures
+import ru.yofik.athena.common.presentation.handleFailures
 import ru.yofik.athena.common.utils.InternalDeepLink
 import ru.yofik.athena.createchat.databinding.FragmentCreateChatBinding
 import timber.log.Timber

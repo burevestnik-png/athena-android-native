@@ -1,9 +1,9 @@
-package ru.yofik.athena.common.presentation.model
+package ru.yofik.athena.common.presentation
 
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import ru.yofik.athena.common.R
-import ru.yofik.athena.common.presentation.FailureEvent
+import ru.yofik.athena.common.presentation.model.FailureEvent
 
 fun Fragment.handleFailures(event: FailureEvent?) {
     val unhandledFailure = event?.getFailureOrNull() ?: return

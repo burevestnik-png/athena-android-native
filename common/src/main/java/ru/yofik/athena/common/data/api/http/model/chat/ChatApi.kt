@@ -5,12 +5,12 @@ import ru.yofik.athena.common.data.api.ApiHttpConstants
 import ru.yofik.athena.common.data.api.http.model.chat.requests.CreateChatRequest
 import ru.yofik.athena.common.data.api.http.model.chat.responses.CreateChatResponse
 import ru.yofik.athena.common.data.api.http.model.chat.responses.GetPaginatedChatsResponse
-import ru.yofik.athena.common.data.api.http.model.common.requests.RequestWithPagination
 
 interface ChatApi {
     @GET(ApiHttpConstants.CHATS_ENDPOINT)
     suspend fun getPaginatedChats(
-        @Body requestWithPagination: RequestWithPagination
+        @Query("sequentialNumber") sequentialNumber: Int,
+        @Query("size") size: Int
     ): GetPaginatedChatsResponse
 
     @POST(ApiHttpConstants.CHATS_ENDPOINT)

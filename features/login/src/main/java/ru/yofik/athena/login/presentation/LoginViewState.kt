@@ -1,7 +1,7 @@
 package ru.yofik.athena.login.presentation
 
 import androidx.annotation.StringRes
-import ru.yofik.athena.common.presentation.FailureEvent
+import ru.yofik.athena.common.presentation.model.FailureEvent
 import ru.yofik.athena.login.R
 
 data class LoginViewState(

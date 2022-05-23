@@ -4,7 +4,7 @@ import com.squareup.moshi.Moshi
 import ru.yofik.athena.common.data.api.ws.model.CommandType
 import ru.yofik.athena.common.data.api.ws.model.WsMessage
 
-class ApiSubscribeOnNotificationsMessage {
+internal class ApiSubscribeOnNotificationsMessage {
     companion object {
         private val adapter = Moshi.Builder().build().adapter(WsMessage::class.java)
 

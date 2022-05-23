@@ -4,7 +4,7 @@ import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 
 // todo remade injectable
-object RxNotificationPublisher {
+internal object RxNotificationPublisher {
     private val publisher = PublishSubject.create<RxNotificationEvent>()
 
     fun publish(event: RxNotificationEvent) {
