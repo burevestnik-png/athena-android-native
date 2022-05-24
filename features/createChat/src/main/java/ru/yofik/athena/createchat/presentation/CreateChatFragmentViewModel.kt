@@ -28,7 +28,7 @@ constructor(
     private val createChat: CreateChat,
     private val requestNextUsersPage: RequestNextUsersPage,
     private val uiUserMapper: UiUserMapper
-) : ViewModel() {
+) : BaseViewModel() {
 
     companion object {
         const val UI_PAGE_SIZE = Pagination.DEFAULT_PAGE_SIZE
