@@ -42,7 +42,7 @@ constructor(
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Timber.d("exceptionHandler: ${throwable.message}")
-        viewModelScope.launch { onFailure(throwable) }
+        onFailure(throwable)
     }
 
     var isLastPage = false
@@ -59,9 +59,7 @@ constructor(
             getUsers()
                 .distinctUntilChanged()
                 .onEach {
-                    Timber.d("subscribeOnUsersUpdates: onEach")
                     if (hasNoUsersStoredButCanLoadMore(it)) {
-                        Timber.d("subscribeOnChatsUpdates: in has no users")
                         loadNextUserPage()
                     } else {
                         val amount = it.size
@@ -69,13 +67,8 @@ constructor(
                     }
                 }
                 .filter { it.isNotEmpty() }
-                .catch {
-                    Timber.d("subscribeOnChatsUpdates: exception ${it.message}")
-                    onFailure(it)
-                }
-                .collect {
-                    Timber.d("subscribeOnUsersUpdates: collect")
-                    onNewUsersList(it) }
+                .catch { onFailure(it) }
+                .collect { onNewUsersList(it) }
         }
     }
 
@@ -83,21 +76,7 @@ constructor(
         return users.isEmpty() && !state.value.noMoreUsersAnymore
     }
 
-    private fun loadNextUserPage() {
-        _state.value = state.value.copy(loading = true)
 
-        viewModelScope.launch(exceptionHandler) {
-            Timber.d("currentPage: $currentPage")
-            val pagination = withContext(Dispatchers.IO) { requestNextUsersPage(currentPage) }
-            Timber.d("loadNextUserPage: $pagination")
-
-            isLastPage = !pagination.canLoadMore
-            Timber.d("loadNextUserPage: $isLastPage")
-            currentPage = pagination.currentPage
-            Timber.d("loadNextUserPage: $currentPage")
-            _state.value = state.value.copy(loading = false, noMoreUsersAnymore = isLastPage)
-        }
-    }
 
     private fun onNewUsersList(users: List<User>) {
         val userFromServer = users.map(uiUserMapper::mapToView)
@@ -113,6 +92,7 @@ constructor(
         when (event) {
             is CreateChatEvent.CreateChat -> handleCreateChat(event.id, event.name)
             is CreateChatEvent.RequestMoreUsers -> loadNextUserPage()
+            is CreateChatEvent.ForceRequestAllUsers ->
         }
     }
 
@@ -129,42 +109,19 @@ constructor(
         //            }
     }
 
-    // todo think how refactor
-    private fun handleRequestGetAllUsers() {
-        //        _state.value = state.value!!.copy(loading = true)
-        //        job =
-        //            CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-        //                val users = requestNextUsersPage()
-        //
-        //                withContext(Dispatchers.Main) {
-        //                    _state.value =
-        //                        state.value!!.copy(
-        //                            loading = false,
-        //                            users = users.map(uiUserMapper::mapToView)
-        //                        )
-        //                }
-        //            }
+    private fun loadNextUserPage() {
+        _state.value = state.value.copy(loading = true)
+
+        viewModelScope.launch(exceptionHandler) {
+            val pagination = withContext(Dispatchers.IO) { requestNextUsersPage(currentPage) }
+
+            currentPage = pagination.currentPage
+            _state.value = state.value.copy(loading = false)
+        }
     }
 
-    private fun handleGetAllUsers() {
-        //        _state.value = state.value!!.copy(loading = true)
-        //        job =
-        //            CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-        //                var users = getUsers()
-        //                Timber.d("requestGetAllUsers: ${users.joinToString("\n")}")
-        //
-        //                if (users.isEmpty()) {
-        //                    users = requestNextUsersPage()
-        //                }
-        //
-        //                withContext(Dispatchers.Main) {
-        //                    _state.value =
-        //                        state.value!!.copy(
-        //                            loading = false,
-        //                            users = users.map(uiUserMapper::mapToView)
-        //                        )
-        //                }
-        //            }
+    private fun forceRequestAllUsers() {
+        
     }
 
     private fun onFailure(throwable: Throwable) {

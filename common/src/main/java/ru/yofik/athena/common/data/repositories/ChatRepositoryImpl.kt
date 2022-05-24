@@ -78,7 +78,7 @@ constructor(
     // CACHE
     ///////////////////////////////////////////////////////////////////////////
 
-    override fun getAllChats(): Flow<List<Chat>> {
+    override fun getCachedChats(): Flow<List<Chat>> {
         return cache.getChats().map { chats ->
             chats.map { CachedChat.toDomain(it.chat, it.users, it.lastMessage) }
         }
