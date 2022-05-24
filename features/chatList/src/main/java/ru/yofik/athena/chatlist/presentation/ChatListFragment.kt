@@ -3,18 +3,14 @@ package ru.yofik.athena.chatlist.presentation
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import ru.yofik.athena.chatList.R
 import ru.yofik.athena.chatList.databinding.FragmentChatListBinding
 import ru.yofik.athena.common.presentation.components.BaseFragment
 import ru.yofik.athena.common.presentation.components.handleFailures
-import ru.yofik.athena.common.presentation.components.launchStateFlow
+import ru.yofik.athena.common.presentation.components.launchViewModelsFlow
 import ru.yofik.athena.common.presentation.components.navigate
 import ru.yofik.athena.common.utils.Routes
 import timber.log.Timber
@@ -82,7 +78,7 @@ class ChatListFragment :
     ///////////////////////////////////////////////////////////////////////////
 
     override fun observeViewState() {
-        launchStateFlow {
+        launchViewModelsFlow {
             viewModel.state.collect { updateScreenState(it) }
         }
     }

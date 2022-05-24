@@ -1,12 +1,17 @@
 package ru.yofik.athena.createchat.presentation
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import ru.yofik.athena.common.domain.model.exceptions.NoMoreItemsException
+import ru.yofik.athena.common.domain.model.pagination.Pagination
+import ru.yofik.athena.common.domain.model.user.User
 import ru.yofik.athena.common.presentation.model.FailureEvent
 import ru.yofik.athena.createchat.domain.model.UiUserMapper
 import ru.yofik.athena.createchat.domain.model.exceptions.ChatAlreadyCreatedException
@@ -24,93 +29,158 @@ constructor(
     private val requestNextUsersPage: RequestNextUsersPage,
     private val uiUserMapper: UiUserMapper
 ) : ViewModel() {
-    private var _state = MutableLiveData<CreateChatViewState>()
-    val state: LiveData<CreateChatViewState>
-        get() = _state
 
-    private var _effects = MutableLiveData<CreateChatFragmentViewEffect>()
-    val effects: LiveData<CreateChatFragmentViewEffect>
-        get() = _effects
+    companion object {
+        const val UI_PAGE_SIZE = Pagination.DEFAULT_PAGE_SIZE
+    }
 
-    private var job: Job? = null
+    private var _state = MutableStateFlow(CreateChatViewState())
+    val state: StateFlow<CreateChatViewState> = _state
+
+    private var _effects = MutableSharedFlow<CreateChatFragmentViewEffect>()
+    val effects: SharedFlow<CreateChatFragmentViewEffect> = _effects
+
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Timber.d("exceptionHandler: ${throwable.message}")
         viewModelScope.launch { onFailure(throwable) }
     }
 
+    var isLastPage = false
+        private set
+
+    private var currentPage = 0
+
     init {
-        _state.value = CreateChatViewState()
+        subscribeOnUsersUpdates()
+    }
+
+    private fun subscribeOnUsersUpdates() {
+        viewModelScope.launch {
+            getUsers()
+                .distinctUntilChanged()
+                .onEach {
+                    Timber.d("subscribeOnUsersUpdates: onEach")
+                    if (hasNoUsersStoredButCanLoadMore(it)) {
+                        Timber.d("subscribeOnChatsUpdates: in has no users")
+                        loadNextUserPage()
+                    } else {
+                        val amount = it.size
+                        currentPage = amount / UI_PAGE_SIZE
+                    }
+                }
+                .filter { it.isNotEmpty() }
+                .catch {
+                    Timber.d("subscribeOnChatsUpdates: exception ${it.message}")
+                    onFailure(it)
+                }
+                .collect {
+                    Timber.d("subscribeOnUsersUpdates: collect")
+                    onNewUsersList(it) }
+        }
+    }
+
+    private fun hasNoUsersStoredButCanLoadMore(users: List<User>): Boolean {
+        return users.isEmpty() && !state.value.noMoreUsersAnymore
+    }
+
+    private fun loadNextUserPage() {
+        _state.value = state.value.copy(loading = true)
+
+        viewModelScope.launch(exceptionHandler) {
+            Timber.d("currentPage: $currentPage")
+            val pagination = withContext(Dispatchers.IO) { requestNextUsersPage(currentPage) }
+            Timber.d("loadNextUserPage: $pagination")
+
+            isLastPage = !pagination.canLoadMore
+            Timber.d("loadNextUserPage: $isLastPage")
+            currentPage = pagination.currentPage
+            Timber.d("loadNextUserPage: $currentPage")
+            _state.value = state.value.copy(loading = false, noMoreUsersAnymore = isLastPage)
+        }
+    }
+
+    private fun onNewUsersList(users: List<User>) {
+        val userFromServer = users.map(uiUserMapper::mapToView)
+
+        val currentUsers = state.value.users
+        val newUsers = userFromServer.subtract(currentUsers.toSet())
+        val updatedList = currentUsers + newUsers
+
+        _state.value = state.value.copy(users = updatedList)
     }
 
     fun onEvent(event: CreateChatEvent) {
         when (event) {
-            is CreateChatEvent.GetAllUsers -> handleGetAllUsers()
             is CreateChatEvent.CreateChat -> handleCreateChat(event.id, event.name)
-            is CreateChatEvent.RequestGetAllUsers -> handleRequestGetAllUsers()
+            is CreateChatEvent.RequestMoreUsers -> loadNextUserPage()
         }
     }
 
     private fun handleCreateChat(id: Long, name: String) {
-        _state.value = state.value!!.copy(loading = true)
-        job =
-            CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-                val createdChat = createChat(name, id)
-                Timber.d("handleCreateChat: $createdChat")
-
-                withContext(Dispatchers.Main) {
-                    _effects.value = CreateChatFragmentViewEffect.NavigateToChatListScreen
-                }
-            }
+        _state.value = state.value.copy(loading = true)
+        //        job =
+        //            CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+        //                val createdChat = createChat(name, id)
+        //                Timber.d("handleCreateChat: $createdChat")
+        //
+        //                withContext(Dispatchers.Main) {
+        //                    _effects.value = CreateChatFragmentViewEffect.NavigateToChatListScreen
+        //                }
+        //            }
     }
 
     // todo think how refactor
     private fun handleRequestGetAllUsers() {
-        _state.value = state.value!!.copy(loading = true)
-        job =
-            CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-                val users = requestNextUsersPage()
-
-                withContext(Dispatchers.Main) {
-                    _state.value =
-                        state.value!!.copy(
-                            loading = false,
-                            users = users.map(uiUserMapper::mapToView)
-                        )
-                }
-            }
+        //        _state.value = state.value!!.copy(loading = true)
+        //        job =
+        //            CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+        //                val users = requestNextUsersPage()
+        //
+        //                withContext(Dispatchers.Main) {
+        //                    _state.value =
+        //                        state.value!!.copy(
+        //                            loading = false,
+        //                            users = users.map(uiUserMapper::mapToView)
+        //                        )
+        //                }
+        //            }
     }
 
     private fun handleGetAllUsers() {
-        _state.value = state.value!!.copy(loading = true)
-        job =
-            CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-                var users = getUsers()
-                Timber.d("requestGetAllUsers: ${users.joinToString("\n")}")
-
-                if (users.isEmpty()) {
-                    users = requestNextUsersPage()
-                }
-
-                withContext(Dispatchers.Main) {
-                    _state.value =
-                        state.value!!.copy(
-                            loading = false,
-                            users = users.map(uiUserMapper::mapToView)
-                        )
-                }
-            }
+        //        _state.value = state.value!!.copy(loading = true)
+        //        job =
+        //            CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+        //                var users = getUsers()
+        //                Timber.d("requestGetAllUsers: ${users.joinToString("\n")}")
+        //
+        //                if (users.isEmpty()) {
+        //                    users = requestNextUsersPage()
+        //                }
+        //
+        //                withContext(Dispatchers.Main) {
+        //                    _state.value =
+        //                        state.value!!.copy(
+        //                            loading = false,
+        //                            users = users.map(uiUserMapper::mapToView)
+        //                        )
+        //                }
+        //            }
     }
 
     private fun onFailure(throwable: Throwable) {
         when (throwable) {
-            is ChatAlreadyCreatedException ->
+            is ChatAlreadyCreatedException -> {
+                _state.value = state.value.copy(loading = false, failure = FailureEvent(throwable))
+            }
+            is NoMoreItemsException -> {
+                isLastPage = true
                 _state.value =
-                    state.value!!.copy(loading = false, failure = FailureEvent(throwable))
+                    state.value.copy(
+                        loading = false,
+                        failure = FailureEvent(throwable),
+                        noMoreUsersAnymore = true
+                    )
+            }
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        job = null
     }
 }

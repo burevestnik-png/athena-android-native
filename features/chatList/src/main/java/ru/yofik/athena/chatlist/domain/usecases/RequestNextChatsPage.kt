@@ -1,7 +1,7 @@
 package ru.yofik.athena.chatlist.domain.usecases
 
 import javax.inject.Inject
-import ru.yofik.athena.common.domain.model.exceptions.NoMoreItemsExceptions
+import ru.yofik.athena.common.domain.model.exceptions.NoMoreItemsException
 import ru.yofik.athena.common.domain.model.pagination.Pagination
 import ru.yofik.athena.common.domain.repositories.ChatRepository
 
@@ -17,7 +17,7 @@ constructor(
         val (chats, pagination) = chatRepository.requestGetPaginatedChats(pageNumber, pageSize)
 
         if (!pagination.canLoadMore) {
-            throw NoMoreItemsExceptions("No more chats available")
+            throw NoMoreItemsException("No more chats available")
         }
 
         chatRepository.cacheChats(chats)

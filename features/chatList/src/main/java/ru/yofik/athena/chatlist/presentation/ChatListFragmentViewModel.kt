@@ -1,7 +1,5 @@
 package ru.yofik.athena.chatlist.presentation
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -9,8 +7,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.yofik.athena.chatlist.domain.model.mappers.UiChatMapper
 import ru.yofik.athena.chatlist.domain.model.mappers.UiMessageMapper
 import ru.yofik.athena.chatlist.domain.usecases.GetChats
@@ -30,7 +31,7 @@ constructor(
     private val requestNextChatsPage: RequestNextChatsPage,
     private val uiChatMapper: UiChatMapper,
     private val uiMessageMapper: UiMessageMapper,
-    subscribeOnNotifications: SubscribeOnNotifications
+    private val subscribeOnNotifications: SubscribeOnNotifications
 ) : ViewModel() {
     private val _state = MutableStateFlow(ChatListViewState())
     val state: StateFlow<ChatListViewState> = _state
@@ -38,6 +39,7 @@ constructor(
     private val compositeDisposable = CompositeDisposable()
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        Timber.d(": $throwable")
         Timber.d("exceptionHandler: ${throwable.message}")
         viewModelScope.launch { onFailure(throwable) }
     }
@@ -46,7 +48,6 @@ constructor(
     private var currentPage = 0
 
     init {
-        subscribeOnNotifications()
         listenNotifications()
         subscribeOnChatsUpdates()
     }
@@ -54,6 +55,7 @@ constructor(
     private fun subscribeOnChatsUpdates() {
         viewModelScope.launch {
             getChats()
+                .distinctUntilChanged()
                 .onEach {
                     Timber.d("subscribeOnChatsUpdates: onEach")
                     if (hasNoChatsStoredButCanLoadMore(it)) {
@@ -88,7 +90,7 @@ constructor(
 
             isLastPage = !pagination.canLoadMore
             currentPage = pagination.currentPage
-            _state.value = state.value.copy(loading = false)
+            _state.value = state.value.copy(loading = false, noMoreChatsAnymore = isLastPage)
         }
     }
 
@@ -97,6 +99,7 @@ constructor(
     }
 
     private fun listenNotifications() {
+        subscribeOnNotifications()
         listenNewMessageNotifications()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { handleNewNotification(it) }
@@ -125,9 +128,7 @@ constructor(
         }
     }
 
-    private fun handleForceGetAllChats() {
-
-    }
+    private fun handleForceGetAllChats() {}
 
     private fun onFailure(throwable: Throwable) {}
 

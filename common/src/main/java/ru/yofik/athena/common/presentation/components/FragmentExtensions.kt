@@ -32,7 +32,7 @@ fun Fragment.navigate(path: String) {
     findNavController().navigate(deepLink)
 }
 
-fun Fragment.launchStateFlow(block: suspend () -> Unit) {
+fun Fragment.launchViewModelsFlow(block: suspend () -> Unit) {
     viewLifecycleOwner.lifecycleScope.launch {
         viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             block()

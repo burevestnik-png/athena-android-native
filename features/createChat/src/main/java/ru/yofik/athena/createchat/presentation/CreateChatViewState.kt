@@ -6,5 +6,6 @@ import ru.yofik.athena.createchat.domain.model.UiUser
 data class CreateChatViewState(
     val loading: Boolean = false,
     val failure: FailureEvent? = null,
+    val noMoreUsersAnymore: Boolean = false,
     val users: List<UiUser> = emptyList()
 )

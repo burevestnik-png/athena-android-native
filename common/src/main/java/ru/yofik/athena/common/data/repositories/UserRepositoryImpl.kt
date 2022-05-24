@@ -31,11 +31,11 @@ constructor(
             val response = userApi.getPaginatedUsers(pageNumber, pageSize)
 
             return PaginatedUsers(
-                users = response.payload.map(apiUserMapper::mapToDomain),
+                users = response.payload.users.map(apiUserMapper::mapToDomain),
                 pagination =
                     Pagination(
                         currentPage = pageNumber + 1,
-                        currentAmountOfItems = response.payload.size
+                        currentAmountOfItems = response.payload.users.size
                     )
             )
         } catch (exception: HttpException) {

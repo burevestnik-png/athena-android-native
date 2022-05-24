@@ -7,8 +7,13 @@ import ru.yofik.athena.common.data.api.http.model.common.responses.ResponseStatu
 import ru.yofik.athena.common.data.api.http.model.common.apiEntity.ApiUser
 
 @JsonClass(generateAdapter = true)
-class GetAllUsersResponse(
-    @field:Json(name = "payload") val payload: List<ApiUser>,
+data class GetPaginatedUsersResponsePayload(
+    @field:Json(name = "content") val users: List<ApiUser>
+)
+
+@JsonClass(generateAdapter = true)
+class GetPaginatedUsersResponse(
+    @field:Json(name = "payload") val payload: GetPaginatedUsersResponsePayload,
     code: String,
     status: ResponseStatus
 ) : Response(code, status)

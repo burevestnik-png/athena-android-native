@@ -1,7 +1,7 @@
 package ru.yofik.athena.createchat.domain.usecases
 
-import ru.yofik.athena.common.domain.model.exceptions.NoMoreItemsExceptions
 import javax.inject.Inject
+import ru.yofik.athena.common.domain.model.exceptions.NoMoreItemsException
 import ru.yofik.athena.common.domain.model.pagination.Pagination
 import ru.yofik.athena.common.domain.repositories.CurrentUserRepository
 import ru.yofik.athena.common.domain.repositories.UserRepository
@@ -19,11 +19,11 @@ constructor(
         val currentUserId = currentUserRepository.getCache().id
         val (users, pagination) = userRepository.requestGetPaginatedUsers(pageNumber, pageSize)
 
-        if (!pagination.canLoadMore) {
-            throw NoMoreItemsExceptions("No more chats available")
-        }
+        userRepository.cacheUsers(users.filter { it.id != currentUserId })
 
-        userRepository.cacheUsers(users)
+        if (!pagination.canLoadMore) {
+            throw NoMoreItemsException("No more users available")
+        }
 
         return pagination
     }
