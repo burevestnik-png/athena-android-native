@@ -1,4 +1,4 @@
-package ru.yofik.athena.common.presentation.components
+package ru.yofik.athena.common.presentation.components.extensions
 
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
@@ -7,9 +7,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import ru.yofik.athena.common.R
 import ru.yofik.athena.common.presentation.model.FailureEvent
+import timber.log.Timber
 
 fun Fragment.handleFailures(event: FailureEvent?) {
     val unhandledFailure = event?.getFailureOrNull() ?: return
@@ -39,3 +42,5 @@ fun Fragment.launchViewModelsFlow(block: suspend () -> Unit) {
         }
     }
 }
+
+

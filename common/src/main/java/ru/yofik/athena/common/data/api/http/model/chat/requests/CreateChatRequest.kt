@@ -5,6 +5,5 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class CreateChatRequest(
-    @field:Json(name = "name") val name: String,
-    @field:Json(name = "users") val users: List<Long>
+    @field:Json(name = "targetUserId") val targetUserId: Long
 )

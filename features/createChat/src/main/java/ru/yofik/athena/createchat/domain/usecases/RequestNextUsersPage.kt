@@ -19,7 +19,7 @@ constructor(
         val currentUserId = currentUserRepository.getCache().id
         val (users, pagination) = userRepository.requestGetPaginatedUsers(pageNumber, pageSize)
 
-        userRepository.cacheUsers(users.filter { it.id != currentUserId })
+        userRepository.cacheUsers(users)
 
         if (!pagination.canLoadMore) {
             throw NoMoreItemsException("No more users available")

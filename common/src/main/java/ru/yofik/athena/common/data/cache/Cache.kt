@@ -6,6 +6,7 @@ import ru.yofik.athena.common.data.cache.model.CachedUser
 
 interface Cache {
     fun getUsers(): Flow<List<CachedUser>>
+    suspend fun deleteAllUsers()
     suspend fun insertUsers(users: List<CachedUser>)
 
     fun getChats(): Flow<List<CachedChatAggregate>>

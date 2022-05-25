@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import ru.yofik.athena.common.presentation.components.handleFailures
+import ru.yofik.athena.common.presentation.components.extensions.handleFailures
 import ru.yofik.athena.common.utils.Routes
 import ru.yofik.athena.login.databinding.FragmentLoginBinding
 import timber.log.Timber

@@ -9,5 +9,6 @@ interface UserRepository {
     suspend fun requestGetDefiniteUser(id: Long): User
 
     fun getCachedUsers(): Flow<List<User>>
+    suspend fun removeCachedUsers()
     suspend fun cacheUsers(users: List<User>)
 }

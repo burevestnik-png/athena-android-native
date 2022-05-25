@@ -6,10 +6,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
-import ru.yofik.athena.common.presentation.components.BaseFragment
-import ru.yofik.athena.common.presentation.components.handleFailures
-import ru.yofik.athena.common.presentation.components.launchViewModelsFlow
-import ru.yofik.athena.common.presentation.components.navigate
+import ru.yofik.athena.common.presentation.components.base.BaseFragment
+import ru.yofik.athena.common.presentation.components.extensions.handleFailures
+import ru.yofik.athena.common.presentation.components.extensions.launchViewModelsFlow
+import ru.yofik.athena.common.presentation.components.extensions.navigate
+import ru.yofik.athena.common.presentation.model.UIState
+import ru.yofik.athena.common.presentation.utils.InfiniteScrollListener
 import ru.yofik.athena.common.utils.Routes
 import ru.yofik.athena.createchat.R
 import ru.yofik.athena.createchat.databinding.FragmentCreateChatBinding
@@ -38,12 +40,12 @@ class CreateChatFragment :
 
     private fun createAdapter(): UserAdapter {
         return UserAdapter().apply {
-            setUserClickListener { id, name -> requestCreateChat(id, name) }
+            setUserClickListener { requestCreateChat(it) }
         }
     }
 
-    private fun requestCreateChat(id: Long, name: String) {
-        viewModel.onEvent(CreateChatEvent.CreateChat(id, name))
+    private fun requestCreateChat(targetUserId: Long) {
+        viewModel.onEvent(CreateChatEvent.CreateChat(targetUserId))
     }
 
     private fun setupRecyclerView(adapter: UserAdapter) {
@@ -72,7 +74,11 @@ class CreateChatFragment :
     }
 
     private fun setupSwipeRefreshLayout() {
-        binding.swipeLayout.apply { setOnRefreshListener {} }
+        binding.swipeLayout.apply { setOnRefreshListener { requestForceRefresh() } }
+    }
+
+    private fun requestForceRefresh() {
+        viewModel.onEvent(CreateChatEvent.ForceRequestAllUsers)
     }
 
     private fun listenToBackButtonClick() {
@@ -87,9 +93,9 @@ class CreateChatFragment :
         launchViewModelsFlow { viewModel.state.collect { updateScreenState(it) } }
     }
 
-    private fun updateScreenState(state: CreateChatViewState) {
+    private fun updateScreenState(state: UIState<CreateChatStatePayload>) {
         binding.swipeLayout.isRefreshing = state.loading
-        adapter.submitList(state.users)
+        adapter.submitList(state.payload.users)
         handleFailures(state.failure)
     }
 

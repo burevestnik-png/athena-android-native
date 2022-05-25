@@ -5,11 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import ru.yofik.athena.createchat.R
 import ru.yofik.athena.createchat.databinding.ListItemUserBinding
 import ru.yofik.athena.createchat.domain.model.UiUser
 
 fun interface UserClickListener {
-    fun onUserClick(id: Long, name: String)
+    fun onUserClick(targetUserId: Long)
 }
 
 class UserAdapter : ListAdapter<UiUser, UserAdapter.UserViewHolder>(UI_USER_COMPARATOR) {
@@ -38,11 +39,10 @@ class UserAdapter : ListAdapter<UiUser, UserAdapter.UserViewHolder>(UI_USER_COMP
         fun bind(user: UiUser) {
             binding.apply {
                 this.name.text = user.name
-                // todo rework
-                this.login.text = "@${user.login}"
+                this.login.text = itemView.context.getString(R.string.user_login, user.login)
                 logo.setText(user.name)
 
-                root.setOnClickListener { userClickListener?.onUserClick(user.id, user.name) }
+                root.setOnClickListener { userClickListener?.onUserClick(user.id) }
             }
         }
     }

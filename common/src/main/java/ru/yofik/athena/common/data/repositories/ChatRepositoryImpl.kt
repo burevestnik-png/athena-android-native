@@ -24,7 +24,6 @@ class ChatRepositoryImpl
 constructor(
     private val chatApi: ChatApi,
     private val apiChatMapper: ApiChatMapper,
-    private val preferences: Preferences,
     private val cache: Cache
 ) : ChatRepository {
 
@@ -50,10 +49,9 @@ constructor(
         }
     }
 
-    override suspend fun requestCreateChat(name: String, userId: Long): Chat {
+    override suspend fun requestCreateChat(targetUserId: Long): Chat {
         try {
-            val initiatorId = preferences.getCurrentUserId()
-            val request = CreateChatRequest(name = name, users = listOf(initiatorId, userId))
+            val request = CreateChatRequest(targetUserId)
 
             val response = chatApi.createChat(request)
             Timber.d("requestCreateChat: ${response.payload}")

@@ -4,4 +4,6 @@
     <string name="chat_toolbar_back_desc">Go back</string>
 
     <string name="nav_create_chat">CreateChatFragment</string>
+
+    <string name="user_login">\@%1$s</string>
 </resources>

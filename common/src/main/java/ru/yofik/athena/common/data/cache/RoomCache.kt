@@ -14,6 +14,10 @@ constructor(private val usersDao: UsersDao, private val chatsDao: ChatsDao) : Ca
         return usersDao.getAll()
     }
 
+    override suspend fun deleteAllUsers() {
+        usersDao.deleteAll()
+    }
+
     override suspend fun insertUsers(users: List<CachedUser>) {
         usersDao.insert(users)
     }

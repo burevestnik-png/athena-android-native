@@ -1,4 +1,4 @@
-package ru.yofik.athena.common.presentation.components
+package ru.yofik.athena.common.presentation.components.base
 
 import android.os.Bundle
 import android.view.View

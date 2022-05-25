@@ -8,10 +8,10 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.chatList.R
 import ru.yofik.athena.chatList.databinding.FragmentChatListBinding
-import ru.yofik.athena.common.presentation.components.BaseFragment
-import ru.yofik.athena.common.presentation.components.handleFailures
-import ru.yofik.athena.common.presentation.components.launchViewModelsFlow
-import ru.yofik.athena.common.presentation.components.navigate
+import ru.yofik.athena.common.presentation.components.base.BaseFragment
+import ru.yofik.athena.common.presentation.components.extensions.handleFailures
+import ru.yofik.athena.common.presentation.components.extensions.launchViewModelsFlow
+import ru.yofik.athena.common.presentation.components.extensions.navigate
 import ru.yofik.athena.common.utils.Routes
 import timber.log.Timber
 

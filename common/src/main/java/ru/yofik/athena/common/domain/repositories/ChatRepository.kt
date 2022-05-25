@@ -6,7 +6,7 @@ import ru.yofik.athena.common.domain.model.pagination.PaginatedChats
 
 interface ChatRepository {
     suspend fun requestGetPaginatedChats(pageNumber: Int, pageSize: Int): PaginatedChats
-    suspend fun requestCreateChat(name: String, userId: Long): Chat
+    suspend fun requestCreateChat(targetUserId: Long): Chat
     suspend fun requestDeleteChat(chatId: Long)
 
     fun getCachedChats(): Flow<List<Chat>>

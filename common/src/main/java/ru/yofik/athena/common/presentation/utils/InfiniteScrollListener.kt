@@ -1,4 +1,4 @@
-package ru.yofik.athena.createchat.presentation
+package ru.yofik.athena.common.presentation.utils
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
