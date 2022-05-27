@@ -14,6 +14,7 @@ import ru.yofik.athena.common.data.cache.Cache
 import ru.yofik.athena.common.data.cache.MIGRATION_1_2
 import ru.yofik.athena.common.data.cache.RoomCache
 import ru.yofik.athena.common.data.cache.dao.ChatsDao
+import ru.yofik.athena.common.data.cache.dao.MessageDao
 import ru.yofik.athena.common.data.cache.dao.UsersDao
 
 @Module
@@ -41,6 +42,11 @@ internal abstract class CacheModule {
         @Provides
         fun provideChatsDao(athenaDatabase: AthenaDatabase): ChatsDao {
             return athenaDatabase.chatsDao()
+        }
+
+        @Provides
+        fun provideMessageDao(athenaDatabase: AthenaDatabase): MessageDao {
+            return athenaDatabase.messageDao()
         }
     }
 }

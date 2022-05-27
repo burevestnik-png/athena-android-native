@@ -8,7 +8,7 @@ interface CurrentUserRepository {
 
     fun cache(user: User)
     fun getCache(): User
-    fun removeCache()
+    suspend fun removeCache()
 
     fun hasAccess(): Boolean
     fun removeAccessToken()

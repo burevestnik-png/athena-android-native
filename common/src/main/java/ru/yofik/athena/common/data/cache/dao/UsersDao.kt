@@ -10,5 +10,9 @@ interface UsersDao {
 
     @Transaction @Query("SELECT * FROM users") fun getAll(): Flow<List<CachedUser>>
 
-    @Transaction @Query("DELETE FROM users") suspend fun deleteAll()
+    suspend fun deleteAll() {
+        deleteAllUsers()
+    }
+
+    @Transaction @Query("DELETE FROM users") suspend fun deleteAllUsers()
 }

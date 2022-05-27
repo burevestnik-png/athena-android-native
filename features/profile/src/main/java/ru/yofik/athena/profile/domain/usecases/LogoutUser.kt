@@ -5,7 +5,7 @@ import javax.inject.Inject
 import ru.yofik.athena.common.domain.repositories.UserRepository
 
 class LogoutUser @Inject constructor(private val currentUserRepository: CurrentUserRepository) {
-    operator fun invoke() {
+    suspend operator fun invoke() {
         currentUserRepository.apply {
             removeAccessToken()
             removeCache()

@@ -3,7 +3,9 @@ package ru.yofik.athena.profile.presentation
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import ru.yofik.athena.profile.domain.usecases.GetCachedUser
 import ru.yofik.athena.profile.domain.usecases.LogoutUser
@@ -42,7 +44,10 @@ constructor(private val logoutUser: LogoutUser, private val getCachedUser: GetCa
     }
 
     private fun handleLogoutUser() {
-        logoutUser()
+        viewModelScope.launch {
+            logoutUser()
+        }
+
         _effects.value = ProfileFragmentViewEffect.NavigateToLoginScreen
     }
 }

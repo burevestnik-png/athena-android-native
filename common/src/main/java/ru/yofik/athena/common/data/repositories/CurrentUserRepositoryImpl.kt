@@ -6,6 +6,7 @@ import ru.yofik.athena.common.data.api.http.model.currentUser.mappers.ApiAccessT
 import ru.yofik.athena.common.data.api.http.model.currentUser.requests.ActivateUserRequest
 import ru.yofik.athena.common.data.api.http.model.currentUser.requests.AuthUserRequest
 import ru.yofik.athena.common.data.api.http.model.common.mappers.ApiUserMapper
+import ru.yofik.athena.common.data.cache.Cache
 import ru.yofik.athena.common.data.preferences.Preferences
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
 import ru.yofik.athena.common.domain.model.user.User
@@ -19,7 +20,8 @@ constructor(
     private val preferences: Preferences,
     private val currentUserApi: CurrentUserApi,
     private val apiAccessTokenMapper: ApiAccessTokenMapper,
-    private val apiUserMapper: ApiUserMapper
+    private val apiUserMapper: ApiUserMapper,
+    private val cache: Cache
 ) : CurrentUserRepository {
 
     ///////////////////////////////////////////////////////////////////////////
@@ -68,8 +70,9 @@ constructor(
         return preferences.getCurrentUser()
     }
 
-    override fun removeCache() {
+    override suspend fun removeCache() {
         preferences.removeCurrentUser()
+        cache.cleanup()
     }
 
     override fun hasAccess(): Boolean {

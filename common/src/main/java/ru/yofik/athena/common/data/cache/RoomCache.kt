@@ -4,6 +4,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onEach
 import ru.yofik.athena.common.data.cache.dao.ChatsDao
+import ru.yofik.athena.common.data.cache.dao.MessageDao
 import ru.yofik.athena.common.data.cache.dao.UsersDao
 import ru.yofik.athena.common.data.cache.model.CachedChatAggregate
 import ru.yofik.athena.common.data.cache.model.CachedChatUserCrossRef
@@ -12,13 +13,17 @@ import timber.log.Timber
 
 class RoomCache
 @Inject
-constructor(private val usersDao: UsersDao, private val chatsDao: ChatsDao) : Cache {
+constructor(
+    private val usersDao: UsersDao,
+    private val chatsDao: ChatsDao,
+    private val messageDao: MessageDao
+) : Cache {
     override fun getUsers(): Flow<List<CachedUser>> {
         return usersDao.getAll()
     }
 
     override suspend fun deleteAllUsers() {
-        usersDao.deleteAll()
+        usersDao.deleteAllUsers()
     }
 
     override suspend fun insertUsers(users: List<CachedUser>) {
@@ -31,7 +36,7 @@ constructor(private val usersDao: UsersDao, private val chatsDao: ChatsDao) : Ca
     }
 
     override suspend fun deleteAllChats() {
-        chatsDao.deleteAll()
+        chatsDao.deleteAllChats()
     }
 
     override suspend fun insertChats(chatsAggregate: List<CachedChatAggregate>) {
@@ -44,5 +49,11 @@ constructor(private val usersDao: UsersDao, private val chatsDao: ChatsDao) : Ca
                 )
             }
         }
+    }
+
+    override suspend fun cleanup() {
+        chatsDao.deleteAll()
+        messageDao.deleteAll()
+        usersDao.deleteAll()
     }
 }

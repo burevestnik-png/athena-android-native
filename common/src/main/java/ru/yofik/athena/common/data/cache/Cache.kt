@@ -12,4 +12,6 @@ interface Cache {
     fun getChats(): Flow<List<CachedChatAggregate>>
     suspend fun deleteAllChats()
     suspend fun insertChats(chatsAggregate: List<CachedChatAggregate>)
+
+    suspend fun cleanup()
 }

@@ -3,7 +3,6 @@ package ru.yofik.athena.common.data.cache.dao
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import ru.yofik.athena.common.data.cache.model.*
-import timber.log.Timber
 
 @Dao
 abstract class ChatsDao {
@@ -41,5 +40,14 @@ abstract class ChatsDao {
     @Query("SELECT * FROM chats")
     abstract fun getAll(): Flow<List<CachedChatAggregate>>
 
-    @Transaction @Query("DELETE FROM chats") abstract fun deleteAll()
+    suspend fun deleteAll() {
+        deleteAllChats()
+        deleteAllChatUserCrossRef()
+    }
+
+    @Query("DELETE FROM chats") abstract suspend fun deleteAllChats()
+
+
+    @Query("DELETE FROM chat_user_cross_ref")
+    abstract suspend fun deleteAllChatUserCrossRef()
 }
