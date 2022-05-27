@@ -24,7 +24,6 @@ constructor(
             throw NoMoreItemsException("No more chats available")
         }
 
-        Timber.d("invoke: return")
         return pagination
     }
 }

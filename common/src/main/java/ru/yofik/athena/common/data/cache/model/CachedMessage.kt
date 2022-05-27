@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import org.threeten.bp.LocalDateTime
 import ru.yofik.athena.common.domain.model.message.Message
 
-@Entity
+@Entity(tableName = "messages")
 data class CachedMessage(
     @PrimaryKey(autoGenerate = false) val id: Long,
     val content: String,

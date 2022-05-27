@@ -20,7 +20,7 @@ import ru.yofik.athena.common.data.cache.model.CachedUser
             CachedChatUserCrossRef::class,
             CachedMessage::class,
         ],
-    version = 4
+    version = 5
 )
 @TypeConverters(LocalDateTimeConverter::class, ChatTypeConverter::class)
 abstract class AthenaDatabase : RoomDatabase() {

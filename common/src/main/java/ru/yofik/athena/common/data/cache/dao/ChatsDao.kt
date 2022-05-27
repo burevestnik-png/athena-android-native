@@ -8,7 +8,6 @@ import timber.log.Timber
 @Dao
 abstract class ChatsDao {
     suspend fun insertChats(chatAggregates: List<CachedChatAggregate>) {
-        Timber.d("insertChats: ${chatAggregates.joinToString("\n")}")
         for (chatAggregate in chatAggregates) {
             if (chatAggregate.lastMessage == null) {
                 insertChatAggregateWithNullableLastMessage(chatAggregate.chat, chatAggregate.users)
