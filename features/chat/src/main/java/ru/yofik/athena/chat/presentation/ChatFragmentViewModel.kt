@@ -1,8 +1,5 @@
 package ru.yofik.athena.chat.presentation
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -10,6 +7,9 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import ru.yofik.athena.chat.domain.model.UiChat
 import ru.yofik.athena.chat.domain.model.mappers.UiChatMapper
 import ru.yofik.athena.chat.domain.model.mappers.UiMessageMapper
@@ -17,8 +17,9 @@ import ru.yofik.athena.chat.domain.usecases.GetChat
 import ru.yofik.athena.chat.domain.usecases.GetUserId
 import ru.yofik.athena.chat.domain.usecases.SendMessage
 import ru.yofik.athena.chat.domain.usecases.SubscribeOnNewMessageNotifications
-import ru.yofik.athena.common.domain.model.chat.ChatWithDetails
 import ru.yofik.athena.common.domain.model.notification.NewMessageNotification
+import ru.yofik.athena.common.presentation.components.base.BaseViewModel
+import ru.yofik.athena.common.presentation.model.UIState
 import timber.log.Timber
 
 @HiltViewModel
@@ -31,28 +32,34 @@ constructor(
     private val getUserId: GetUserId,
     private val uiMessageMapper: UiMessageMapper,
     private val uiChatMapper: UiChatMapper
-) : ViewModel() {
-    private val _state = MutableLiveData(ChatFragmentState())
-    val state: LiveData<ChatFragmentState>
-        get() = _state
+) : BaseViewModel<ChatFragmentPayload>() {
+    private val _state = MutableUIStateFlow(ChatFragmentPayload())
+    private val _effects = MutableSharedFlow<ChatFragmentViewEffect>()
 
-    private val _effects = MutableLiveData<ChatFragmentViewEffect>()
-    val effects: LiveData<ChatFragmentViewEffect>
-        get() = _effects
+    val state: StateFlow<UIState<ChatFragmentPayload>> = _state
+    val effects: SharedFlow<ChatFragmentViewEffect> = _effects
 
-    private val uiChat = MutableLiveData<UiChat>()
+    private lateinit var uiChat: UiChat
 
+    // todo inject
     private val compositeDisposable = CompositeDisposable()
 
-    private var job: Job? = null
-    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        Timber.d("exceptionHandler: ${throwable.message}")
-        viewModelScope.launch { onFailure(throwable) }
-    }
+    ///////////////////////////////////////////////////////////////////////////
+    // INIT
+    ///////////////////////////////////////////////////////////////////////////
 
     init {
-        uiChat.value = uiChatMapper.mapToView(Pair(ChatWithDetails.nullable(), getUserId()))
+        getChatInfo()
+        subscribeOnMessagesUpdates()
     }
+
+    private fun getChatInfo() {}
+
+    private fun subscribeOnMessagesUpdates() {}
+
+    ///////////////////////////////////////////////////////////////////////////
+    // ON EVENT
+    ///////////////////////////////////////////////////////////////////////////
 
     fun onEvent(event: ChatFragmentEvent) {
         when (event) {
@@ -70,18 +77,20 @@ constructor(
         _state.value = state.value!!.copy(loading = true)
         job =
             CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-//                val chat = getChat(id)
-//                Timber.d("handleGetChat: got chat from api $chat")
+                //                val chat = getChat(id)
+                //                Timber.d("handleGetChat: got chat from api $chat")
 
                 withContext(Dispatchers.Main) {
-//                    uiChat.value = uiChatMapper.mapToView(Pair(chat, getUserId()))
+                    //                    uiChat.value = uiChatMapper.mapToView(Pair(chat,
+                    // getUserId()))
                     _state.value =
                         state.value!!.copy(
                             loading = false,
-//                            messages = chat.messages.map {
-//                                uiMessageMapper.mapToView(Pair(it, uiChat.value!!))
-//                            }
-                        )
+                            //                            messages = chat.messages.map {
+                            //                                uiMessageMapper.mapToView(Pair(it,
+                            // uiChat.value!!))
+                            //                            }
+                            )
 
                     _effects.value = ChatFragmentViewEffect.SetChatName(uiChat.value!!.name)
                 }
@@ -103,22 +112,24 @@ constructor(
 
         _state.value =
             state.value!!.copy(
-                messages = messages.apply {
-                    add(
-                        uiMessageMapper.mapToView(
-                            Pair(
-                                notification.message,
-                                uiChat.value!!
-                            )
-                        )
-                    )
-                }
+                messages =
+                    messages.apply {
+                        add(uiMessageMapper.mapToView(Pair(notification.message, uiChat.value!!)))
+                    }
             )
     }
 
     private fun handleSendMessage() {
-        _state.value = state.value!!.copy(loading = true)
-        job =
+        _state.value = showLoader(state)
+
+        launchApiRequest {
+            withContext(Dispatchers.IO) {
+                sendMessage(uiChat.id, state.payload.input)
+            }
+
+            _state.value = state.value.copy(loading = false) { copy() }
+        }
+
             CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
                 sendMessage(uiChat.value!!.id, state.value!!.input)
                 withContext(Dispatchers.Main) {
@@ -128,13 +139,12 @@ constructor(
             }
     }
 
-    private fun onFailure(throwable: Throwable) {
-        // TODO
+    override fun onFailure(throwable: Throwable) {
+        when (throwable) {}
     }
 
     override fun onCleared() {
         super.onCleared()
-        job = null
         compositeDisposable.clear()
     }
 }

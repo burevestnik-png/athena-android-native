@@ -78,6 +78,10 @@
 
 #### Features
 
+- TODO в чат листе
+- вынести пагинацию
+- рефактор логина и профиля
+
 #### Plans
 
 - [ ] Rework AppBar with Navigation framework

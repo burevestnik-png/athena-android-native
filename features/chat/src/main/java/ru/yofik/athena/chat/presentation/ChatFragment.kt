@@ -137,7 +137,7 @@ class ChatFragment : Fragment() {
         viewModel.state.observe(viewLifecycleOwner) { updateScreenState(it, adapter) }
     }
 
-    private fun updateScreenState(state: ChatFragmentState, adapter: MessageAdapter) {
+    private fun updateScreenState(state: ChatFragmentPayload, adapter: MessageAdapter) {
         Timber.d("updateScreenState: $state")
         binding.progressBar.isVisible = state.loading
         adapter.submitList(state.messages)

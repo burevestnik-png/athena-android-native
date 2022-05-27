@@ -5,7 +5,6 @@ import ru.yofik.athena.common.data.api.common.MappingException
 import ru.yofik.athena.common.data.api.common.mappers.ApiMessageMapper
 import ru.yofik.athena.common.data.api.http.model.chat.apiEntity.ApiChatWithDetails
 import ru.yofik.athena.common.data.api.http.model.common.mappers.ApiUserMapper
-import ru.yofik.athena.common.domain.model.chat.ChatWithDetails
 import javax.inject.Inject
 
 class ApiChatWithDetailsMapper

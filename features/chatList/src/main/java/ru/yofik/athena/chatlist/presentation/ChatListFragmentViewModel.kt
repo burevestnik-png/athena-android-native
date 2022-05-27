@@ -7,7 +7,10 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.yofik.athena.chatlist.domain.model.mappers.UiChatMapper
@@ -33,7 +36,7 @@ constructor(
     private val forceRefreshChats: ForceRefreshChats,
     private val uiChatMapper: UiChatMapper,
     private val uiMessageMapper: UiMessageMapper
-) : BaseViewModel() {
+) : BaseViewModel<ChatListViewPayload>(ChatListViewPayload()) {
 
     companion object {
         const val UI_PAGE_SIZE = Pagination.DEFAULT_PAGE_SIZE
@@ -42,13 +45,10 @@ constructor(
         private const val CURRENT_PAGE_INITIAL = 0
     }
 
-    private val _state = MutableUIStateFlow(ChatListViewPayload())
-
     // todo provide like in BP
     private val compositeDisposable = CompositeDisposable()
     private var currentPage = 0
 
-    val state: StateFlow<UIState<ChatListViewPayload>> = _state
     var isLastPage = false
         private set
 
@@ -85,17 +85,16 @@ constructor(
         val newChats = chatFromServer.subtract(currentChats.toSet())
         val updatedList = currentChats + newChats
 
-        _state.value = state.value.copy { copy(chats = updatedList) }
+        modifyState { payload -> payload.copy(chats = updatedList) }
     }
 
     private fun loadNextChatPage() {
-        Timber.d("loadNextChatPage: loading")
-        _state.value = showLoader(state)
+        showLoader()
 
         launchApiRequest {
             val pagination = withContext(Dispatchers.IO) { requestNextChatsPage(currentPage) }
             currentPage = pagination.currentPage
-            _state.value = hideLoader(state)
+            hideLoader()
         }
     }
 
@@ -124,7 +123,7 @@ constructor(
                 }
             }
 
-        _state.value = state.value.copy { copy(chats = updatedList) }
+        modifyState { payload -> payload.copy(chats = updatedList) }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -139,7 +138,7 @@ constructor(
     }
 
     private fun handleForceGetAllChats() {
-        _state.value = showLoader(state)
+        showLoader()
 
         viewModelScope.launch {
             withContext(Dispatchers.IO) { forceRefreshChats() }
@@ -155,10 +154,9 @@ constructor(
         when (throwable) {
             is NoMoreItemsException -> {
                 isLastPage = true
-                _state.value =
-                    state.value.copy(loading = false, failure = FailureEvent(throwable)) {
-                        copy(noMoreChatsAnymore = true)
-                    }
+                modifyState(loading = false, failure = FailureEvent(throwable)) { payload ->
+                    payload.copy(noMoreChatsAnymore = true)
+                }
             }
         }
     }

@@ -6,19 +6,35 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import ru.yofik.athena.common.presentation.components.extensions.createExceptionHandler
+import ru.yofik.athena.common.presentation.model.FailureEvent
 import ru.yofik.athena.common.presentation.model.UIState
 
-abstract class BaseViewModel : ViewModel() {
-
+abstract class BaseViewModel<Payload>(payload: Payload) : ViewModel() {
     @Suppress("FunctionName")
-    protected fun <Payload> MutableUIStateFlow(payload: Payload) =
-        MutableStateFlow(UIState(payload))
+    protected fun MutableUIStateFlow(payload: Payload) = MutableStateFlow(UIState(payload))
 
-    protected fun <Payload> showLoader(state: StateFlow<UIState<Payload>>) =
-        state.value.copy(loading = true)
+    protected val _state = MutableUIStateFlow(payload)
+    val state: StateFlow<UIState<Payload>> = _state
 
-    protected fun <Payload> hideLoader(state: StateFlow<UIState<Payload>>) =
-        state.value.copy(loading = false)
+    protected val payload
+        get() = state.value.payload
+
+    protected fun modifyState(
+        loading: Boolean = _state.value.loading,
+        failure: FailureEvent? = _state.value.failure,
+        copyPayload: (Payload) -> Payload = { it }
+    ) {
+        _state.value =
+            state.value.copy(loading = loading, failure = failure, copyPayload = copyPayload)
+    }
+
+    protected fun showLoader() {
+        _state.value = state.value.copy(loading = true)
+    }
+
+    protected fun hideLoader() {
+        _state.value = state.value.copy(loading = false)
+    }
 
     protected fun launchApiRequest(
         errorMessage: String = "Failed to make request",

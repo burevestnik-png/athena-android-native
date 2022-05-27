@@ -30,7 +30,7 @@ constructor(
     private val requestNextUsersPage: RequestNextUsersPage,
     private val forceRefreshUsers: ForceRefreshUsers,
     private val uiUserMapper: UiUserMapper
-) : BaseViewModel() {
+) : BaseViewModel<CreateChatStatePayload>(CreateChatStatePayload()) {
 
     companion object {
         const val UI_PAGE_SIZE = Pagination.DEFAULT_PAGE_SIZE
@@ -39,11 +39,9 @@ constructor(
         private const val CURRENT_PAGE_INITIAL = 0
     }
 
-    private var _state = MutableUIStateFlow(CreateChatStatePayload())
     private var _effects = MutableSharedFlow<CreateChatFragmentViewEffect>()
     private var currentPage = 0
 
-    val state: StateFlow<UIState<CreateChatStatePayload>> = _state
     val effects: SharedFlow<CreateChatFragmentViewEffect> = _effects
     var isLastPage = IS_LAST_PAGE_INITIAL
         private set
@@ -87,6 +85,7 @@ constructor(
         val updatedList = currentUsers + newUsers
 
         _state.value = state.value.copy { copy(users = updatedList) }
+        modifyState  }
     }
 
     ///////////////////////////////////////////////////////////////////////////

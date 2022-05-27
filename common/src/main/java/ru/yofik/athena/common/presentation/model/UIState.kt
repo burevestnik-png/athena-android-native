@@ -8,7 +8,7 @@ data class UIState<Payload>(
     fun copy(
         loading: Boolean? = null,
         failure: FailureEvent? = null,
-        copyPayload: Payload.() -> Payload = { this }
+        copyPayload: (Payload) -> Payload = { it }
     ): UIState<Payload> {
         return copy(
             loading = loading ?: this.loading,
