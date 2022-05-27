@@ -85,4 +85,8 @@ constructor(
     override suspend fun cacheChats(chats: List<Chat>) {
         cache.insertChats(chats.map { CachedChatAggregate.fromDomain(it) })
     }
+
+    override suspend fun removeCachedChats() {
+        cache.deleteAllChats()
+    }
 }

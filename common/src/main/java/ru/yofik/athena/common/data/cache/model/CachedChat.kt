@@ -19,7 +19,7 @@ data class CachedChat(
         fun toDomain(
             cachedChat: CachedChat,
             users: List<CachedUser>,
-            lastMessage: CachedMessage
+            lastMessage: CachedMessage?
         ): Chat {
             return Chat(
                 id = cachedChat.chatId,

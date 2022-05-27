@@ -127,7 +127,7 @@ constructor(
         _state.value = showLoader(state)
 
         viewModelScope.launch {
-            forceRefreshUsers()
+            withContext(Dispatchers.IO) { forceRefreshUsers() }
 
             isLastPage = IS_LAST_PAGE_INITIAL
             currentPage = CURRENT_PAGE_INITIAL

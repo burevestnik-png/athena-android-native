@@ -15,8 +15,9 @@ data class CachedMessage(
     val modificationDate: LocalDateTime
 ) {
     companion object {
-        fun fromDomain(message: Message) =
-            CachedMessage(
+        fun fromDomain(message: Message): CachedMessage? {
+            if (message.isNullable) return null
+            return CachedMessage(
                 id = message.id,
                 content = message.content,
                 senderId = message.senderId,
@@ -24,9 +25,11 @@ data class CachedMessage(
                 creationDate = message.creationDate,
                 modificationDate = message.modificationDate
             )
+        }
 
-        fun toDomain(cachedMessage: CachedMessage) =
-            Message(
+        fun toDomain(cachedMessage: CachedMessage?): Message {
+            if (cachedMessage == null) return Message.nullable()
+            return Message(
                 id = cachedMessage.id,
                 content = cachedMessage.content,
                 senderId = cachedMessage.senderId,
@@ -34,5 +37,6 @@ data class CachedMessage(
                 creationDate = cachedMessage.creationDate,
                 modificationDate = cachedMessage.modificationDate
             )
+        }
     }
 }

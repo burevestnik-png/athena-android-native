@@ -4,6 +4,7 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.chatList.R
@@ -12,8 +13,12 @@ import ru.yofik.athena.common.presentation.components.base.BaseFragment
 import ru.yofik.athena.common.presentation.components.extensions.handleFailures
 import ru.yofik.athena.common.presentation.components.extensions.launchViewModelsFlow
 import ru.yofik.athena.common.presentation.components.extensions.navigate
+import ru.yofik.athena.common.presentation.model.UIState
+import ru.yofik.athena.common.presentation.utils.InfiniteScrollListener
 import ru.yofik.athena.common.utils.Routes
 import timber.log.Timber
+
+// todo как вынести пагинацию
 
 @AndroidEntryPoint
 class ChatListFragment :
@@ -70,7 +75,24 @@ class ChatListFragment :
             layoutManager = LinearLayoutManager(context)
             // todo add in future
             // setHasFixedSize(true)
+
+            addOnScrollListener(createOnScrollListener(layoutManager as LinearLayoutManager))
         }
+    }
+
+    private fun createOnScrollListener(
+        layoutManager: LinearLayoutManager
+    ): RecyclerView.OnScrollListener {
+        return object :
+            InfiniteScrollListener(layoutManager, ChatListFragmentViewModel.UI_PAGE_SIZE) {
+            override fun loadMoreItems() = requestMoreUsers()
+            override fun isLastPage(): Boolean = viewModel.isLastPage
+            override fun isLoading(): Boolean = viewModel.state.value.loading
+        }
+    }
+
+    private fun requestMoreUsers() {
+        viewModel.onEvent(ChatListEvent.RequestNextChatsPage)
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -83,10 +105,10 @@ class ChatListFragment :
         }
     }
 
-    private fun updateScreenState(state: ChatListViewState) {
+    private fun updateScreenState(state: UIState<ChatListViewPayload>) {
         Timber.d("updateScreenState: $state")
         binding.swipeLayout.isRefreshing = state.loading
-        adapter.submitList(state.chats)
+        adapter.submitList(state.payload.chats)
         handleFailures(state.failure)
     }
 }

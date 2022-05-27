@@ -14,8 +14,13 @@ import ru.yofik.athena.common.data.cache.model.CachedUser
 
 @Database(
     entities =
-        [CachedUser::class, CachedChat::class, CachedChatUserCrossRef::class, CachedMessage::class],
-    version = 2
+        [
+            CachedUser::class,
+            CachedChat::class,
+            CachedChatUserCrossRef::class,
+            CachedMessage::class,
+        ],
+    version = 4
 )
 @TypeConverters(LocalDateTimeConverter::class, ChatTypeConverter::class)
 abstract class AthenaDatabase : RoomDatabase() {

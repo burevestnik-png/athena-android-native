@@ -1,25 +1,25 @@
 package ru.yofik.athena.chatlist.presentation
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.yofik.athena.chatlist.domain.model.mappers.UiChatMapper
 import ru.yofik.athena.chatlist.domain.model.mappers.UiMessageMapper
-import ru.yofik.athena.chatlist.domain.usecases.GetChats
-import ru.yofik.athena.chatlist.domain.usecases.ListenNewMessageNotifications
-import ru.yofik.athena.chatlist.domain.usecases.RequestNextChatsPage
-import ru.yofik.athena.chatlist.domain.usecases.SubscribeOnNotifications
+import ru.yofik.athena.chatlist.domain.usecases.*
 import ru.yofik.athena.common.domain.model.chat.Chat
+import ru.yofik.athena.common.domain.model.exceptions.NoMoreItemsException
 import ru.yofik.athena.common.domain.model.notification.NewMessageNotification
+import ru.yofik.athena.common.domain.model.pagination.Pagination
+import ru.yofik.athena.common.presentation.components.base.BaseViewModel
+import ru.yofik.athena.common.presentation.model.FailureEvent
+import ru.yofik.athena.common.presentation.model.UIState
 import timber.log.Timber
 
 @HiltViewModel
@@ -29,23 +29,32 @@ constructor(
     private val getChats: GetChats,
     private val listenNewMessageNotifications: ListenNewMessageNotifications,
     private val requestNextChatsPage: RequestNextChatsPage,
+    private val subscribeOnNotifications: SubscribeOnNotifications,
+    private val forceRefreshChats: ForceRefreshChats,
     private val uiChatMapper: UiChatMapper,
-    private val uiMessageMapper: UiMessageMapper,
-    private val subscribeOnNotifications: SubscribeOnNotifications
-) : ViewModel() {
-    private val _state = MutableStateFlow(ChatListViewState())
-    val state: StateFlow<ChatListViewState> = _state
+    private val uiMessageMapper: UiMessageMapper
+) : BaseViewModel() {
 
-    private val compositeDisposable = CompositeDisposable()
+    companion object {
+        const val UI_PAGE_SIZE = Pagination.DEFAULT_PAGE_SIZE
 
-    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        Timber.d(": $throwable")
-        Timber.d("exceptionHandler: ${throwable.message}")
-        viewModelScope.launch { onFailure(throwable) }
+        private const val IS_LAST_PAGE_INITIAL = false
+        private const val CURRENT_PAGE_INITIAL = 0
     }
 
-    private var isLastPage = false
+    private val _state = MutableUIStateFlow(ChatListViewPayload())
+
+    // todo provide like in BP
+    private val compositeDisposable = CompositeDisposable()
     private var currentPage = 0
+
+    val state: StateFlow<UIState<ChatListViewPayload>> = _state
+    var isLastPage = false
+        private set
+
+    ///////////////////////////////////////////////////////////////////////////
+    // INIT
+    ///////////////////////////////////////////////////////////////////////////
 
     init {
         listenNotifications()
@@ -64,10 +73,7 @@ constructor(
                     }
                 }
                 .filter { it.isNotEmpty() }
-                .catch {
-                    Timber.d("subscribeOnChatsUpdates: exception ${it.message}")
-                    onFailure(it)
-                }
+                .catch { onFailure(it) }
                 .collect { onNewChatList(it) }
         }
     }
@@ -75,27 +81,26 @@ constructor(
     private fun onNewChatList(chats: List<Chat>) {
         val chatFromServer = chats.map(uiChatMapper::mapToView)
 
-        val currentChats = state.value.chats
+        val currentChats = state.value.payload.chats
         val newChats = chatFromServer.subtract(currentChats.toSet())
         val updatedList = currentChats + newChats
 
-        _state.value = state.value.copy(chats = updatedList)
+        _state.value = state.value.copy { copy(chats = updatedList) }
     }
 
     private fun loadNextChatPage() {
-        _state.value = state.value.copy(loading = true)
+        Timber.d("loadNextChatPage: loading")
+        _state.value = showLoader(state)
 
-        viewModelScope.launch(exceptionHandler) {
-            val pagination = withContext(Dispatchers.IO) { requestNextChatsPage(++currentPage) }
-
-            isLastPage = !pagination.canLoadMore
+        launchApiRequest {
+            val pagination = withContext(Dispatchers.IO) { requestNextChatsPage(currentPage) }
             currentPage = pagination.currentPage
-            _state.value = state.value.copy(loading = false, noMoreChatsAnymore = isLastPage)
+            _state.value = hideLoader(state)
         }
     }
 
     private fun hasNoChatsStoredButCanLoadMore(chats: List<Chat>): Boolean {
-        return chats.isEmpty() && !state.value.noMoreChatsAnymore
+        return chats.isEmpty() && !state.value.payload.noMoreChatsAnymore
     }
 
     private fun listenNotifications() {
@@ -111,7 +116,7 @@ constructor(
 
         // todo update cache
         val updatedList =
-            state.value.chats.map {
+            state.value.payload.chats.map {
                 if (it.id == notification.message.chatId) {
                     it.copy(message = uiMessageMapper.mapToView(notification.message))
                 } else {
@@ -119,18 +124,44 @@ constructor(
                 }
             }
 
-        _state.value = state.value.copy(chats = updatedList)
+        _state.value = state.value.copy { copy(chats = updatedList) }
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // ON EVENT
+    ///////////////////////////////////////////////////////////////////////////
 
     fun onEvent(event: ChatListEvent) {
         when (event) {
             is ChatListEvent.ForceGetAllChats -> handleForceGetAllChats()
+            is ChatListEvent.RequestNextChatsPage -> loadNextChatPage()
         }
     }
 
-    private fun handleForceGetAllChats() {}
+    private fun handleForceGetAllChats() {
+        _state.value = showLoader(state)
 
-    private fun onFailure(throwable: Throwable) {}
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) { forceRefreshChats() }
+
+            isLastPage = IS_LAST_PAGE_INITIAL
+            currentPage = CURRENT_PAGE_INITIAL
+
+            _state.value = UIState(ChatListViewPayload())
+        }
+    }
+
+    override fun onFailure(throwable: Throwable) {
+        when (throwable) {
+            is NoMoreItemsException -> {
+                isLastPage = true
+                _state.value =
+                    state.value.copy(loading = false, failure = FailureEvent(throwable)) {
+                        copy(noMoreChatsAnymore = true)
+                    }
+            }
+        }
+    }
 
     override fun onCleared() {
         super.onCleared()

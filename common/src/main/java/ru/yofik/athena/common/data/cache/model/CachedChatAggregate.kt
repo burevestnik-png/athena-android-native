@@ -1,9 +1,8 @@
 package ru.yofik.athena.common.data.cache.model
 
-import androidx.room.Embedded
-import androidx.room.Junction
-import androidx.room.Relation
+import androidx.room.*
 import ru.yofik.athena.common.domain.model.chat.Chat
+import ru.yofik.athena.common.domain.model.user.User
 
 data class CachedChatAggregate(
     @Embedded val chat: CachedChat,
@@ -13,11 +12,7 @@ data class CachedChatAggregate(
         associateBy = Junction(CachedChatUserCrossRef::class)
     )
     val users: List<CachedUser>,
-    @Relation(
-        parentColumn = "chatId",
-        entityColumn = "chatId"
-    )
-    val lastMessage: CachedMessage
+    @Relation(parentColumn = "chatId", entityColumn = "chatId") val lastMessage: CachedMessage?
 ) {
     companion object {
         fun fromDomain(chat: Chat): CachedChatAggregate {

@@ -29,6 +29,8 @@ internal abstract class CacheModule {
             @ApplicationContext context: Context,
         ): AthenaDatabase {
             return Room.databaseBuilder(context, AthenaDatabase::class.java, "athena.db")
+                // todo delete
+                .fallbackToDestructiveMigration()
                 .addMigrations(MIGRATION_1_2)
                 .build()
         }

@@ -10,13 +10,11 @@ class RequestNextUsersPage
 @Inject
 constructor(
     private val userRepository: UserRepository,
-    private val currentUserRepository: CurrentUserRepository
 ) {
     suspend operator fun invoke(
         pageNumber: Int,
         pageSize: Int = Pagination.DEFAULT_PAGE_SIZE
     ): Pagination {
-        val currentUserId = currentUserRepository.getCache().id
         val (users, pagination) = userRepository.requestGetPaginatedUsers(pageNumber, pageSize)
 
         userRepository.cacheUsers(users)
