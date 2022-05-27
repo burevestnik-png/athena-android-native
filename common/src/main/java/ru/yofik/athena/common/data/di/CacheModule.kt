@@ -8,12 +8,13 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 import ru.yofik.athena.common.data.cache.AthenaDatabase
 import ru.yofik.athena.common.data.cache.Cache
+import ru.yofik.athena.common.data.cache.MIGRATION_1_2
 import ru.yofik.athena.common.data.cache.RoomCache
 import ru.yofik.athena.common.data.cache.dao.ChatsDao
 import ru.yofik.athena.common.data.cache.dao.UsersDao
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -27,7 +28,9 @@ internal abstract class CacheModule {
         fun provideDatabase(
             @ApplicationContext context: Context,
         ): AthenaDatabase {
-            return Room.databaseBuilder(context, AthenaDatabase::class.java, "athena.db").build()
+            return Room.databaseBuilder(context, AthenaDatabase::class.java, "athena.db")
+                .addMigrations(MIGRATION_1_2)
+                .build()
         }
 
         @Provides
