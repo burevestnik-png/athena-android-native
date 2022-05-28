@@ -67,7 +67,7 @@ constructor(
             getChats()
                 .distinctUntilChanged()
                 .onEach {
-                    Timber.d("subscribeOnChatsUpdates: onEach")
+                    Timber.d("subscribeOnChatsUpdates: onEach ${it.size}")
                     if (hasNoChatsStoredButCanLoadMore(it)) {
                         Timber.d("subscribeOnChatsUpdates: in has no chat")
                         loadNextChatPage()
