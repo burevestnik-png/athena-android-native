@@ -7,11 +7,9 @@ import retrofit2.HttpException
 import ru.yofik.athena.common.data.api.http.model.chat.ChatApi
 import ru.yofik.athena.common.data.api.http.model.chat.mappers.ApiChatMapper
 import ru.yofik.athena.common.data.api.http.model.chat.requests.CreateChatRequest
-import ru.yofik.athena.common.data.api.http.model.common.requests.RequestWithPagination
 import ru.yofik.athena.common.data.cache.Cache
 import ru.yofik.athena.common.data.cache.model.CachedChat
 import ru.yofik.athena.common.data.cache.model.CachedChatAggregate
-import ru.yofik.athena.common.data.preferences.Preferences
 import ru.yofik.athena.common.domain.model.chat.Chat
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
 import ru.yofik.athena.common.domain.model.pagination.PaginatedChats
@@ -80,6 +78,15 @@ constructor(
         return cache.getChats().map { chats ->
             chats.map { CachedChat.toDomain(it.chat, it.users, it.lastMessage) }
         }
+    }
+
+    override suspend fun getCachedChat(id: Long): Chat {
+        val cachedChatAggregate = cache.getChat(id)
+        return CachedChat.toDomain(
+            cachedChat = cachedChatAggregate.chat,
+            users = cachedChatAggregate.users,
+            lastMessage = cachedChatAggregate.lastMessage
+        )
     }
 
     override suspend fun cacheChats(chats: List<Chat>) {

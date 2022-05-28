@@ -36,7 +36,7 @@ abstract class BaseViewModel<Payload>(payload: Payload) : ViewModel() {
         _state.value = state.value.copy(loading = false)
     }
 
-    protected fun launchApiRequest(
+    protected fun launchIORequest(
         errorMessage: String = "Failed to make request",
         request: suspend () -> Unit
     ) {

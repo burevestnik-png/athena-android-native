@@ -102,7 +102,7 @@ constructor(
     private fun handleCreateChat(targetUserId: Long) {
         showLoader()
 
-        launchApiRequest {
+        launchIORequest {
             val createdChat = withContext(Dispatchers.IO) { createChat(targetUserId) }
             Timber.d("handleCreateChat: $createdChat")
             //            _effects.emit(CreateChatFragmentViewEffect.NavigateToChatListScreen)
@@ -114,7 +114,7 @@ constructor(
     private fun loadNextUserPage() {
         showLoader()
 
-        launchApiRequest {
+        launchIORequest {
             val pagination = withContext(Dispatchers.IO) { requestNextUsersPage(currentPage) }
             currentPage = pagination.currentPage
             hideLoader()

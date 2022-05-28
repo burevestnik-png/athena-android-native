@@ -61,10 +61,6 @@ class ChatListFragment :
         binding.swipeLayout.setOnRefreshListener { requestForceGetAllChats() }
     }
 
-    private fun requestForceGetAllChats() {
-        viewModel.onEvent(ChatListEvent.ForceGetAllChats)
-    }
-
     private fun createAdapter(): ChatAdapter {
         return ChatAdapter().apply { setChatClickListener { id -> navigate(Routes.CHAT(id)) } }
     }
@@ -91,18 +87,12 @@ class ChatListFragment :
         }
     }
 
-    private fun requestMoreUsers() {
-        viewModel.onEvent(ChatListEvent.RequestNextChatsPage)
-    }
-
     ///////////////////////////////////////////////////////////////////////////
     // STATE OBSERVING
     ///////////////////////////////////////////////////////////////////////////
 
     override fun observeViewState() {
-        launchViewModelsFlow {
-            viewModel.state.collect { updateScreenState(it) }
-        }
+        launchViewModelsFlow { viewModel.state.collect { updateScreenState(it) } }
     }
 
     private fun updateScreenState(state: UIState<ChatListViewPayload>) {
@@ -110,5 +100,17 @@ class ChatListFragment :
         binding.swipeLayout.isRefreshing = state.loading
         adapter.submitList(state.payload.chats)
         handleFailures(state.failure)
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // ON EVENT WRAPPERS
+    ///////////////////////////////////////////////////////////////////////////
+
+    private fun requestMoreUsers() {
+        viewModel.onEvent(ChatListEvent.RequestNextChatsPage)
+    }
+
+    private fun requestForceGetAllChats() {
+        viewModel.onEvent(ChatListEvent.ForceGetAllChats)
     }
 }

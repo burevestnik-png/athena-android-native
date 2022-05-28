@@ -2,6 +2,7 @@ package ru.yofik.athena.common.data.cache.model
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 
 @Entity(
     tableName = "chat_user_cross_ref",
@@ -22,6 +23,7 @@ import androidx.room.ForeignKey
                 onDelete = ForeignKey.CASCADE,
                 onUpdate = ForeignKey.CASCADE
             ),
-        ]
+        ],
+    indices = [Index("chatId"), Index("userId")]
 )
 data class CachedChatUserCrossRef(val chatId: Long, val userId: Long)

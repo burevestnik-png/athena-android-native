@@ -92,7 +92,7 @@ constructor(
     private fun loadNextChatPage() {
         showLoader()
 
-        launchApiRequest {
+        launchIORequest {
             val pagination = withContext(Dispatchers.IO) { requestNextChatsPage(currentPage) }
             currentPage = pagination.currentPage
             hideLoader()

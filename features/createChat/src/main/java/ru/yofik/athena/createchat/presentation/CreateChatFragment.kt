@@ -39,9 +39,7 @@ class CreateChatFragment :
     }
 
     private fun createAdapter(): UserAdapter {
-        return UserAdapter().apply {
-            setUserClickListener { requestCreateChat(it) }
-        }
+        return UserAdapter().apply { setUserClickListener { requestCreateChat(it) } }
     }
 
     private fun requestCreateChat(targetUserId: Long) {
@@ -69,16 +67,8 @@ class CreateChatFragment :
         }
     }
 
-    private fun requestMoreUsers() {
-        viewModel.onEvent(CreateChatEvent.RequestMoreUsers)
-    }
-
     private fun setupSwipeRefreshLayout() {
         binding.swipeLayout.apply { setOnRefreshListener { requestForceRefresh() } }
-    }
-
-    private fun requestForceRefresh() {
-        viewModel.onEvent(CreateChatEvent.ForceRequestAllUsers)
     }
 
     private fun listenToBackButtonClick() {
@@ -111,5 +101,17 @@ class CreateChatFragment :
         when (effect) {
             is CreateChatFragmentViewEffect.NavigateToChatListScreen -> navigate(Routes.CHAT_LIST)
         }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // ON EVENT WRAPPERS
+    ///////////////////////////////////////////////////////////////////////////
+
+    private fun requestForceRefresh() {
+        viewModel.onEvent(CreateChatEvent.ForceRequestAllUsers)
+    }
+
+    private fun requestMoreUsers() {
+        viewModel.onEvent(CreateChatEvent.RequestMoreUsers)
     }
 }

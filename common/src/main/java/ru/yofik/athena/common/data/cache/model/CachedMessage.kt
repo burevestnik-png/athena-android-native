@@ -2,6 +2,7 @@ package ru.yofik.athena.common.data.cache.model
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.threeten.bp.LocalDateTime
 import ru.yofik.athena.common.domain.model.message.Message
@@ -23,7 +24,8 @@ import ru.yofik.athena.common.domain.model.message.Message
                 childColumns = ["chatId"],
                 onDelete = ForeignKey.CASCADE,
                 onUpdate = ForeignKey.CASCADE
-            )]
+            )],
+    indices = [Index("id"), Index("senderId"), Index("chatId")]
 )
 data class CachedMessage(
     @PrimaryKey(autoGenerate = false) val id: Long,

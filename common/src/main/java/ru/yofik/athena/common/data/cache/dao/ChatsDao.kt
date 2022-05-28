@@ -23,33 +23,6 @@ abstract class ChatsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertChat(chat: CachedChat)
 
-    /*abstract suspend suspend fun insertChats(chatAggregates: List<CachedChatAggregate>) {
-        for (chatAggregate in chatAggregates) {
-            if (chatAggregate.lastMessage == null) {
-                insertChatAggregateWithNullableLastMessage(chatAggregate.chat, chatAggregate.users)
-            } else {
-                insertChatAggregate(
-                    chatAggregate.chat,
-                    chatAggregate.users,
-                    chatAggregate.lastMessage
-                )
-            }
-        }
-    }*/
-
-    /*@Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertChatAggregateWithNullableLastMessage(
-        chat: CachedChat,
-        users: List<CachedUser>
-    )*/
-
-    /*@Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertChatAggregate(
-        chat: CachedChat,
-        users: List<CachedUser>,
-        lastMessage: CachedMessage
-    )*/
-
     ///////////////////////////////////////////////////////////////////////////
     // QUERY
     ///////////////////////////////////////////////////////////////////////////
@@ -57,6 +30,10 @@ abstract class ChatsDao {
     @Transaction
     @Query("SELECT * FROM chats")
     abstract fun getAll(): Flow<List<CachedChatAggregate>>
+
+    @Transaction
+    @Query("SELECT * FROM chats WHERE chatId = :id")
+    abstract fun getById(id: Long): CachedChatAggregate
 
     ///////////////////////////////////////////////////////////////////////////
     // DELETE

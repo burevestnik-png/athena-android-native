@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 5,
-    "identityHash": "25060af3e4997b7d8ea5446979fb3bbb",
+    "identityHash": "6c3e78a922c863a4984fcbac7445c26d",
     "entities": [
       {
         "tableName": "users",
@@ -92,7 +92,26 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_chat_user_cross_ref_chatId",
+            "unique": false,
+            "columnNames": [
+              "chatId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_chat_user_cross_ref_chatId` ON `${TABLE_NAME}` (`chatId`)"
+          },
+          {
+            "name": "index_chat_user_cross_ref_userId",
+            "unique": false,
+            "columnNames": [
+              "userId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_chat_user_cross_ref_userId` ON `${TABLE_NAME}` (`userId`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "chats",
@@ -120,7 +139,7 @@
       },
       {
         "tableName": "messages",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `content` TEXT NOT NULL, `senderId` INTEGER NOT NULL, `chatId` INTEGER NOT NULL, `creationDate` TEXT NOT NULL, `modificationDate` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `content` TEXT NOT NULL, `senderId` INTEGER NOT NULL, `chatId` INTEGER NOT NULL, `creationDate` TEXT NOT NULL, `modificationDate` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`senderId`) REFERENCES `users`(`userId`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`chatId`) REFERENCES `chats`(`chatId`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -165,14 +184,65 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
-        "foreignKeys": []
+        "indices": [
+          {
+            "name": "index_messages_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_messages_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_messages_senderId",
+            "unique": false,
+            "columnNames": [
+              "senderId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_messages_senderId` ON `${TABLE_NAME}` (`senderId`)"
+          },
+          {
+            "name": "index_messages_chatId",
+            "unique": false,
+            "columnNames": [
+              "chatId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_messages_chatId` ON `${TABLE_NAME}` (`chatId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "users",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "senderId"
+            ],
+            "referencedColumns": [
+              "userId"
+            ]
+          },
+          {
+            "table": "chats",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "chatId"
+            ],
+            "referencedColumns": [
+              "chatId"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '25060af3e4997b7d8ea5446979fb3bbb')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6c3e78a922c863a4984fcbac7445c26d')"
     ]
   }
 }

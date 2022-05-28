@@ -10,6 +10,7 @@ import ru.yofik.athena.common.data.cache.model.CachedChatAggregate
 import ru.yofik.athena.common.data.cache.model.CachedChatUserCrossRef
 import ru.yofik.athena.common.data.cache.model.CachedMessage
 import ru.yofik.athena.common.data.cache.model.CachedUser
+import ru.yofik.athena.common.domain.model.chat.Chat
 import timber.log.Timber
 
 class RoomCache
@@ -42,6 +43,10 @@ constructor(
 
     override fun getChats(): Flow<List<CachedChatAggregate>> {
         return chatsDao.getAll().onEach { Timber.d("getChats: ${it.joinToString("\n")}") }
+    }
+
+    override suspend fun getChat(id: Long): CachedChatAggregate {
+        return chatsDao.getById(id)
     }
 
     override suspend fun deleteAllChats() {

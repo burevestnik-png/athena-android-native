@@ -5,19 +5,20 @@ import kotlinx.coroutines.flow.Flow
 import ru.yofik.athena.common.data.cache.model.CachedUser
 
 @Dao
-interface UsersDao {
+abstract class UsersDao {
 
     ///////////////////////////////////////////////////////////////////////////
     // INSERT
     ///////////////////////////////////////////////////////////////////////////
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertUsers(users: List<CachedUser>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun insertUsers(users: List<CachedUser>)
 
     ///////////////////////////////////////////////////////////////////////////
     // QUERY
     ///////////////////////////////////////////////////////////////////////////
 
-    @Transaction @Query("SELECT * FROM users") fun getAll(): Flow<List<CachedUser>>
+    @Transaction @Query("SELECT * FROM users") abstract fun getAll(): Flow<List<CachedUser>>
 
     ///////////////////////////////////////////////////////////////////////////
     // DELETE
@@ -27,5 +28,5 @@ interface UsersDao {
         deleteAllUsers()
     }
 
-    @Transaction @Query("DELETE FROM users") suspend fun deleteAllUsers()
+    @Transaction @Query("DELETE FROM users") abstract suspend fun deleteAllUsers()
 }
