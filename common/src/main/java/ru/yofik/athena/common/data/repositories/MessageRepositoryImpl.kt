@@ -6,15 +6,21 @@ import ru.yofik.athena.common.data.api.common.mappers.ApiMessageMapper
 import ru.yofik.athena.common.data.api.http.model.common.requests.RequestWithPagination
 import ru.yofik.athena.common.data.api.http.model.message.MessageApi
 import ru.yofik.athena.common.data.api.http.model.message.requests.SendMessageRequest
+import ru.yofik.athena.common.data.cache.dao.MessageDao
+import ru.yofik.athena.common.data.cache.model.CachedMessage
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
+import ru.yofik.athena.common.domain.model.message.Message
 import ru.yofik.athena.common.domain.model.pagination.PaginatedMessages
 import ru.yofik.athena.common.domain.model.pagination.Pagination
 import ru.yofik.athena.common.domain.repositories.MessageRepository
 
 class MessageRepositoryImpl
 @Inject
-constructor(private val messageApi: MessageApi, private val apiMessageMapper: ApiMessageMapper) :
-    MessageRepository {
+constructor(
+    private val messageApi: MessageApi,
+    private val apiMessageMapper: ApiMessageMapper,
+    private val messageDao: MessageDao
+) : MessageRepository {
 
     ///////////////////////////////////////////////////////////////////////////
     // NETWORK
@@ -65,5 +71,14 @@ constructor(private val messageApi: MessageApi, private val apiMessageMapper: Ap
             // TODO add exception parse
             throw NetworkException(exception.message ?: "Code ${exception.code()}")
         }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // CACHE
+    ///////////////////////////////////////////////////////////////////////////
+
+    override suspend fun cacheMessage(message: Message) {
+        if (message.isNullable) return
+        messageDao.insertMessage(CachedMessage.fromDomain(message)!!)
     }
 }

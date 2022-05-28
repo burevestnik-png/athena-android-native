@@ -1,11 +1,30 @@
 package ru.yofik.athena.common.data.cache.model
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import org.threeten.bp.LocalDateTime
 import ru.yofik.athena.common.domain.model.message.Message
 
-@Entity(tableName = "messages")
+@Entity(
+    tableName = "messages",
+    foreignKeys =
+        [
+            ForeignKey(
+                entity = CachedUser::class,
+                parentColumns = ["userId"],
+                childColumns = ["senderId"],
+                onDelete = ForeignKey.CASCADE,
+                onUpdate = ForeignKey.CASCADE
+            ),
+            ForeignKey(
+                entity = CachedChat::class,
+                parentColumns = ["chatId"],
+                childColumns = ["chatId"],
+                onDelete = ForeignKey.CASCADE,
+                onUpdate = ForeignKey.CASCADE
+            )]
+)
 data class CachedMessage(
     @PrimaryKey(autoGenerate = false) val id: Long,
     val content: String,

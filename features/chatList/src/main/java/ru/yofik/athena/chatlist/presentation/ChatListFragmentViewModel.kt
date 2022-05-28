@@ -34,6 +34,7 @@ constructor(
     private val requestNextChatsPage: RequestNextChatsPage,
     private val subscribeOnNotifications: SubscribeOnNotifications,
     private val forceRefreshChats: ForceRefreshChats,
+    private val updateMessage: UpdateMessage,
     private val uiChatMapper: UiChatMapper,
     private val uiMessageMapper: UiMessageMapper
 ) : BaseViewModel<ChatListViewPayload>(ChatListViewPayload()) {
@@ -114,16 +115,20 @@ constructor(
         Timber.d("Get new notification in chatList feature")
 
         // todo update cache
-        val updatedList =
-            state.value.payload.chats.map {
-                if (it.id == notification.message.chatId) {
-                    it.copy(message = uiMessageMapper.mapToView(notification.message))
-                } else {
-                    it
-                }
-            }
+        // will list update if I only change db
+        viewModelScope.launch(Dispatchers.IO) {
+            updateMessage(notification.message)
+        }
+//        val updatedList =
+//            state.value.payload.chats.map {
+//                if (it.id == notification.message.chatId) {
+//                    it.copy(message = uiMessageMapper.mapToView(notification.message))
+//                } else {
+//                    it
+//                }
+//            }
 
-        modifyState { payload -> payload.copy(chats = updatedList) }
+//        modifyState { payload -> payload.copy(chats = updatedList) }
     }
 
     ///////////////////////////////////////////////////////////////////////////

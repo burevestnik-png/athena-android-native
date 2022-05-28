@@ -2,6 +2,7 @@ package ru.yofik.athena.common.data.cache
 
 import kotlinx.coroutines.flow.Flow
 import ru.yofik.athena.common.data.cache.model.CachedChatAggregate
+import ru.yofik.athena.common.data.cache.model.CachedMessage
 import ru.yofik.athena.common.data.cache.model.CachedUser
 
 interface Cache {
@@ -12,6 +13,8 @@ interface Cache {
     fun getChats(): Flow<List<CachedChatAggregate>>
     suspend fun deleteAllChats()
     suspend fun insertChats(chatsAggregate: List<CachedChatAggregate>)
+
+    suspend fun insertMessage(message: CachedMessage)
 
     suspend fun cleanup()
 }

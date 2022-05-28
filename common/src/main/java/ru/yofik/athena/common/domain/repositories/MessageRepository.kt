@@ -1,5 +1,6 @@
 package ru.yofik.athena.common.domain.repositories
 
+import ru.yofik.athena.common.domain.model.message.Message
 import ru.yofik.athena.common.domain.model.pagination.PaginatedMessages
 
 interface MessageRepository {
@@ -14,4 +15,7 @@ interface MessageRepository {
         messageId: Long,
         isGlobal: Boolean = false
     )
+
+
+    suspend fun cacheMessage(message: Message)
 }

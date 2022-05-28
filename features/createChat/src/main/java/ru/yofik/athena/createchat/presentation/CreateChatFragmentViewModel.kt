@@ -84,8 +84,7 @@ constructor(
         val newUsers = userFromServer.subtract(currentUsers.toSet())
         val updatedList = currentUsers + newUsers
 
-        _state.value = state.value.copy { copy(users = updatedList) }
-        modifyState  }
+        modifyState { payload -> payload.copy(users = updatedList) }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -101,29 +100,29 @@ constructor(
     }
 
     private fun handleCreateChat(targetUserId: Long) {
-        _state.value = showLoader(state)
+        showLoader()
 
         launchApiRequest {
             val createdChat = withContext(Dispatchers.IO) { createChat(targetUserId) }
             Timber.d("handleCreateChat: $createdChat")
-//            _effects.emit(CreateChatFragmentViewEffect.NavigateToChatListScreen)
+            //            _effects.emit(CreateChatFragmentViewEffect.NavigateToChatListScreen)
 
-            _state.value = hideLoader(state)
+            hideLoader()
         }
     }
 
     private fun loadNextUserPage() {
-        _state.value = showLoader(state)
+        showLoader()
 
         launchApiRequest {
             val pagination = withContext(Dispatchers.IO) { requestNextUsersPage(currentPage) }
             currentPage = pagination.currentPage
-            _state.value = hideLoader(state)
+            hideLoader()
         }
     }
 
     private fun forceRequestAllUsers() {
-        _state.value = showLoader(state)
+        showLoader()
 
         viewModelScope.launch {
             withContext(Dispatchers.IO) { forceRefreshUsers() }
@@ -142,10 +141,9 @@ constructor(
             }
             is NoMoreItemsException -> {
                 isLastPage = true
-                _state.value =
-                    state.value.copy(loading = false, failure = FailureEvent(throwable)) {
-                        copy(noMoreUsersAnymore = true)
-                    }
+                modifyState(loading = false, failure = FailureEvent(throwable)) { payload ->
+                    payload.copy(noMoreUsersAnymore = true)
+                }
             }
         }
     }

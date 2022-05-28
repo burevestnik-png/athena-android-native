@@ -8,6 +8,7 @@ import ru.yofik.athena.common.data.cache.dao.MessageDao
 import ru.yofik.athena.common.data.cache.dao.UsersDao
 import ru.yofik.athena.common.data.cache.model.CachedChatAggregate
 import ru.yofik.athena.common.data.cache.model.CachedChatUserCrossRef
+import ru.yofik.athena.common.data.cache.model.CachedMessage
 import ru.yofik.athena.common.data.cache.model.CachedUser
 import timber.log.Timber
 
@@ -18,6 +19,11 @@ constructor(
     private val chatsDao: ChatsDao,
     private val messageDao: MessageDao
 ) : Cache {
+
+    ///////////////////////////////////////////////////////////////////////////
+    // User
+    ///////////////////////////////////////////////////////////////////////////
+
     override fun getUsers(): Flow<List<CachedUser>> {
         return usersDao.getAll()
     }
@@ -27,11 +33,14 @@ constructor(
     }
 
     override suspend fun insertUsers(users: List<CachedUser>) {
-        usersDao.insert(users)
+        usersDao.insertUsers(users)
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Chat
+    ///////////////////////////////////////////////////////////////////////////
+
     override fun getChats(): Flow<List<CachedChatAggregate>> {
-        // todo delete on eacg
         return chatsDao.getAll().onEach { Timber.d("getChats: ${it.joinToString("\n")}") }
     }
 
@@ -40,15 +49,28 @@ constructor(
     }
 
     override suspend fun insertChats(chatsAggregate: List<CachedChatAggregate>) {
-        chatsDao.insertChats(chatsAggregate)
-
         chatsAggregate.forEach { chatAggregate ->
+            chatsDao.insertChat(chatAggregate.chat)
+            usersDao.insertUsers(chatAggregate.users)
+
+            if (chatAggregate.lastMessage != null) {
+                messageDao.insertMessage(chatAggregate.lastMessage)
+            }
+
             chatAggregate.users.forEach { user ->
                 chatsDao.insertCachedChatUserCrossRef(
                     CachedChatUserCrossRef(chatAggregate.chat.chatId, user.userId)
                 )
             }
         }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Message
+    ///////////////////////////////////////////////////////////////////////////
+
+    override suspend fun insertMessage(message: CachedMessage) {
+        messageDao.insertMessage(message)
     }
 
     override suspend fun cleanup() {
