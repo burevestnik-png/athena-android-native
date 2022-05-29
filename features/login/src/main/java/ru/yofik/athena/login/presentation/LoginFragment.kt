@@ -1,60 +1,32 @@
 package ru.yofik.athena.login.presentation
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
+import ru.yofik.athena.common.presentation.components.base.BaseFragment
 import ru.yofik.athena.common.presentation.components.extensions.handleFailures
+import ru.yofik.athena.common.presentation.components.extensions.launchViewModelsFlow
+import ru.yofik.athena.common.presentation.components.extensions.navigate
+import ru.yofik.athena.common.presentation.model.UIState
 import ru.yofik.athena.common.utils.Routes
+import ru.yofik.athena.login.R
 import ru.yofik.athena.login.databinding.FragmentLoginBinding
-import timber.log.Timber
 
 @AndroidEntryPoint
-class LoginFragment : Fragment() {
-    private var _binding: FragmentLoginBinding? = null
-    private val binding: FragmentLoginBinding
-        get() = _binding!!
-
-    private val viewModel by viewModels<LoginFragmentViewModel>()
-
-    ///////////////////////////////////////////////////////////////////////////
-    // LIFECYCLE
-    ///////////////////////////////////////////////////////////////////////////
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentLoginBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        setupUI()
-        observeViewStateUpdates()
-        observeViewEffects()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
-    }
+class LoginFragment :
+    BaseFragment<LoginFragmentViewModel, FragmentLoginBinding>(R.layout.fragment_login) {
+    override val binding by viewBinding(FragmentLoginBinding::bind)
+    override val viewModel by viewModels<LoginFragmentViewModel>()
 
     ///////////////////////////////////////////////////////////////////////////
     // SETUPING UI
     ///////////////////////////////////////////////////////////////////////////
 
-    private fun setupUI() {
+    override fun setupUI() {
         setOnCodeChangeListener()
         listenToSubmitButton()
     }
@@ -67,29 +39,19 @@ class LoginFragment : Fragment() {
         binding.codeInput.editText?.doAfterTextChanged { onCodeValueChange(it?.toString() ?: "") }
     }
 
-    private fun requestUserActivation() {
-        viewModel.onEvent(LoginEvent.RequestUserActivation)
-    }
-
-    private fun onCodeValueChange(value: String) {
-        viewModel.onEvent(LoginEvent.OnCodeValueChange(value))
-    }
-
     ///////////////////////////////////////////////////////////////////////////
     // STATE OBSERVING
     ///////////////////////////////////////////////////////////////////////////
 
-    private fun observeViewStateUpdates() {
-        viewModel.state.observe(viewLifecycleOwner) { updateScreenState(it) }
+    override fun observeViewState() {
+        launchViewModelsFlow { viewModel.state.collect { updateScreenState(it) } }
     }
 
-    private fun updateScreenState(state: LoginViewState) {
-        Timber.d("updateScreenState: $state")
-
+    private fun updateScreenState(state: UIState<LoginViewStatePayload>) {
         with(binding) {
             progressBar.isVisible = state.loading
-            codeInput.error = resources.getString(state.codeError)
-            submitButton.isEnabled = state.isSubmitButtonActive
+            codeInput.error = resources.getString(state.payload.codeError)
+            submitButton.isEnabled = state.payload.isSubmitButtonActive
         }
 
         handleFailures(state.failure)
@@ -99,18 +61,25 @@ class LoginFragment : Fragment() {
     // EFFECT OBSERVING
     ///////////////////////////////////////////////////////////////////////////
 
-    private fun observeViewEffects() {
-        viewModel.effects.observe(viewLifecycleOwner) { reactTo(it) }
+    override fun observeViewEffects() {
+        launchViewModelsFlow { viewModel.effects.collect { reactTo(it) } }
     }
 
     private fun reactTo(effect: LoginViewEffect) {
         when (effect) {
-            is LoginViewEffect.NavigateToChatListPage -> navigateToChatListScreen()
+            is LoginViewEffect.NavigateToChatListPage -> navigate(Routes.CHAT_LIST)
         }
     }
 
-    private fun navigateToChatListScreen() {
-        val deepLink = Routes.CHAT_LIST.toUri()
-        findNavController().navigate(deepLink)
+    ///////////////////////////////////////////////////////////////////////////
+    // ON EVENT WRAPPERS
+    ///////////////////////////////////////////////////////////////////////////
+
+    private fun requestUserActivation() {
+        viewModel.onEvent(LoginEvent.RequestUserActivation)
+    }
+
+    private fun onCodeValueChange(value: String) {
+        viewModel.onEvent(LoginEvent.OnCodeValueChange(value))
     }
 }

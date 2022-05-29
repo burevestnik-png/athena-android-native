@@ -1,19 +1,18 @@
 package ru.yofik.athena.login.presentation
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.withContext
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
 import ru.yofik.athena.common.domain.model.exceptions.NetworkUnavailableException
+import ru.yofik.athena.common.presentation.components.base.BaseViewModel
 import ru.yofik.athena.common.presentation.model.FailureEvent
 import ru.yofik.athena.login.R
 import ru.yofik.athena.login.domain.usecases.RequestUserActivation
 import ru.yofik.athena.login.domain.usecases.RequestUserInfo
-import timber.log.Timber
 
 @HiltViewModel
 class LoginFragmentViewModel
@@ -21,29 +20,18 @@ class LoginFragmentViewModel
 constructor(
     private val requestUserActivation: RequestUserActivation,
     private val requestUserInfo: RequestUserInfo
-) : ViewModel() {
+) : BaseViewModel<LoginViewStatePayload>(LoginViewStatePayload()) {
 
     companion object {
         const val MAX_CODE_LENGTH = 3
     }
 
-    private val _state = MutableLiveData<LoginViewState>()
-    private val _effects = MutableLiveData<LoginViewEffect>()
+    private val _effects = MutableSharedFlow<LoginViewEffect>()
+    val effects: SharedFlow<LoginViewEffect> = _effects
 
-    val effects: LiveData<LoginViewEffect>
-        get() = _effects
-    val state: LiveData<LoginViewState>
-        get() = _state
-
-    private var job: Job? = null
-    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        Timber.d("exceptionHandler: ${throwable.message}")
-        viewModelScope.launch { onFailure(throwable) }
-    }
-
-    init {
-        _state.value = LoginViewState()
-    }
+    ///////////////////////////////////////////////////////////////////////////
+    // ON EVENT
+    ///////////////////////////////////////////////////////////////////////////
 
     fun onEvent(event: LoginEvent) {
         when (event) {
@@ -62,35 +50,30 @@ constructor(
                 R.string.code_error
             }
 
-        _state.value = state.value!!.copy(code = newValue, codeError = codeError)
+        modifyState { payload -> payload.copy(code = newValue, codeError = codeError) }
     }
 
     private fun onUserActivation() {
-        _state.value = state.value!!.copy(loading = true)
+        showLoader()
 
-        job =
-            CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-                requestUserActivation(state.value!!.code)
+        launchIORequest {
+            withContext(Dispatchers.IO) {
+                requestUserActivation(payload.code)
                 requestUserInfo()
-
-                withContext(Dispatchers.Main) {
-                    _state.value = state.value!!.copy(loading = false)
-                    _effects.value = LoginViewEffect.NavigateToChatListPage
-                }
             }
-    }
 
-    private fun onFailure(failure: Throwable) {
-        Timber.d("onFailure: $failure")
-        when (failure) {
-            is NetworkUnavailableException, is NetworkException -> {
-                _state.value = state.value!!.copy(loading = false, failure = FailureEvent(failure))
-            }
+            hideLoader()
+            _effects.emit(LoginViewEffect.NavigateToChatListPage)
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        job?.cancel()
+    override fun onFailure(failure: Throwable) {
+        when (failure) {
+            // todo add to all handlers
+            is NetworkUnavailableException,
+            is NetworkException -> {
+                modifyState(loading = false, failure = FailureEvent(failure))
+            }
+        }
     }
 }

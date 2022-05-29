@@ -4,9 +4,7 @@ import androidx.annotation.StringRes
 import ru.yofik.athena.common.presentation.model.FailureEvent
 import ru.yofik.athena.login.R
 
-data class LoginViewState(
-    val loading: Boolean = false,
-    val failure: FailureEvent? = null,
+data class LoginViewStatePayload(
     val code: String = "",
     @StringRes val codeError: Int = R.string.no_error
 ) {
