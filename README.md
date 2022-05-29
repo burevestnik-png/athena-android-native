@@ -78,23 +78,21 @@
 
 #### Features
 
-- TODO в чат листе, протестить
-- вынести пагинацию
-- рефактор логина и профиля
+- Added pagination and caching for users on CreateChat screen, CHatList screen; **Need testing**
 
 #### Plans
 
 - [ ] Rework AppBar with Navigation framework
-- [ ] Think about settings
 - [ ] Coroutines :]
 - [ ] TextInputLayout rewrite on
 - [ ] Add validation on Login screen like on Onboarding
-- [ ] Think about creating several chats
 - [ ] Very bad realization of rx java, need to study more
 - [ ] Add a list of my name convention in fragment and activity
-- [ ] add chat to chat list module
 - [ ] added response error parsing
 - Вопрос, где лучше инитить - в фрагменте или в вм
+- TODO в чат листе, протестить
+- вынести пагинацию
+- рефактор логина и профиля
 
 ---
 
