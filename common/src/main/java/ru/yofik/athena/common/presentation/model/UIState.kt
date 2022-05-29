@@ -1,5 +1,7 @@
 package ru.yofik.athena.common.presentation.model
 
+class EmptyPayload
+
 data class UIState<Payload>(
     val payload: Payload,
     val loading: Boolean = false,

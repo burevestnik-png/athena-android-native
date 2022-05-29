@@ -1,12 +1,13 @@
 package ru.yofik.athena.profile.presentation
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.launch
+import ru.yofik.athena.common.presentation.components.base.BaseViewModel
+import ru.yofik.athena.common.presentation.model.EmptyPayload
 import ru.yofik.athena.profile.domain.usecases.GetCachedUser
 import ru.yofik.athena.profile.domain.usecases.LogoutUser
 
@@ -14,19 +15,21 @@ import ru.yofik.athena.profile.domain.usecases.LogoutUser
 class ProfileFragmentViewModel
 @Inject
 constructor(private val logoutUser: LogoutUser, private val getCachedUser: GetCachedUser) :
-    ViewModel() {
-    private val _effects = MutableLiveData<ProfileFragmentViewEffect>()
-    val effects: LiveData<ProfileFragmentViewEffect>
-        get() = _effects
+    BaseViewModel<EmptyPayload>(EmptyPayload()) {
+    private val _effects = MutableSharedFlow<ProfileFragmentViewEffect>()
+    val effects: SharedFlow<ProfileFragmentViewEffect> = _effects
 
-    private val _state = MutableLiveData<ProfileViewState>()
-    val state: LiveData<ProfileViewState>
-        get() = _state
+    ///////////////////////////////////////////////////////////////////////////
+    // INIT
+    ///////////////////////////////////////////////////////////////////////////
 
     init {
-        _state.value = ProfileViewState()
         provideUserInfo()
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // ON EVENT
+    ///////////////////////////////////////////////////////////////////////////
 
     fun onEvent(event: ProfileFragmentEvent) {
         when (event) {
@@ -35,19 +38,20 @@ constructor(private val logoutUser: LogoutUser, private val getCachedUser: GetCa
     }
 
     private fun provideUserInfo() {
-        _state.value = state.value!!.copy(loading = true)
+        showLoader()
 
         val user = getCachedUser()
-        _effects.value = ProfileFragmentViewEffect.ProvideUserInfo(user)
+        viewModelScope.launch { _effects.emit(ProfileFragmentViewEffect.ProvideUserInfo(user)) }
 
-        _state.value = state.value!!.copy(loading = false)
+        hideLoader()
     }
 
     private fun handleLogoutUser() {
-        viewModelScope.launch {
+        launchIORequest {
             logoutUser()
+            _effects.emit(ProfileFragmentViewEffect.NavigateToLoginScreen)
         }
-
-        _effects.value = ProfileFragmentViewEffect.NavigateToLoginScreen
     }
+
+    override fun onFailure(throwable: Throwable) {}
 }

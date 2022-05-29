@@ -1,29 +1,27 @@
 package ru.yofik.athena.profile.presentation
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.common.domain.model.user.User
+import ru.yofik.athena.common.presentation.components.base.BaseFragment
+import ru.yofik.athena.common.presentation.components.extensions.launchViewModelsFlow
+import ru.yofik.athena.common.presentation.model.EmptyPayload
+import ru.yofik.athena.common.presentation.model.UIState
 import ru.yofik.athena.common.utils.Routes
 import ru.yofik.athena.profile.R
 import ru.yofik.athena.profile.databinding.FragmentSettingsBinding
 
 @AndroidEntryPoint
-class ProfileFragment : Fragment() {
-    private var _binding: FragmentSettingsBinding? = null
-    private val binding: FragmentSettingsBinding
-        get() = _binding!!
-
-    private val viewModel by viewModels<ProfileFragmentViewModel>()
+class ProfileFragment :
+    BaseFragment<ProfileFragmentViewModel, FragmentSettingsBinding>(R.layout.fragment_settings) {
+    override val binding by viewBinding(FragmentSettingsBinding::bind)
+    override val viewModel by viewModels<ProfileFragmentViewModel>()
 
     private val actionBar: ActionBar
         get() =
@@ -31,44 +29,16 @@ class ProfileFragment : Fragment() {
                 ?: throw RuntimeException("View was initialized wrong")
 
     ///////////////////////////////////////////////////////////////////////////
-    // LIFECYCLE
-    ///////////////////////////////////////////////////////////////////////////
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        setupUI()
-        observeViewEffects()
-        observeViewStateUpdates()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
     // SETUPING UI
     ///////////////////////////////////////////////////////////////////////////
 
-    private fun setupUI() {
+    override fun setupUI() {
         setupActionBar()
         listenToLogoutButton()
     }
 
     private fun listenToLogoutButton() {
-        binding.logoutButton.setOnClickListener {
-            viewModel.onEvent(ProfileFragmentEvent.LogoutUser)
-        }
+        binding.logoutButton.setOnClickListener { requestLogoutUser() }
     }
 
     private fun setupActionBar() {
@@ -80,11 +50,11 @@ class ProfileFragment : Fragment() {
     // OBSERVE STATE
     ///////////////////////////////////////////////////////////////////////////
 
-    private fun observeViewStateUpdates() {
-        viewModel.state.observe(viewLifecycleOwner) { updateScreenState(it) }
+    override fun observeViewState() {
+        launchViewModelsFlow { viewModel.state.collect { updateScreenState(it) } }
     }
 
-    private fun updateScreenState(state: ProfileViewState) {
+    private fun updateScreenState(state: UIState<EmptyPayload>) {
         binding.progressBar.isVisible = state.loading
     }
 
@@ -92,8 +62,8 @@ class ProfileFragment : Fragment() {
     // OBSERVE EFFECTS
     ///////////////////////////////////////////////////////////////////////////
 
-    private fun observeViewEffects() {
-        viewModel.effects.observe(viewLifecycleOwner) { reactTo(it) }
+    override fun observeViewEffects() {
+        launchViewModelsFlow { viewModel.effects.collect { reactTo(it) } }
     }
 
     private fun reactTo(effect: ProfileFragmentViewEffect) {
@@ -114,5 +84,13 @@ class ProfileFragment : Fragment() {
     private fun navigateToLoginScreen() {
         val deepLink = Routes.LOGIN.toUri()
         findNavController().navigate(deepLink)
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // ON EVENT WRAPPERS
+    ///////////////////////////////////////////////////////////////////////////
+
+    private fun requestLogoutUser() {
+        viewModel.onEvent(ProfileFragmentEvent.LogoutUser)
     }
 }
