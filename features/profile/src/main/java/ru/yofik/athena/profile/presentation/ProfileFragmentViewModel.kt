@@ -1,22 +1,21 @@
 package ru.yofik.athena.profile.presentation
 
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.launch
 import ru.yofik.athena.common.presentation.components.base.BaseViewModel
 import ru.yofik.athena.common.presentation.model.EmptyPayload
 import ru.yofik.athena.profile.domain.usecases.GetCachedUser
 import ru.yofik.athena.profile.domain.usecases.LogoutUser
+import timber.log.Timber
 
 @HiltViewModel
 class ProfileFragmentViewModel
 @Inject
 constructor(private val logoutUser: LogoutUser, private val getCachedUser: GetCachedUser) :
     BaseViewModel<EmptyPayload>(EmptyPayload()) {
-    private val _effects = MutableSharedFlow<ProfileFragmentViewEffect>()
+    private val _effects = MutableSharedFlow<ProfileFragmentViewEffect>(replay = 1)
     val effects: SharedFlow<ProfileFragmentViewEffect> = _effects
 
     ///////////////////////////////////////////////////////////////////////////
@@ -41,7 +40,7 @@ constructor(private val logoutUser: LogoutUser, private val getCachedUser: GetCa
         showLoader()
 
         val user = getCachedUser()
-        viewModelScope.launch { _effects.emit(ProfileFragmentViewEffect.ProvideUserInfo(user)) }
+        _effects.tryEmit(ProfileFragmentViewEffect.ProvideUserInfo(user))
 
         hideLoader()
     }
