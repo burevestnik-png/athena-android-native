@@ -25,11 +25,6 @@ class ProfileFragment :
     override val binding by viewBinding(FragmentProfileBinding::bind)
     override val viewModel by viewModels<ProfileFragmentViewModel>()
 
-    private val actionBar: ActionBar
-        get() =
-            (activity as AppCompatActivity).supportActionBar
-                ?: throw RuntimeException("View was initialized wrong")
-
     ///////////////////////////////////////////////////////////////////////////
     // SETUPING UI
     ///////////////////////////////////////////////////////////////////////////
@@ -44,8 +39,7 @@ class ProfileFragment :
     }
 
     private fun setupActionBar() {
-        (activity as AppCompatActivity).setSupportActionBar(binding.toolbarWrapper.toolbar)
-        actionBar.title = ""
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
     }
 
     ///////////////////////////////////////////////////////////////////////////
