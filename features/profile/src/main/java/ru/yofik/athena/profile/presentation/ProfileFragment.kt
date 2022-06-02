@@ -30,16 +30,11 @@ class ProfileFragment :
     ///////////////////////////////////////////////////////////////////////////
 
     override fun setupUI() {
-        setupActionBar()
         listenToLogoutButton()
     }
 
     private fun listenToLogoutButton() {
         binding.logoutButton.setOnClickListener { requestLogoutUser() }
-    }
-
-    private fun setupActionBar() {
-        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
     }
 
     ///////////////////////////////////////////////////////////////////////////

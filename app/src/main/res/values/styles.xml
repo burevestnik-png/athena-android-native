@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ToolbarMaterial3">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:background">@color/primary</item>
+        <item name="titleCentered">true</item>
+        <item name="tint">@color/white</item>
+        <item name="navigationIconTint">@color/white</item>
+        <item name="titleTextColor">@color/text_or_icons</item>
+    </style>
+
+</resources>

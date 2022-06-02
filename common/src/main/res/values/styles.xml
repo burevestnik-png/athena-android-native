@@ -1,20 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Toolbar">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">?attr/actionBarSize</item>
-        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
-        <item name="android:background">@color/primary</item>
-        <item name="contentInsetStart">0dp</item>
-    </style>
 
-    <style name="ToolbarMaterial3" >
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">?attr/actionBarSize</item>
-        <item name="android:background">@color/primary</item>
-        <item name="titleCentered">true</item>
-        <item name="titleTextColor">@color/text_or_icons</item>
-    </style>
 
 </resources>

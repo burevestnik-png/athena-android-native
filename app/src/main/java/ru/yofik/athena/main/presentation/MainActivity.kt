@@ -6,6 +6,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.R
@@ -13,10 +16,23 @@ import ru.yofik.athena.databinding.ActivityMainBinding
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    companion object {
+        val DESTINATIONS_WITHOUT_APP_BAR =
+            listOf(
+                ru.yofik.athena.login.R.id.loginFragment,
+            )
+    }
+
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     private val viewModel by viewModels<MainActivityViewModel>()
+
+    ///////////////////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    ///////////////////////////////////////////////////////////////////////////
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,10 +40,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupNavController()
-        setupBottomNavigation()
-        observeViewEffects()
+        setupAppBarConfiguration()
+        setupActionBar()
+        setupDrawer()
 
+        observeViewEffects()
         requestDefineStartDestination()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
     private fun setupNavController() {
@@ -37,20 +59,34 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
     }
 
-    private fun setupBottomNavigation() {
-        binding.bottomNavigation.setupWithNavController(navController)
-        setRulesWhenBottomNavigationShouldBeHide()
+    private fun setupAppBarConfiguration() {
+        appBarConfiguration =
+            AppBarConfiguration(setOf(R.id.nav_chat_list, R.id.nav_profile), binding.root)
     }
 
-    private fun setRulesWhenBottomNavigationShouldBeHide() {
+    private fun setupActionBar() {
+        setSupportActionBar(binding.layoutAppBar.toolbar)
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        setRulesWhenAppBarShouldBeHide()
+    }
+
+    private fun setupDrawer() {
+        binding.navigationView.setupWithNavController(navController)
+    }
+
+    private fun setRulesWhenAppBarShouldBeHide() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id in DESTINATIONS_WITHOUT_BOTTOM_NAV) {
-                binding.bottomNavigation.visibility = View.GONE
+            if (destination.id in DESTINATIONS_WITHOUT_APP_BAR) {
+                binding.navigationView.visibility = View.GONE
             } else {
-                binding.bottomNavigation.visibility = View.VISIBLE
+                binding.navigationView.visibility = View.VISIBLE
             }
         }
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // OBSERVING VIEW EFFECTS
+    ///////////////////////////////////////////////////////////////////////////
 
     private fun observeViewEffects() {
         viewModel.effects.observe(this) { reactTo(it) }
@@ -70,16 +106,11 @@ class MainActivity : AppCompatActivity() {
         navController.graph = navGraph
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // EVENT WRAPPERS
+    ///////////////////////////////////////////////////////////////////////////
+
     private fun requestDefineStartDestination() {
         viewModel.onEvent(MainActivityEvent.DefineStartDestination)
-    }
-
-    companion object {
-        val DESTINATIONS_WITHOUT_BOTTOM_NAV =
-            listOf(
-                ru.yofik.athena.login.R.id.loginFragment,
-                ru.yofik.athena.chat.R.id.chatFragment,
-                ru.yofik.athena.createchat.R.id.createChatFragment
-            )
     }
 }

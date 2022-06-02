@@ -1,6 +1,9 @@
 package ru.yofik.athena.chat.presentation
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
@@ -52,11 +55,23 @@ class ChatFragment :
     override fun setupUI() {
         adapter = createAdapter()
         setupRecycleView(adapter)
+        setHasOptionsMenu(true)
 
         listenToMessageInput()
         listenToSubmitButtonClick()
-        listenToBackButtonClick()
-        listenToToolbarMenuClick()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.tool_bar_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_profile -> {
+                true
+            }
+            else -> false
+        }
     }
 
     private fun createAdapter(): MessageAdapter {
@@ -88,21 +103,6 @@ class ChatFragment :
         binding.sendButton.setOnClickListener { requestSendMessage() }
     }
 
-    private fun listenToBackButtonClick() {
-        binding.toolbar.setNavigationOnClickListener { findNavController().popBackStack() }
-    }
-
-    private fun listenToToolbarMenuClick() {
-        binding.toolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.action_profile -> {
-                    true
-                }
-                else -> false
-            }
-        }
-    }
-
     ///////////////////////////////////////////////////////////////////////////
     // OBSERVING EFFECTS
     ///////////////////////////////////////////////////////////////////////////
@@ -123,7 +123,7 @@ class ChatFragment :
     }
 
     private fun handleSetChatName(name: String) {
-        binding.toolbar.title = name
+        requireActivity().actionBar?.title = name
     }
 
     ///////////////////////////////////////////////////////////////////////////

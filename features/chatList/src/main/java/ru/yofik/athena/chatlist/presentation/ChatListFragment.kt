@@ -1,6 +1,16 @@
 package ru.yofik.athena.chatlist.presentation
 
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -21,6 +31,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class ChatListFragment :
     BaseFragment<ChatListFragmentViewModel, FragmentChatListBinding>(R.layout.fragment_chat_list) {
+
     override val binding: FragmentChatListBinding by viewBinding(FragmentChatListBinding::bind)
     override val viewModel: ChatListFragmentViewModel by viewModels()
 
@@ -31,41 +42,33 @@ class ChatListFragment :
     ///////////////////////////////////////////////////////////////////////////
 
     override fun setupUI() {
-        setupSwipeRefreshLayout()
-
-        listenToDrawerButton()
-        listenToToolbarMenuButton()
-
-        adapter = createAdapter()
+        adapter = setupChatAdapter()
         setupRecyclerView(adapter)
+        setHasOptionsMenu(true)
+
+        listenToListPulling()
     }
 
-    private fun listenToDrawerButton() {
-        binding.toolbar.setNavigationOnClickListener {
-            Timber.d("listenToDrawerButton: drawer")
-        }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.toolbar_menu, menu)
     }
 
-    private fun listenToToolbarMenuButton() {
-        binding.toolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.action_create_chat -> {
-                    navigate(Routes.CREATE_CHAT)
-                    true
-                }
-                else -> false
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_create_chat -> {
+                navigate(Routes.CREATE_CHAT)
+                true
             }
+            else -> false
         }
     }
 
-
-    private fun setupSwipeRefreshLayout() {
+    private fun listenToListPulling() {
         binding.swipeLayout.setOnRefreshListener { requestForceGetAllChats() }
     }
 
-    private fun createAdapter(): ChatAdapter {
-        return ChatAdapter().apply { setChatClickListener { id -> navigate(Routes.CHAT(id)) } }
-    }
+    private fun setupChatAdapter() =
+        ChatAdapter().apply { setChatClickListener { id -> navigate(Routes.CHAT(id)) } }
 
     private fun setupRecyclerView(adapter: ChatAdapter) {
         binding.recyclerView.apply {

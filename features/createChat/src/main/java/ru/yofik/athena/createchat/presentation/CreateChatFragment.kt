@@ -33,8 +33,6 @@ class CreateChatFragment :
     override fun setupUI() {
         adapter = createAdapter()
         setupRecyclerView(adapter)
-
-        listenToBackButtonClick()
         setupSwipeRefreshLayout()
     }
 
@@ -65,10 +63,6 @@ class CreateChatFragment :
 
     private fun setupSwipeRefreshLayout() {
         binding.swipeLayout.apply { setOnRefreshListener { requestForceRefresh() } }
-    }
-
-    private fun listenToBackButtonClick() {
-        binding.toolbar.setNavigationOnClickListener { findNavController().popBackStack() }
     }
 
     ///////////////////////////////////////////////////////////////////////////
