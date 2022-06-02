@@ -5,12 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
+
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
-        layout="@layout/toolbar_chat_list_toolbar"
+        style="@style/ToolbarMaterial3"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/tool_bar_menu"
+        app:navigationIcon="@drawable/ic_baseline_menu_24"
+        app:navigationIconTint="@color/white"
+        app:title="@string/chat_list_toolbar_title_chats" />
 
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

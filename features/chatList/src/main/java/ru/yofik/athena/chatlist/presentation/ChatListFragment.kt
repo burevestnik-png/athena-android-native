@@ -1,7 +1,5 @@
 package ru.yofik.athena.chatlist.presentation
 
-import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,11 +24,6 @@ class ChatListFragment :
     override val binding: FragmentChatListBinding by viewBinding(FragmentChatListBinding::bind)
     override val viewModel: ChatListFragmentViewModel by viewModels()
 
-    private val actionBar: ActionBar
-        get() =
-            (activity as AppCompatActivity).supportActionBar
-                ?: throw RuntimeException("View was initialized wrong")
-
     private lateinit var adapter: ChatAdapter
 
     ///////////////////////////////////////////////////////////////////////////
@@ -38,24 +31,33 @@ class ChatListFragment :
     ///////////////////////////////////////////////////////////////////////////
 
     override fun setupUI() {
-        setupActionBar()
         setupSwipeRefreshLayout()
 
-        listenToAddButton()
+        listenToDrawerButton()
+        listenToToolbarMenuButton()
 
         adapter = createAdapter()
         setupRecyclerView(adapter)
     }
 
-    private fun setupActionBar() {
-        // Adding Toolbar & removing showing app name in title
-        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar.root)
-        actionBar.title = ""
+    private fun listenToDrawerButton() {
+        binding.toolbar.setNavigationOnClickListener {
+            Timber.d("listenToDrawerButton: drawer")
+        }
     }
 
-    private fun listenToAddButton() {
-        binding.toolbar.addButton.setOnClickListener { navigate(Routes.CREATE_CHAT) }
+    private fun listenToToolbarMenuButton() {
+        binding.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.action_create_chat -> {
+                    navigate(Routes.CREATE_CHAT)
+                    true
+                }
+                else -> false
+            }
+        }
     }
+
 
     private fun setupSwipeRefreshLayout() {
         binding.swipeLayout.setOnRefreshListener { requestForceGetAllChats() }
