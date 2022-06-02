@@ -7,5 +7,5 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="ru.yofik.athena.profile.presentation.ProfileFragment"
-        android:label="@string/nav_profile_fragment" />
+        android:label="@string/nav_profile_label" />
 </navigation>

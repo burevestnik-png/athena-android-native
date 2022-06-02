@@ -4,7 +4,7 @@
     <string name="chat_list_toolbar_create_desc">Create new chat</string>
     <string name="chat_list_toolbar_title_chats">Chats</string>
 
-    <string name="nav_chat_list_label">ChatListFragment</string>
+    <string name="nav_chat_list_label">Chats</string>
 
     <string name="action_create_chat">Create chat</string>
 </resources>

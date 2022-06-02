@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
@@ -123,7 +124,7 @@ class ChatFragment :
     }
 
     private fun handleSetChatName(name: String) {
-        requireActivity().actionBar?.title = name
+        (activity as AppCompatActivity).supportActionBar?.title = name
     }
 
     ///////////////////////////////////////////////////////////////////////////

@@ -2,9 +2,9 @@
 <resources>
     <string name="chat_toolbar_back_desc">Return to chats</string>
     <string name="chat_toolbar_profile_desc">Return to chats</string>
+    <string name="type_your_message">Type your message…</string>
 
-    <string name="nav_chat_label">ChatFragment</string>
+    <string name="nav_chat_label">Chat</string>
 
     <string name="action_profile">Profile</string>
-    <string name="type_your_message">Type your message...</string>
 </resources>

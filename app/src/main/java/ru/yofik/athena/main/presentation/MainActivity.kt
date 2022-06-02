@@ -22,6 +22,9 @@ class MainActivity : AppCompatActivity() {
             listOf(
                 ru.yofik.athena.login.R.id.loginFragment,
             )
+
+        val TOP_LEVEL_DESTINATIONS =
+            setOf(R.id.nav_chat_list, R.id.nav_profile, ru.yofik.athena.login.R.id.nav_login)
     }
 
     private lateinit var binding: ActivityMainBinding
@@ -60,8 +63,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupAppBarConfiguration() {
-        appBarConfiguration =
-            AppBarConfiguration(setOf(R.id.nav_chat_list, R.id.nav_profile), binding.root)
+        appBarConfiguration = AppBarConfiguration(TOP_LEVEL_DESTINATIONS, binding.root)
     }
 
     private fun setupActionBar() {
@@ -77,8 +79,10 @@ class MainActivity : AppCompatActivity() {
     private fun setRulesWhenAppBarShouldBeHide() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if (destination.id in DESTINATIONS_WITHOUT_APP_BAR) {
+                binding.layoutAppBar.toolbar.visibility = View.GONE
                 binding.navigationView.visibility = View.GONE
             } else {
+                binding.layoutAppBar.toolbar.visibility = View.VISIBLE
                 binding.navigationView.visibility = View.VISIBLE
             }
         }

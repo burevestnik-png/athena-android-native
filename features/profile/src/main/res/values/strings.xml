@@ -4,6 +4,5 @@
     <string name="logout">Log out</string>
 
     <string name="nav_profile_label">Profile</string>
-    <string name="nav_profile_fragment">ProfileFragment</string>
     <string name="user_login">\@%1$s</string>
 </resources>
