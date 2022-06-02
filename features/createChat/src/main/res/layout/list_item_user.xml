@@ -10,10 +10,10 @@
         android:id="@+id/logo"
         android:layout_width="55dp"
         android:layout_height="55dp"
-        app:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:textSize="11sp" />
 
     <TextView
         android:id="@+id/name"
@@ -40,6 +40,7 @@
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

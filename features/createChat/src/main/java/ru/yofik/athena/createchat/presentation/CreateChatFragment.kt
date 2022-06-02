@@ -34,16 +34,12 @@ class CreateChatFragment :
         adapter = createAdapter()
         setupRecyclerView(adapter)
 
-        setupSwipeRefreshLayout()
         listenToBackButtonClick()
+        setupSwipeRefreshLayout()
     }
 
     private fun createAdapter(): UserAdapter {
         return UserAdapter().apply { setUserClickListener { requestCreateChat(it) } }
-    }
-
-    private fun requestCreateChat(targetUserId: Long) {
-        viewModel.onEvent(CreateChatEvent.CreateChat(targetUserId))
     }
 
     private fun setupRecyclerView(adapter: UserAdapter) {
@@ -72,7 +68,7 @@ class CreateChatFragment :
     }
 
     private fun listenToBackButtonClick() {
-        binding.toolbar.backButton.setOnClickListener { findNavController().popBackStack() }
+        binding.toolbar.setNavigationOnClickListener { findNavController().popBackStack() }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -113,5 +109,9 @@ class CreateChatFragment :
 
     private fun requestMoreUsers() {
         viewModel.onEvent(CreateChatEvent.RequestMoreUsers)
+    }
+
+    private fun requestCreateChat(targetUserId: Long) {
+        viewModel.onEvent(CreateChatEvent.CreateChat(targetUserId))
     }
 }
