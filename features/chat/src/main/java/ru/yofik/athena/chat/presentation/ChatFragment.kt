@@ -1,8 +1,6 @@
 package ru.yofik.athena.chat.presentation
 
 import android.os.Bundle
-import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
@@ -27,10 +25,6 @@ class ChatFragment :
     override val binding by viewBinding(FragmentChatBinding::bind)
 
     private lateinit var adapter: MessageAdapter
-    private val actionBar: ActionBar
-        get() =
-            (activity as AppCompatActivity).supportActionBar
-                ?: throw RuntimeException("View was initialized wrong")
 
     private var id: Long? = null
 
@@ -59,10 +53,10 @@ class ChatFragment :
         adapter = createAdapter()
         setupRecycleView(adapter)
 
-        setupActionBar()
-        listenToInput()
-        listenToSubmitButton()
+        listenToMessageInput()
+        listenToSubmitButtonClick()
         listenToBackButtonClick()
+        listenToToolbarMenuClick()
     }
 
     private fun createAdapter(): MessageAdapter {
@@ -86,22 +80,27 @@ class ChatFragment :
         }
     }
 
-    private fun listenToInput() {
+    private fun listenToMessageInput() {
         binding.input.addTextChangedListener { requestUpdateInput(it.toString()) }
     }
 
-    private fun listenToSubmitButton() {
+    private fun listenToSubmitButtonClick() {
         binding.sendButton.setOnClickListener { requestSendMessage() }
     }
 
-    private fun setupActionBar() {
-        // Adding Toolbar & removing showing app name in title
-        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar.root)
-        actionBar.title = ""
+    private fun listenToBackButtonClick() {
+        binding.toolbar.setNavigationOnClickListener { findNavController().popBackStack() }
     }
 
-    private fun listenToBackButtonClick() {
-        binding.toolbar.backButton.setOnClickListener { findNavController().popBackStack() }
+    private fun listenToToolbarMenuClick() {
+        binding.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.action_profile -> {
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -124,7 +123,7 @@ class ChatFragment :
     }
 
     private fun handleSetChatName(name: String) {
-        binding.toolbar.chatName.text = name
+        binding.toolbar.title = name
     }
 
     ///////////////////////////////////////////////////////////////////////////
