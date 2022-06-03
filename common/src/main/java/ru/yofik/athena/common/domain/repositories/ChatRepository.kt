@@ -12,5 +12,5 @@ interface ChatRepository {
     fun getCachedChats(): Flow<List<Chat>>
     suspend fun getCachedChat(id: Long): Chat
     suspend fun cacheChats(chats: List<Chat>)
-    suspend fun removeCachedChats()
+    suspend fun removeAllCache()
 }

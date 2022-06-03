@@ -28,7 +28,7 @@ constructor(
     // NETWORK
     ///////////////////////////////////////////////////////////////////////////
 
-    override suspend fun requestActivate(code: String) {
+    override suspend fun requestCurrentUserActivation(code: String) {
         try {
             val request = ActivateUserRequest(code)
             val response = currentUserApi.activate(request)
@@ -43,7 +43,7 @@ constructor(
         }
     }
 
-    override suspend fun requestGetInfo() {
+    override suspend fun requestGetCurrentUserInfo() {
         try {
             val request = AuthUserRequest(preferences.getAccessToken())
             val response = currentUserApi.auth(request)
@@ -62,17 +62,16 @@ constructor(
     // CACHE
     ///////////////////////////////////////////////////////////////////////////
 
-    override fun cache(user: User) {
+    override fun cacheCurrentUser(user: User) {
         preferences.putCurrentUser(user)
     }
 
-    override fun getCache(): User {
+    override fun getCachedCurrentUser(): User {
         return preferences.getCurrentUser()
     }
 
-    override suspend fun removeCache() {
+    override fun removeAllCache() {
         preferences.removeCurrentUser()
-        cache.cleanup()
     }
 
     override fun hasAccess(): Boolean {
