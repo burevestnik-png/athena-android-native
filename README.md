@@ -79,20 +79,25 @@
 #### Features
 
 - Added pagination and caching for users on CreateChat screen, CHatList screen; **Need testing**
+- Created Drawer and removed bottom navigation bar
+- Migrated on Material3
 
 #### Plans
 
-- [ ] Rework AppBar with Navigation framework
-- [ ] Coroutines :]
-- [ ] TextInputLayout rewrite on
-- [ ] Add validation on Login screen like on Onboarding
-- [ ] Very bad realization of rx java, need to study more
-- [ ] Add a list of my name convention in fragment and activity
-- [ ] added response error parsing
+- Very bad realization of rx java, need to study more
+- added response error parsing
 - Вопрос, где лучше инитить - в фрагменте или в вм
 - TODO в чат листе, протестить
 - вынести пагинацию
+
+#### Inspected
+
+- Rework AppBar with Navigation framework
+- Coroutines :]
+- TextInputLayout rewrite on
+- Add validation on Login screen like on Onboarding
 - рефактор логина и профиля
+- Add a list of my name convention in fragment and activity
 
 ---
 
