@@ -1,7 +1,7 @@
 package ru.yofik.athena.common.domain.model.chat
 
 import ru.yofik.athena.common.domain.model.message.Message
-import ru.yofik.athena.common.domain.model.user.User
+import ru.yofik.athena.common.domain.model.users.User
 
 enum class ChatType {
     PERSONAL,
@@ -18,7 +18,7 @@ data class Chat(
     val isEmpty: Boolean
         get() = lastMessage.isNullable
 
-    val nullable: Boolean
+    val isNullable: Boolean
         get() = id == NULLABLE_ID
 
     companion object {

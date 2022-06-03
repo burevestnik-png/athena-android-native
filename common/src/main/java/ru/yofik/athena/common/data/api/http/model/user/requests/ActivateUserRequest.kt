@@ -1,4 +1,4 @@
-package ru.yofik.athena.common.data.api.http.model.currentUser.requests
+package ru.yofik.athena.common.data.api.http.model.user.requests
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

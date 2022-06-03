@@ -1,6 +1,6 @@
 package ru.yofik.athena.chat.domain.model
 
-import ru.yofik.athena.common.domain.model.user.User
+import ru.yofik.athena.common.domain.model.users.User
 
 data class UiChat(
     val id: Long,

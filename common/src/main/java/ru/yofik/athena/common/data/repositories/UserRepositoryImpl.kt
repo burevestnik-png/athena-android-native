@@ -1,23 +1,25 @@
 package ru.yofik.athena.common.data.repositories
 
-import javax.inject.Inject
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import retrofit2.HttpException
-import ru.yofik.athena.common.data.api.http.model.common.mappers.ApiUserMapper
 import ru.yofik.athena.common.data.api.http.model.user.UserApi
+import ru.yofik.athena.common.data.api.http.model.user.mappers.ApiAccessTokenMapper
+import ru.yofik.athena.common.data.api.http.model.user.requests.ActivateUserRequest
+import ru.yofik.athena.common.data.api.http.model.user.requests.AuthUserRequest
+import ru.yofik.athena.common.data.api.http.model.common.mappers.ApiUserMapper
 import ru.yofik.athena.common.data.cache.Cache
-import ru.yofik.athena.common.data.cache.model.CachedUser
+import ru.yofik.athena.common.data.preferences.Preferences
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
-import ru.yofik.athena.common.domain.model.pagination.PaginatedUsers
-import ru.yofik.athena.common.domain.model.pagination.Pagination
-import ru.yofik.athena.common.domain.model.user.User
+import ru.yofik.athena.common.domain.model.users.User
 import ru.yofik.athena.common.domain.repositories.UserRepository
+import timber.log.Timber
+import javax.inject.Inject
 
 class UserRepositoryImpl
 @Inject
 constructor(
+    private val preferences: Preferences,
     private val userApi: UserApi,
+    private val apiAccessTokenMapper: ApiAccessTokenMapper,
     private val apiUserMapper: ApiUserMapper,
     private val cache: Cache
 ) : UserRepository {
@@ -26,28 +28,30 @@ constructor(
     // NETWORK
     ///////////////////////////////////////////////////////////////////////////
 
-    override suspend fun requestGetPaginatedUsers(pageNumber: Int, pageSize: Int): PaginatedUsers {
+    override suspend fun requestUserActivation(code: String) {
         try {
-            val response = userApi.getPaginatedUsers(pageNumber, pageSize)
+            val request = ActivateUserRequest(code)
+            val response = userApi.activate(request)
 
-            return PaginatedUsers(
-                users = response.payload.users.map(apiUserMapper::mapToDomain),
-                pagination =
-                    Pagination(
-                        currentPage = pageNumber + 1,
-                        currentAmountOfItems = response.payload.users.size
-                    )
-            )
+            val accessToken = apiAccessTokenMapper.mapToDomain(response.payload)
+            Timber.d("Got accessToken $accessToken")
+
+            preferences.putAccessToken(accessToken)
         } catch (exception: HttpException) {
             // TODO add exception parse
             throw NetworkException(exception.message ?: "Code ${exception.code()}")
         }
     }
 
-    override suspend fun requestGetDefiniteUser(id: Long): User {
+    override suspend fun requestGetUserInfo() {
         try {
-            val response = userApi.getDefiniteUser(id)
-            return apiUserMapper.mapToDomain(response.user)
+            val request = AuthUserRequest(preferences.getAccessToken())
+            val response = userApi.auth(request)
+
+            val user = apiUserMapper.mapToDomain(response.payload)
+            Timber.d("Got currentUser $user")
+
+            preferences.putCurrentUser(user)
         } catch (exception: HttpException) {
             // TODO add exception parse
             throw NetworkException(exception.message ?: "Code ${exception.code()}")
@@ -58,15 +62,28 @@ constructor(
     // CACHE
     ///////////////////////////////////////////////////////////////////////////
 
-    override fun getCachedUsers(): Flow<List<User>> {
-        return cache.getUsers().map { users -> users.map { CachedUser.toDomain(it) } }
+    override fun cacheUser(user: User) {
+        preferences.putCurrentUser(user)
     }
 
-    override suspend fun cacheUsers(users: List<User>) {
-        cache.insertUsers(users.map(CachedUser::fromDomain))
+    override fun getCachedUser(): User {
+        return preferences.getCurrentUser()
     }
 
-    override suspend fun removeCachedUsers() {
-        cache.deleteAllUsers()
+    override fun removeAllCache() {
+        preferences.removeCurrentUser()
+    }
+
+    override fun hasAccess(): Boolean {
+        return with(preferences) {
+            getAccessToken().isNotEmpty() &&
+                getCurrentUserId() != -1L &&
+                getCurrentUserLogin().isNotEmpty() &&
+                getCurrentUserName().isNotEmpty()
+        }
+    }
+
+    override fun removeAccessToken() {
+        preferences.removeAccessToken()
     }
 }

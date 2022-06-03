@@ -1,13 +1,13 @@
 package ru.yofik.athena.profile.domain.usecases
 
-import ru.yofik.athena.common.domain.model.user.User
-import ru.yofik.athena.common.domain.repositories.CurrentUserRepository
+import ru.yofik.athena.common.domain.model.users.User
+import ru.yofik.athena.common.domain.repositories.UserRepository
 import javax.inject.Inject
 
 class GetCachedUser @Inject constructor(
-    private val currentUserRepository: CurrentUserRepository
+    private val userRepository: UserRepository
 ) {
     operator fun invoke(): User {
-        return currentUserRepository.getCachedCurrentUser()
+        return userRepository.getCachedUser()
     }
 }

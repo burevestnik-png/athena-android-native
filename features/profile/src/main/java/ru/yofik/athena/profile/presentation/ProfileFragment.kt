@@ -1,14 +1,10 @@
 package ru.yofik.athena.profile.presentation
 
-import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
-import ru.yofik.athena.common.domain.model.user.User
+import ru.yofik.athena.common.domain.model.users.User
 import ru.yofik.athena.common.presentation.components.base.BaseFragment
 import ru.yofik.athena.common.presentation.components.extensions.launchViewModelsFlow
 import ru.yofik.athena.common.presentation.components.extensions.navigate
@@ -17,7 +13,6 @@ import ru.yofik.athena.common.presentation.model.UIState
 import ru.yofik.athena.common.utils.Routes
 import ru.yofik.athena.profile.R
 import ru.yofik.athena.profile.databinding.FragmentProfileBinding
-import timber.log.Timber
 
 @AndroidEntryPoint
 class ProfileFragment :

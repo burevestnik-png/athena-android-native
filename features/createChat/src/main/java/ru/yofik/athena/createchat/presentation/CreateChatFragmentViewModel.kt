@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.yofik.athena.common.domain.model.exceptions.NoMoreItemsException
 import ru.yofik.athena.common.domain.model.pagination.Pagination
-import ru.yofik.athena.common.domain.model.user.User
+import ru.yofik.athena.common.domain.model.users.User
 import ru.yofik.athena.common.presentation.components.base.BaseViewModel
 import ru.yofik.athena.common.presentation.model.FailureEvent
 import ru.yofik.athena.common.presentation.model.UIState

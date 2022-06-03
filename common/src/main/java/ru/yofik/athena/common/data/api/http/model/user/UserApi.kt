@@ -1,19 +1,23 @@
 package ru.yofik.athena.common.data.api.http.model.user
 
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.Body
+import retrofit2.http.Headers
+import retrofit2.http.POST
 import ru.yofik.athena.common.data.api.ApiHttpConstants
-import ru.yofik.athena.common.data.api.http.model.user.responses.GetPaginatedUsersResponse
-import ru.yofik.athena.common.data.api.http.model.user.responses.GetDefiniteUserResponse
+import ru.yofik.athena.common.data.api.ApiParameters
+import ru.yofik.athena.common.data.api.http.model.user.requests.ActivateUserRequest
+import ru.yofik.athena.common.data.api.http.model.user.requests.AuthUserRequest
+import ru.yofik.athena.common.data.api.http.model.user.responses.ActivateUserResponse
+import ru.yofik.athena.common.data.api.http.model.user.responses.AuthUserResponse
 
 interface UserApi {
-    @GET(ApiHttpConstants.ALL_USERS_ENDPOINT)
-    suspend fun getPaginatedUsers(
-        @Query("sequentialNumber") sequentialNumber: Int,
-        @Query("size") size: Int
-    ): GetPaginatedUsersResponse
+    @POST(ApiHttpConstants.ACTIVATE_ENDPOINT)
+    @Headers(ApiParameters.NO_AUTH_HEADER_FULL)
+    suspend fun activate(
+        @Body request: ActivateUserRequest,
+    ): ActivateUserResponse
 
-    @GET("${ApiHttpConstants.ALL_USERS_ENDPOINT}/{id}")
-    suspend fun getDefiniteUser(@Path("id") id: Long): GetDefiniteUserResponse
+    @POST(ApiHttpConstants.AUTHORIZATION_ENDPOINT)
+    @Headers(ApiParameters.NO_AUTH_HEADER_FULL)
+    suspend fun auth(@Body request: AuthUserRequest): AuthUserResponse
 }

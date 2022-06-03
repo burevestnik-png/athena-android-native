@@ -1,12 +1,12 @@
 package ru.yofik.athena.chat.domain.usecases
 
-import ru.yofik.athena.common.domain.repositories.CurrentUserRepository
+import ru.yofik.athena.common.domain.repositories.UserRepository
 import javax.inject.Inject
 
 class GetCurrentUserId @Inject constructor(
-    private val currentUserRepository: CurrentUserRepository
+    private val userRepository: UserRepository
 ) {
     operator fun invoke(): Long {
-        return currentUserRepository.getCachedCurrentUser().id
+        return userRepository.getCachedUser().id
     }
 }

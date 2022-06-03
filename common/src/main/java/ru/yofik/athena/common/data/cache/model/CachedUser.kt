@@ -2,7 +2,7 @@ package ru.yofik.athena.common.data.cache.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import ru.yofik.athena.common.domain.model.user.User
+import ru.yofik.athena.common.domain.model.users.User
 
 @Entity(tableName = "users")
 data class CachedUser(

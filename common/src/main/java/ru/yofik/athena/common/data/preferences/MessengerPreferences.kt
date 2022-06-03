@@ -7,7 +7,7 @@ import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_ACCESS_T
 import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_USER_ID
 import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_USER_LOGIN
 import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_USER_NAME
-import ru.yofik.athena.common.domain.model.user.User
+import ru.yofik.athena.common.domain.model.users.User
 import javax.inject.Inject
 
 class MessengerPreferences @Inject constructor(@ApplicationContext context: Context) : Preferences {

@@ -19,5 +19,5 @@ interface MessageRepository {
 
     suspend fun cacheMessage(message: Message)
     suspend fun cacheMessages(message: List<Message>)
-    suspend fun removeCache()
+    suspend fun removeAllCache()
 }

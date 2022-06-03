@@ -1,6 +1,6 @@
 package ru.yofik.athena.createchat.domain.model
 
-import ru.yofik.athena.common.domain.model.user.User
+import ru.yofik.athena.common.domain.model.users.User
 import ru.yofik.athena.common.presentation.model.UiMapper
 import javax.inject.Inject
 

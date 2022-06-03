@@ -18,9 +18,9 @@ import ru.yofik.athena.common.data.api.ApiParameters.TOKEN_TYPE
 import ru.yofik.athena.common.data.api.ApiWsConstants
 import ru.yofik.athena.common.data.api.http.interceptors.AuthenticationInterceptor
 import ru.yofik.athena.common.data.api.http.model.chat.ChatApi
-import ru.yofik.athena.common.data.api.http.model.currentUser.CurrentUserApi
-import ru.yofik.athena.common.data.api.http.model.message.MessageApi
 import ru.yofik.athena.common.data.api.http.model.user.UserApi
+import ru.yofik.athena.common.data.api.http.model.message.MessageApi
+import ru.yofik.athena.common.data.api.http.model.userProfiles.UserApi
 import ru.yofik.athena.common.data.api.common.interceptors.NetworkStatusInterceptor
 import ru.yofik.athena.common.data.api.ws.listeners.NotificationListener
 import ru.yofik.athena.common.data.preferences.Preferences
@@ -46,8 +46,8 @@ internal object ApiModule {
 
     @Provides
     @Singleton
-    fun provideCurrentUserApi(builder: Builder): CurrentUserApi {
-        return builder.build().create(CurrentUserApi::class.java)
+    fun provideCurrentUserApi(builder: Builder): ru.yofik.athena.common.data.api.http.model.user.UserApi {
+        return builder.build().create(UserApi::class.java)
     }
 
     @Provides

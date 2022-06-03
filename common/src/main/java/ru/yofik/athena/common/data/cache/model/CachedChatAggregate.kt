@@ -2,7 +2,6 @@ package ru.yofik.athena.common.data.cache.model
 
 import androidx.room.*
 import ru.yofik.athena.common.domain.model.chat.Chat
-import ru.yofik.athena.common.domain.model.user.User
 
 data class CachedChatAggregate(
     @Embedded val chat: CachedChat,

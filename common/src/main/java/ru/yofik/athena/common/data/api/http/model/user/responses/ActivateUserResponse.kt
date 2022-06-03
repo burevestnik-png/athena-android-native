@@ -1,10 +1,10 @@
-package ru.yofik.athena.common.data.api.http.model.currentUser.responses
+package ru.yofik.athena.common.data.api.http.model.user.responses
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import ru.yofik.athena.common.data.api.http.model.common.responses.Response
 import ru.yofik.athena.common.data.api.http.model.common.responses.ResponseStatus
-import ru.yofik.athena.common.data.api.http.model.currentUser.apiEntity.ApiAccessToken
+import ru.yofik.athena.common.data.api.http.model.user.apiEntity.ApiAccessToken
 
 @JsonClass(generateAdapter = true)
 class ActivateUserResponse(

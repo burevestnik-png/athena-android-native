@@ -3,21 +3,20 @@ package ru.yofik.athena.createchat.domain.usecases
 import javax.inject.Inject
 import ru.yofik.athena.common.domain.model.exceptions.NoMoreItemsException
 import ru.yofik.athena.common.domain.model.pagination.Pagination
-import ru.yofik.athena.common.domain.repositories.CurrentUserRepository
-import ru.yofik.athena.common.domain.repositories.UserRepository
+import ru.yofik.athena.common.domain.repositories.UserProfileRepository
 
 class RequestNextUsersPage
 @Inject
 constructor(
-    private val userRepository: UserRepository,
+    private val userProfileRepository: UserProfileRepository,
 ) {
     suspend operator fun invoke(
         pageNumber: Int,
         pageSize: Int = Pagination.DEFAULT_PAGE_SIZE
     ): Pagination {
-        val (users, pagination) = userRepository.requestGetPaginatedUsers(pageNumber, pageSize)
+        val (users, pagination) = userProfileRepository.requestGetPaginatedUsers(pageNumber, pageSize)
 
-        userRepository.cacheUsers(users)
+        userProfileRepository.cacheUsers(users)
 
         if (!pagination.canLoadMore) {
             throw NoMoreItemsException("No more users available")

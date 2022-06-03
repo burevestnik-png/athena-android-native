@@ -1,10 +1,10 @@
 package ru.yofik.athena.createchat.domain.usecases
 
 import javax.inject.Inject
-import ru.yofik.athena.common.domain.repositories.UserRepository
+import ru.yofik.athena.common.domain.repositories.UserProfileRepository
 
-class ForceRefreshUsers @Inject constructor(private val userRepository: UserRepository) {
+class ForceRefreshUsers @Inject constructor(private val userProfileRepository: UserProfileRepository) {
     suspend operator fun invoke() {
-        userRepository.removeCachedUsers()
+        userProfileRepository.removeCachedUsers()
     }
 }

@@ -1,6 +1,6 @@
 package ru.yofik.athena.common.data.preferences
 
-import ru.yofik.athena.common.domain.model.user.User
+import ru.yofik.athena.common.domain.model.users.User
 
 interface Preferences {
     fun putAccessToken(accessToken: String)

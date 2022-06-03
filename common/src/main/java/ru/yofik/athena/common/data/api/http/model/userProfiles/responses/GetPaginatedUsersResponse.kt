@@ -1,4 +1,4 @@
-package ru.yofik.athena.common.data.api.http.model.user.responses
+package ru.yofik.athena.common.data.api.http.model.userProfiles.responses
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -7,8 +7,13 @@ import ru.yofik.athena.common.data.api.http.model.common.responses.ResponseStatu
 import ru.yofik.athena.common.data.api.http.model.common.apiEntity.ApiUser
 
 @JsonClass(generateAdapter = true)
-class GetDefiniteUserResponse(
+data class GetPaginatedUsersResponsePayload(
+    @field:Json(name = "content") val users: List<ApiUser>
+)
+
+@JsonClass(generateAdapter = true)
+class GetPaginatedUsersResponse(
+    @field:Json(name = "payload") val payload: GetPaginatedUsersResponsePayload,
     code: String,
-    status: ResponseStatus,
-    @field:Json(name = "payload") val user: ApiUser
+    status: ResponseStatus
 ) : Response(code, status)
