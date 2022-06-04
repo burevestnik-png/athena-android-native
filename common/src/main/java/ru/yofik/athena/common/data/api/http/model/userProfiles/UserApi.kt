@@ -4,8 +4,8 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 import ru.yofik.athena.common.data.api.ApiHttpConstants
-import ru.yofik.athena.common.data.api.http.model.userProfiles.responses.GetPaginatedUsersResponse
 import ru.yofik.athena.common.data.api.http.model.userProfiles.responses.GetDefiniteUserResponse
+import ru.yofik.athena.common.data.api.http.model.userProfiles.responses.GetPaginatedUsersResponse
 
 interface UserApi {
     @GET(ApiHttpConstants.ALL_USERS_ENDPOINT)
