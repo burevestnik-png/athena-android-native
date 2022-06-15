@@ -14,7 +14,7 @@ constructor(
         pageNumber: Int,
         pageSize: Int = Pagination.DEFAULT_PAGE_SIZE
     ): Pagination {
-        val (users, pagination) = userProfileRepository.requestGetPaginatedUsers(pageNumber, pageSize)
+        val (users, pagination) = userProfileRepository.requestGetPaginatedUsersProfiles(pageNumber, pageSize)
 
         userProfileRepository.cacheUsers(users)
 

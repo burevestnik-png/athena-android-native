@@ -20,7 +20,6 @@ import ru.yofik.athena.common.data.api.http.interceptors.AuthenticationIntercept
 import ru.yofik.athena.common.data.api.http.model.chat.ChatApi
 import ru.yofik.athena.common.data.api.http.model.user.UserApi
 import ru.yofik.athena.common.data.api.http.model.message.MessageApi
-import ru.yofik.athena.common.data.api.http.model.userProfiles.UserApi
 import ru.yofik.athena.common.data.api.common.interceptors.NetworkStatusInterceptor
 import ru.yofik.athena.common.data.api.ws.listeners.NotificationListener
 import ru.yofik.athena.common.data.preferences.Preferences

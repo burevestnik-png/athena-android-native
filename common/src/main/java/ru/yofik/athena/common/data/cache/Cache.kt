@@ -16,6 +16,7 @@ interface Cache {
     suspend fun deleteAllChats()
 
     suspend fun insertMessage(message: CachedMessage)
+    suspend fun deleteAllMessages()
 
     suspend fun cleanup()
 }

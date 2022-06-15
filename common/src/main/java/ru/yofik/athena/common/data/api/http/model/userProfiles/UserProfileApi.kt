@@ -7,7 +7,7 @@ import ru.yofik.athena.common.data.api.ApiHttpConstants
 import ru.yofik.athena.common.data.api.http.model.userProfiles.responses.GetDefiniteUserResponse
 import ru.yofik.athena.common.data.api.http.model.userProfiles.responses.GetPaginatedUsersResponse
 
-interface UserApi {
+interface UserProfileApi {
     @GET(ApiHttpConstants.ALL_USERS_ENDPOINT)
     suspend fun getPaginatedUsers(
         @Query("sequentialNumber") sequentialNumber: Int,

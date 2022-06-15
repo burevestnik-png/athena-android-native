@@ -21,14 +21,13 @@ constructor(
     private val userApi: UserApi,
     private val apiAccessTokenMapper: ApiAccessTokenMapper,
     private val apiUserMapper: ApiUserMapper,
-    private val cache: Cache
 ) : UserRepository {
 
     ///////////////////////////////////////////////////////////////////////////
     // NETWORK
     ///////////////////////////////////////////////////////////////////////////
 
-    override suspend fun requestUserActivation(code: String) {
+    override suspend fun requestUserActivation(code: String): String {
         try {
             val request = ActivateUserRequest(code)
             val response = userApi.activate(request)
@@ -36,14 +35,14 @@ constructor(
             val accessToken = apiAccessTokenMapper.mapToDomain(response.payload)
             Timber.d("Got accessToken $accessToken")
 
-            preferences.putAccessToken(accessToken)
+            return accessToken
         } catch (exception: HttpException) {
             // TODO add exception parse
             throw NetworkException(exception.message ?: "Code ${exception.code()}")
         }
     }
 
-    override suspend fun requestGetUserInfo() {
+    override suspend fun requestGetUserInfo(): User {
         try {
             val request = AuthUserRequest(preferences.getAccessToken())
             val response = userApi.auth(request)
@@ -51,7 +50,7 @@ constructor(
             val user = apiUserMapper.mapToDomain(response.payload)
             Timber.d("Got currentUser $user")
 
-            preferences.putCurrentUser(user)
+            return user
         } catch (exception: HttpException) {
             // TODO add exception parse
             throw NetworkException(exception.message ?: "Code ${exception.code()}")
@@ -70,9 +69,16 @@ constructor(
         return preferences.getCurrentUser()
     }
 
+    override fun cacheAccessToken(token: String) {
+        preferences.putAccessToken(token)
+    }
+
     override fun removeAllCache() {
+        preferences.removeAccessToken()
         preferences.removeCurrentUser()
     }
+
+
 
     override fun hasAccess(): Boolean {
         return with(preferences) {
@@ -81,9 +87,5 @@ constructor(
                 getCurrentUserLogin().isNotEmpty() &&
                 getCurrentUserName().isNotEmpty()
         }
-    }
-
-    override fun removeAccessToken() {
-        preferences.removeAccessToken()
     }
 }

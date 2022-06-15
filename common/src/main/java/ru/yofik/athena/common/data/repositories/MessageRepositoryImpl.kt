@@ -81,4 +81,12 @@ constructor(
         if (message.isNullable) return
         messageDao.insertMessage(CachedMessage.fromDomain(message)!!)
     }
+
+    override suspend fun cacheMessages(message: List<Message>) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun removeAllCache() {
+        TODO("Not yet implemented")
+    }
 }

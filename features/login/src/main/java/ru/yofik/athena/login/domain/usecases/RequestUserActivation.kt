@@ -5,6 +5,7 @@ import javax.inject.Inject
 
 class RequestUserActivation @Inject constructor(private val userRepository: UserRepository) {
     suspend operator fun invoke(code: String) {
-        userRepository.requestUserActivation(code)
+        val token = userRepository.requestUserActivation(code)
+        userRepository.cacheAccessToken(token)
     }
 }

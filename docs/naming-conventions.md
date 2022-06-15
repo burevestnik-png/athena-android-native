@@ -14,3 +14,10 @@ Entities scope - **domain**
     * `cache{Entity}` - function for caching entities
     * `getCached{Entity}` - function for getting cache
     * `removeAllCache` or `removeCached{Entity}` - function for removing cache at all ot partially
+
+# Cache
+
+Entities scope - **cache**
+
+* `get{Entity}` - function for returning some entity
+* ``

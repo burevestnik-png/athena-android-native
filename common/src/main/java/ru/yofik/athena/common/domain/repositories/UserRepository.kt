@@ -7,6 +7,7 @@ interface UserRepository {
     suspend fun requestGetUserInfo(): User
 
     fun getCachedUser(): User
+    fun cacheAccessToken(token: String)
     fun cacheUser(user: User)
     fun removeAllCache()
 

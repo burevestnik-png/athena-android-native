@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import retrofit2.HttpException
 import ru.yofik.athena.common.data.api.http.model.common.mappers.ApiUserMapper
-import ru.yofik.athena.common.data.api.http.model.userProfiles.UserApi
+import ru.yofik.athena.common.data.api.http.model.userProfiles.UserProfileApi
 import ru.yofik.athena.common.data.cache.Cache
 import ru.yofik.athena.common.data.cache.model.CachedUser
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
@@ -17,7 +17,7 @@ import ru.yofik.athena.common.domain.repositories.UserProfileRepository
 class UserProfileRepositoryImpl
 @Inject
 constructor(
-    private val userApi: UserApi,
+    private val userProfileApi: UserProfileApi,
     private val apiUserMapper: ApiUserMapper,
     private val cache: Cache
 ) : UserProfileRepository {
@@ -26,9 +26,9 @@ constructor(
     // NETWORK
     ///////////////////////////////////////////////////////////////////////////
 
-    override suspend fun requestGetPaginatedUsers(pageNumber: Int, pageSize: Int): PaginatedUsers {
+    override suspend fun requestGetPaginatedUsersProfiles(pageNumber: Int, pageSize: Int): PaginatedUsers {
         try {
-            val response = userApi.getPaginatedUsers(pageNumber, pageSize)
+            val response = userProfileApi.getPaginatedUsers(pageNumber, pageSize)
 
             return PaginatedUsers(
                 users = response.payload.users.map(apiUserMapper::mapToDomain),
@@ -44,9 +44,9 @@ constructor(
         }
     }
 
-    override suspend fun requestGetDefiniteUser(id: Long): User {
+    override suspend fun requestGetDefiniteUserProfile(id: Long): User {
         try {
-            val response = userApi.getDefiniteUser(id)
+            val response = userProfileApi.getDefiniteUser(id)
             return apiUserMapper.mapToDomain(response.user)
         } catch (exception: HttpException) {
             // TODO add exception parse
@@ -66,7 +66,7 @@ constructor(
         cache.insertUsers(users.map(CachedUser::fromDomain))
     }
 
-    override suspend fun removeCachedUsers() {
+    override suspend fun removeAllCache() {
         cache.deleteAllUsers()
     }
 }

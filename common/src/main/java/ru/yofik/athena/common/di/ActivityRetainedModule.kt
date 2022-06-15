@@ -35,4 +35,8 @@ abstract class ActivityRetainedModule {
     @Binds
     @ActivityRetainedScoped
     abstract fun bindMessageRepository(repository: MessageRepositoryImpl): MessageRepository
+
+    @Binds
+    @ActivityRetainedScoped
+    abstract fun bindCommonRepository(repository: CommonRepositoryImpl): CommonRepository
 }
