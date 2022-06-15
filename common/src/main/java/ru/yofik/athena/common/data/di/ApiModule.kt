@@ -5,9 +5,12 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.WebSocket
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.Retrofit.Builder
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -16,17 +19,16 @@ import ru.yofik.athena.common.data.api.ApiHttpConstants
 import ru.yofik.athena.common.data.api.ApiParameters.AUTH_HEADER
 import ru.yofik.athena.common.data.api.ApiParameters.TOKEN_TYPE
 import ru.yofik.athena.common.data.api.ApiWsConstants
+import ru.yofik.athena.common.data.api.common.interceptors.LoggingInterceptor
+import ru.yofik.athena.common.data.api.common.interceptors.NetworkStatusInterceptor
 import ru.yofik.athena.common.data.api.http.interceptors.AuthenticationInterceptor
 import ru.yofik.athena.common.data.api.http.model.chat.ChatApi
-import ru.yofik.athena.common.data.api.http.model.user.UserApi
 import ru.yofik.athena.common.data.api.http.model.message.MessageApi
-import ru.yofik.athena.common.data.api.common.interceptors.NetworkStatusInterceptor
+import ru.yofik.athena.common.data.api.http.model.user.UserApi
 import ru.yofik.athena.common.data.api.http.model.userProfiles.UserProfileApi
 import ru.yofik.athena.common.data.api.ws.listeners.NotificationListener
 import ru.yofik.athena.common.data.preferences.Preferences
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -65,14 +67,23 @@ internal object ApiModule {
     }
 
     @Provides
+    fun provideHttpLoggingInterceptor(loggingInterceptor: LoggingInterceptor): HttpLoggingInterceptor {
+        val interceptor = HttpLoggingInterceptor(loggingInterceptor)
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
+        return interceptor
+    }
+
+    @Provides
     fun provideOkHttpClient(
         networkStatusInterceptor: NetworkStatusInterceptor,
-        authenticationInterceptor: AuthenticationInterceptor
+        authenticationInterceptor: AuthenticationInterceptor,
+        httpLoggingInterceptor: HttpLoggingInterceptor
     ): OkHttpClient {
         val builder =
             OkHttpClient.Builder()
                 .addInterceptor(networkStatusInterceptor)
                 .addInterceptor(authenticationInterceptor)
+                .addInterceptor(httpLoggingInterceptor)
 
         if (BuildConfig.DEBUG) builder.addNetworkInterceptor(StethoInterceptor())
 

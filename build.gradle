@@ -29,6 +29,7 @@ buildscript {
         okHttp_version = "4.9.0"
         moshi_converter_version = '2.9.0'
         moshi_version = '1.13.0'
+        logging_interceptor_version = "4.10.0"
 
         // DI
         hilt_version = '2.41'
