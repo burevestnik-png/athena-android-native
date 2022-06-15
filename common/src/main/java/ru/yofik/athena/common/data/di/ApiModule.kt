@@ -21,6 +21,7 @@ import ru.yofik.athena.common.data.api.http.model.chat.ChatApi
 import ru.yofik.athena.common.data.api.http.model.user.UserApi
 import ru.yofik.athena.common.data.api.http.model.message.MessageApi
 import ru.yofik.athena.common.data.api.common.interceptors.NetworkStatusInterceptor
+import ru.yofik.athena.common.data.api.http.model.userProfiles.UserProfileApi
 import ru.yofik.athena.common.data.api.ws.listeners.NotificationListener
 import ru.yofik.athena.common.data.preferences.Preferences
 import timber.log.Timber
@@ -39,13 +40,13 @@ internal object ApiModule {
 
     @Provides
     @Singleton
-    fun provideUserApi(builder: Retrofit.Builder): UserApi {
-        return builder.build().create(UserApi::class.java)
+    fun provideUserProfileApi(builder: Retrofit.Builder): UserProfileApi {
+        return builder.build().create(UserProfileApi::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideCurrentUserApi(builder: Builder): ru.yofik.athena.common.data.api.http.model.user.UserApi {
+    fun provideUserApi(builder: Builder): UserApi {
         return builder.build().create(UserApi::class.java)
     }
 

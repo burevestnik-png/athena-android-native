@@ -78,6 +78,10 @@ constructor(
         messageDao.insertMessage(message)
     }
 
+    override suspend fun deleteAllMessages() {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun cleanup() {
         chatsDao.deleteAll()
         messageDao.deleteAll()
