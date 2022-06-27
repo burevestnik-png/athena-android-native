@@ -1,6 +1,8 @@
 package ru.yofik.athena.common.data.repositories
 
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import retrofit2.HttpException
 import ru.yofik.athena.common.data.api.common.mappers.ApiMessageMapper
 import ru.yofik.athena.common.data.api.http.model.common.requests.RequestWithPagination
@@ -77,13 +79,19 @@ constructor(
     // CACHE
     ///////////////////////////////////////////////////////////////////////////
 
+    override fun getCachedMessagesForDefiniteChat(chatId: Long): Flow<List<Message>> {
+        return messageDao.getAllFromDefiniteChat(chatId).map { cachedMessages ->
+            cachedMessages.map { CachedMessage.toDomain(it) }
+        }
+    }
+
     override suspend fun cacheMessage(message: Message) {
         if (message.isNullable) return
         messageDao.insertMessage(CachedMessage.fromDomain(message)!!)
     }
 
-    override suspend fun cacheMessages(message: List<Message>) {
-        TODO("Not yet implemented")
+    override suspend fun cacheMessages(messages: List<Message>) {
+        messages.forEach { cacheMessage(it) }
     }
 
     override suspend fun removeAllCache() {

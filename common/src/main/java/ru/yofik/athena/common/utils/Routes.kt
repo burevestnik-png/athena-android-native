@@ -7,6 +7,7 @@ object Routes {
     const val CREATE_CHAT = "${DOMAIN}createChat"
     const val LOGIN = "${DOMAIN}login"
 
+    @Suppress("functionName")
     fun CHAT(chatId: Long): String {
         return "${DOMAIN}chat/?${addQueryParameter("id", chatId.toString())}"
     }

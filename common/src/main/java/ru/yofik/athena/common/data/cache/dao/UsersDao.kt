@@ -18,7 +18,8 @@ abstract class UsersDao {
     // QUERY
     ///////////////////////////////////////////////////////////////////////////
 
-    @Transaction @Query("SELECT * FROM users") abstract fun getAll(): Flow<List<CachedUser>>
+    @Transaction @Query("SELECT * FROM users")
+    abstract fun getAll(): Flow<List<CachedUser>>
 
     ///////////////////////////////////////////////////////////////////////////
     // DELETE

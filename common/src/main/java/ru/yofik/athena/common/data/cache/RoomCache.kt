@@ -2,6 +2,7 @@ package ru.yofik.athena.common.data.cache
 
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import ru.yofik.athena.common.data.cache.dao.ChatsDao
 import ru.yofik.athena.common.data.cache.dao.MessageDao
@@ -10,7 +11,6 @@ import ru.yofik.athena.common.data.cache.model.CachedChatAggregate
 import ru.yofik.athena.common.data.cache.model.CachedChatUserCrossRef
 import ru.yofik.athena.common.data.cache.model.CachedMessage
 import ru.yofik.athena.common.data.cache.model.CachedUser
-import ru.yofik.athena.common.domain.model.chat.Chat
 import timber.log.Timber
 
 class RoomCache
@@ -73,6 +73,12 @@ constructor(
     ///////////////////////////////////////////////////////////////////////////
     // Message
     ///////////////////////////////////////////////////////////////////////////
+
+    override fun getAllMessagesFromDefiniteChat(chatId: Long): Flow<List<CachedMessage>> {
+        return messageDao.getAllFromDefiniteChat(chatId).map { messages ->
+            messages.filter { it.chatId == chatId }
+        }
+    }
 
     override suspend fun insertMessage(message: CachedMessage) {
         messageDao.insertMessage(message)

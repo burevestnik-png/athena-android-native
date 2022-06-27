@@ -3,14 +3,7 @@ package ru.yofik.athena.chatlist.presentation
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -100,7 +93,7 @@ class ChatListFragment :
         launchViewModelsFlow { viewModel.state.collect { updateScreenState(it) } }
     }
 
-    private fun updateScreenState(state: UIState<ChatListViewPayload>) {
+    private fun updateScreenState(state: UIState<ChatListFragmentPayload>) {
         Timber.d("updateScreenState: $state")
         binding.swipeLayout.isRefreshing = state.loading
         adapter.submitList(state.payload.chats)

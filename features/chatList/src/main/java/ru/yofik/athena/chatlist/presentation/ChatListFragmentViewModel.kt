@@ -7,14 +7,9 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import ru.yofik.athena.chatlist.domain.model.mappers.UiChatMapper
-import ru.yofik.athena.chatlist.domain.model.mappers.UiMessageMapper
 import ru.yofik.athena.chatlist.domain.usecases.*
 import ru.yofik.athena.common.domain.model.chat.Chat
 import ru.yofik.athena.common.domain.model.exceptions.NoMoreItemsException
@@ -33,11 +28,10 @@ constructor(
     private val listenNewMessageNotifications: ListenNewMessageNotifications,
     private val requestNextChatsPage: RequestNextChatsPage,
     private val subscribeOnNotifications: SubscribeOnNotifications,
-    private val forceRefreshChats: ForceRefreshChats,
+    private val removeChatCache: RemoveChatCache,
     private val updateMessage: UpdateMessage,
     private val uiChatMapper: UiChatMapper,
-    private val uiMessageMapper: UiMessageMapper
-) : BaseViewModel<ChatListViewPayload>(ChatListViewPayload()) {
+) : BaseViewModel<ChatListFragmentPayload>(ChatListFragmentPayload()) {
 
     companion object {
         const val UI_PAGE_SIZE = Pagination.DEFAULT_PAGE_SIZE
@@ -85,15 +79,17 @@ constructor(
         val currentChats = state.value.payload.chats
         val newChats = chatFromServer.subtract(currentChats.toSet())
         val updatedList = currentChats + newChats
+        Timber.d("onNewChatList: $updatedList")
 
         modifyState { payload -> payload.copy(chats = updatedList) }
     }
 
     private fun loadNextChatPage() {
+        Timber.d("loadNextChatPage: ")
         showLoader()
 
         launchIORequest {
-            val pagination = withContext(Dispatchers.IO) { requestNextChatsPage(currentPage) }
+            val pagination = requestNextChatsPage(currentPage)
             currentPage = pagination.currentPage
             hideLoader()
         }
@@ -116,19 +112,17 @@ constructor(
 
         // todo update cache
         // will list update if I only change db
-        viewModelScope.launch(Dispatchers.IO) {
-            updateMessage(notification.message)
-        }
-//        val updatedList =
-//            state.value.payload.chats.map {
-//                if (it.id == notification.message.chatId) {
-//                    it.copy(message = uiMessageMapper.mapToView(notification.message))
-//                } else {
-//                    it
-//                }
-//            }
+        viewModelScope.launch(Dispatchers.IO) { updateMessage(notification.message) }
+        //        val updatedList =
+        //            state.value.payload.chats.map {
+        //                if (it.id == notification.message.chatId) {
+        //                    it.copy(message = uiMessageMapper.mapToView(notification.message))
+        //                } else {
+        //                    it
+        //                }
+        //            }
 
-//        modifyState { payload -> payload.copy(chats = updatedList) }
+        //        modifyState { payload -> payload.copy(chats = updatedList) }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -136,6 +130,7 @@ constructor(
     ///////////////////////////////////////////////////////////////////////////
 
     fun onEvent(event: ChatListEvent) {
+        Timber.d("onEvent: $event")
         when (event) {
             is ChatListEvent.ForceGetAllChats -> handleForceGetAllChats()
             is ChatListEvent.RequestNextChatsPage -> loadNextChatPage()
@@ -145,13 +140,11 @@ constructor(
     private fun handleForceGetAllChats() {
         showLoader()
 
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) { forceRefreshChats() }
-
+        launchIORequest {
+            removeChatCache()
             isLastPage = IS_LAST_PAGE_INITIAL
             currentPage = CURRENT_PAGE_INITIAL
-
-            _state.value = UIState(ChatListViewPayload())
+            _state.value = UIState(ChatListFragmentPayload())
         }
     }
 

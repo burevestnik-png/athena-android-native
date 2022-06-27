@@ -2,12 +2,14 @@ package ru.yofik.athena.common.presentation.components.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import ru.yofik.athena.common.presentation.components.extensions.createExceptionHandler
 import ru.yofik.athena.common.presentation.model.FailureEvent
 import ru.yofik.athena.common.presentation.model.UIState
+import kotlin.coroutines.CoroutineContext
 
 abstract class BaseViewModel<Payload>(payload: Payload) : ViewModel() {
     @Suppress("FunctionName")
@@ -37,11 +39,12 @@ abstract class BaseViewModel<Payload>(payload: Payload) : ViewModel() {
     }
 
     protected fun launchIORequest(
+        coroutineContext: CoroutineContext = Dispatchers.IO,
         errorMessage: String = "Failed to make request",
         request: suspend () -> Unit
     ) {
         val exceptionHandler = viewModelScope.createExceptionHandler(errorMessage) { onFailure(it) }
-        viewModelScope.launch(exceptionHandler) { request() }
+        viewModelScope.launch(exceptionHandler + coroutineContext) { request() }
     }
 
     protected abstract fun onFailure(throwable: Throwable)

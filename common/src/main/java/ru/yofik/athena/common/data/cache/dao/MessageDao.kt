@@ -1,9 +1,7 @@
 package ru.yofik.athena.common.data.cache.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 import ru.yofik.athena.common.data.cache.model.CachedMessage
 
 @Dao
@@ -15,6 +13,13 @@ interface MessageDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMessage(message: CachedMessage)
+
+    ///////////////////////////////////////////////////////////////////////////
+    // QUERY
+    ///////////////////////////////////////////////////////////////////////////
+    @Transaction
+    @Query("SELECT * FROM messages WHERE chatId = :chatId")
+    fun getAllFromDefiniteChat(chatId: Long): Flow<List<CachedMessage>>
 
     ///////////////////////////////////////////////////////////////////////////
     // DELETE

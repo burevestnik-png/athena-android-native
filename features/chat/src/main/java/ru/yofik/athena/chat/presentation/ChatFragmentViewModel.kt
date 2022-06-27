@@ -1,22 +1,25 @@
 package ru.yofik.athena.chat.presentation
 
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.yofik.athena.chat.domain.model.UiChat
 import ru.yofik.athena.chat.domain.model.mappers.UiChatMapper
 import ru.yofik.athena.chat.domain.model.mappers.UiMessageMapper
-import ru.yofik.athena.chat.domain.usecases.GetChat
-import ru.yofik.athena.chat.domain.usecases.GetCurrentUserId
-import ru.yofik.athena.chat.domain.usecases.SendMessage
-import ru.yofik.athena.chat.domain.usecases.SubscribeOnNewMessageNotifications
+import ru.yofik.athena.chat.domain.usecases.*
+import ru.yofik.athena.common.domain.model.exceptions.NoMoreItemsException
+import ru.yofik.athena.common.domain.model.message.Message
 import ru.yofik.athena.common.domain.model.notification.NewMessageNotification
+import ru.yofik.athena.common.domain.model.pagination.Pagination
 import ru.yofik.athena.common.presentation.components.base.BaseViewModel
+import ru.yofik.athena.common.presentation.model.FailureEvent
 import timber.log.Timber
 
 @HiltViewModel
@@ -27,9 +30,20 @@ constructor(
     private val sendMessage: SendMessage,
     private val subscribeOnNewMessageNotifications: SubscribeOnNewMessageNotifications,
     private val getCurrentUserId: GetCurrentUserId,
+    private val getMessages: GetMessages,
+    private val requestNextMessagesPage: RequestNextMessagesPage,
+    private val handleNewMessage: HandleNewMessage,
     private val uiMessageMapper: UiMessageMapper,
     private val uiChatMapper: UiChatMapper
 ) : BaseViewModel<ChatFragmentPayload>(ChatFragmentPayload()) {
+
+    companion object {
+        const val UI_PAGE_SIZE = Pagination.DEFAULT_PAGE_SIZE
+
+        private const val IS_LAST_PAGE_INITIAL = false
+        private const val CURRENT_PAGE_INITIAL = 0
+    }
+
     private val _effects = MutableSharedFlow<ChatFragmentViewEffect>()
     val effects: SharedFlow<ChatFragmentViewEffect> = _effects
 
@@ -37,16 +51,10 @@ constructor(
 
     // todo inject
     private val compositeDisposable = CompositeDisposable()
+    private var currentPage = 0
 
-    ///////////////////////////////////////////////////////////////////////////
-    // INIT
-    ///////////////////////////////////////////////////////////////////////////
-
-    init {
-        subscribeOnMessagesUpdates()
-    }
-
-    private fun subscribeOnMessagesUpdates() {}
+    var isLastPage = false
+        private set
 
     ///////////////////////////////////////////////////////////////////////////
     // ON EVENT
@@ -57,6 +65,7 @@ constructor(
             is ChatFragmentEvent.SendMessage -> handleSendMessage()
             is ChatFragmentEvent.GetChatInfo -> handleGetChatInfo(event.id)
             is ChatFragmentEvent.UpdateInput -> handleUpdateInput(event.content)
+            is ChatFragmentEvent.RequestNextMessagePage -> loadNextMessagePage()
         }
     }
 
@@ -77,6 +86,50 @@ constructor(
         }
 
         subscribeOnNotificationChannel(id)
+        subscribeOnMessagesUpdates(id)
+    }
+
+    private fun subscribeOnMessagesUpdates(chatId: Long) {
+        viewModelScope.launch {
+            getMessages(chatId)
+                .distinctUntilChanged()
+                .onEach {
+                    if (hasNoMessagesStoredButCanLoadMore(it)) {
+                        loadNextMessagePage()
+                    }
+                }
+                .filter { it.isNotEmpty() }
+                .catch { onFailure(it) }
+                .collect { onNewMessageList(it) }
+        }
+    }
+
+    private fun hasNoMessagesStoredButCanLoadMore(messages: List<Message>): Boolean {
+        return messages.isEmpty() && !state.value.payload.noMoreMessagesAvailable
+    }
+
+    private fun onNewMessageList(messages: List<Message>) {
+        val messagesFromServer = messages.map { uiMessageMapper.mapToView(it to uiChat) }
+
+        val currentMessages = state.value.payload.messages
+        val newMessages = messagesFromServer.subtract(currentMessages.toSet())
+        val updatedList = currentMessages + newMessages
+
+        modifyState { payload -> payload.copy(messages = updatedList) }
+    }
+
+    private fun loadNextMessagePage() {
+        showLoader()
+
+        launchIORequest {
+            val pagination =
+                withContext(Dispatchers.IO) {
+                    requestNextMessagesPage(chatId = uiChat.id, pageNumber = currentPage)
+                }
+
+            currentPage = pagination.currentPage
+            hideLoader()
+        }
     }
 
     private fun subscribeOnNotificationChannel(chatId: Long) {
@@ -89,6 +142,8 @@ constructor(
     private fun handleNotification(notification: NewMessageNotification) {
         Timber.d("New notification in chat feature")
         //        val messages = state.value!!.messages.toMutableList()
+
+        launchIORequest(Dispatchers.IO) { handleNewMessage(notification) }
 
         // todo update cache
 
@@ -114,7 +169,14 @@ constructor(
     }
 
     override fun onFailure(throwable: Throwable) {
-        when (throwable) {}
+        when (throwable) {
+            is NoMoreItemsException -> {
+                isLastPage = true
+                modifyState(loading = false, failure = FailureEvent(throwable)) { payload ->
+                    payload.copy(noMoreMessagesAvailable = true)
+                }
+            }
+        }
     }
 
     override fun onCleared() {
