@@ -45,4 +45,8 @@ dependencies {
 
     // Utils
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
+
+    // testing
+    testImplementation("com.squareup.okhttp3:mockwebserver:$mockwebserver_version")
+    androidTestImplementation("com.squareup.okhttp3:mockwebserver:$mockwebserver_version")
 }
