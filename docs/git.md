@@ -3,3 +3,4 @@
 * DOCS - docs managing
 * FEAT - feature
 * BUG - fixing bug
+* REVERT - reverting changes
