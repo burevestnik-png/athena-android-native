@@ -17,6 +17,7 @@ It is also available for all functions to add *suffixes* via **by** keyword. E.g
     * `getCached{Entity}` - function for getting cache
     * `removeAllCache` or `removeCached{Entity}` - function for removing cache at all ot partially
     * `is{Entity}ExistsInCache` - function for checking is wntity present in cache
+    * `update{Entity}By{Modificator} - function for updating entities in cache
  
 
 # Cache
