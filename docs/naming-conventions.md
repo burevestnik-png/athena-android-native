@@ -17,7 +17,7 @@ It is also available for all functions to add *suffixes* via **by** keyword. E.g
     * `getCached{Entity}` - function for getting cache
     * `removeAllCache` or `removeCached{Entity}` - function for removing cache at all ot partially
     * `is{Entity}ExistsInCache` - function for checking is entity present in cache
-    * `updateCached{Entity}By{Modificator} - function for updating entities in cache
+    * `updateCached{Entity}By{Modificator}` - function for updating entities in cache
  
 
 # Cache
@@ -27,6 +27,6 @@ Entities scope - **cache**
 It is also available for all functions to add *suffixes* via **by** keyword. E.g. `getCatByAge`
 
 * `get{Entity}` - function for returning some entity
-* `update{Entity}By{Modificator} - function for updating entities in cache
+* `update{Entity}By{Modificator}` - function for updating entities in cache
 * `is{Entity}Exists` - function for checking is entity present in cache
 * `insert{Entity}` - function for caching entities
