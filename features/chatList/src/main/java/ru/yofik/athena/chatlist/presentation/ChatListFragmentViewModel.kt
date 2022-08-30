@@ -7,6 +7,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.yofik.athena.chatlist.domain.model.mappers.UiChatMapper
@@ -56,21 +57,29 @@ constructor(
         subscribeOnChatsUpdates()
     }
 
+    private var job: Job? = null
+
     private fun subscribeOnChatsUpdates() {
-        viewModelScope.launch {
-            getChats()
-                .distinctUntilChanged()
-                .onEach {
-                    Timber.d("subscribeOnChatsUpdates: onEach ${it.size}")
-                    if (hasNoChatsStoredButCanLoadMore(it)) {
-                        Timber.d("subscribeOnChatsUpdates: in has no chat")
-                        loadNextChatPage()
+        job =
+            viewModelScope.launch {
+                getChats()
+                    .distinctUntilChanged()
+                    .onEach {
+                        Timber.d("subscribeOnChatsUpdates: onEach ${it.size}")
+                        if (hasNoChatsStoredButCanLoadMore(it)) {
+                            Timber.d("subscribeOnChatsUpdates: in has no chat")
+                            loadNextChatPage()
+                        }
                     }
-                }
-                .filter { it.isNotEmpty() }
-                .catch { onFailure(it) }
-                .collect { onNewChatList(it) }
-        }
+                    .filter { it.isNotEmpty() }
+                    .catch { onFailure(it) }
+                    .collect { onNewChatList(it) }
+            }
+    }
+
+    private fun resub() {
+        job?.cancel()
+        subscribeOnChatsUpdates()
     }
 
     private fun onNewChatList(chats: List<Chat>) {
@@ -145,6 +154,8 @@ constructor(
             isLastPage = IS_LAST_PAGE_INITIAL
             currentPage = CURRENT_PAGE_INITIAL
             _state.value = UIState(ChatListFragmentPayload())
+
+            resub()
         }
     }
 
