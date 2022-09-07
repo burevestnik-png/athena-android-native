@@ -28,8 +28,6 @@ android {
 
     buildFeatures {
         viewBinding true
-        // todo delete later
-        dataBinding true
     }
 
     sourceSets {
