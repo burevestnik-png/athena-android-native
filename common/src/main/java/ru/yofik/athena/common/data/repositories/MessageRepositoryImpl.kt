@@ -1,6 +1,5 @@
 package ru.yofik.athena.common.data.repositories
 
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import retrofit2.HttpException
@@ -15,6 +14,8 @@ import ru.yofik.athena.common.domain.model.message.Message
 import ru.yofik.athena.common.domain.model.pagination.PaginatedMessages
 import ru.yofik.athena.common.domain.model.pagination.Pagination
 import ru.yofik.athena.common.domain.repositories.MessageRepository
+import timber.log.Timber
+import javax.inject.Inject
 
 class MessageRepositoryImpl
 @Inject
@@ -47,14 +48,15 @@ constructor(
 
         try {
             val response = messageApi.getPaginatedMessages(chatId, request)
+            Timber.d("requestGetPaginatedMessages: $response")
 
             return PaginatedMessages(
                 messages = response.payload.map(apiMessageMapper::mapToDomain),
                 pagination =
-                    Pagination(
-                        currentPage = pageNumber + 1,
-                        currentAmountOfItems = response.payload.size
-                    )
+                Pagination(
+                    currentPage = pageNumber + 1,
+                    currentAmountOfItems = response.payload.size
+                )
             )
         } catch (exception: HttpException) {
             // TODO add exception parse

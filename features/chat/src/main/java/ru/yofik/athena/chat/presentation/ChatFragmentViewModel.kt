@@ -5,7 +5,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -21,6 +20,7 @@ import ru.yofik.athena.common.domain.model.pagination.Pagination
 import ru.yofik.athena.common.presentation.components.base.BaseViewModel
 import ru.yofik.athena.common.presentation.model.FailureEvent
 import timber.log.Timber
+import javax.inject.Inject
 
 @HiltViewModel
 class ChatFragmentViewModel
@@ -77,13 +77,12 @@ constructor(
         showLoader()
 
         launchIORequest {
-            val chat = withContext(Dispatchers.IO) { getChat(id) }
+            val chat = getChat(id)
             uiChat = uiChatMapper.mapToView(Pair(chat, getCurrentUserId()))
-
-            hideLoader()
-
             _effects.emit(ChatFragmentViewEffect.SetChatName(uiChat.name))
         }
+
+        hideLoader()
 
         subscribeOnNotificationChannel(id)
         subscribeOnMessagesUpdates(id)
@@ -94,6 +93,7 @@ constructor(
             getMessages(chatId)
                 .distinctUntilChanged()
                 .onEach {
+                    Timber.d("subscribeOnMessagesUpdates: $it")
                     if (hasNoMessagesStoredButCanLoadMore(it)) {
                         loadNextMessagePage()
                     }
@@ -123,9 +123,7 @@ constructor(
 
         launchIORequest {
             val pagination =
-                withContext(Dispatchers.IO) {
-                    requestNextMessagesPage(chatId = uiChat.id, pageNumber = currentPage)
-                }
+                requestNextMessagesPage(chatId = uiChat.id, pageNumber = currentPage)
 
             currentPage = pagination.currentPage
             hideLoader()

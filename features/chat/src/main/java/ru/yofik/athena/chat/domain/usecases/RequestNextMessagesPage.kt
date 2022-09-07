@@ -4,6 +4,7 @@ import ru.yofik.athena.common.domain.model.exceptions.NoMoreItemsException
 import javax.inject.Inject
 import ru.yofik.athena.common.domain.model.pagination.Pagination
 import ru.yofik.athena.common.domain.repositories.MessageRepository
+import timber.log.Timber
 
 class RequestNextMessagesPage
 @Inject
@@ -15,6 +16,8 @@ constructor(private val messageRepository: MessageRepository) {
     ): Pagination {
         val (messages, pagination) =
             messageRepository.requestGetPaginatedMessages(chatId, pageNumber, pageSize)
+
+        Timber.d("invoke: $messages")
 
         messageRepository.cacheMessages(messages)
 

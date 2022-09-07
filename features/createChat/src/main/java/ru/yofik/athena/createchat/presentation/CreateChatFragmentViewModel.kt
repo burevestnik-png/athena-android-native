@@ -2,7 +2,6 @@ package ru.yofik.athena.createchat.presentation
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -20,6 +19,7 @@ import ru.yofik.athena.createchat.domain.usecases.ForceRefreshUsers
 import ru.yofik.athena.createchat.domain.usecases.GetUsers
 import ru.yofik.athena.createchat.domain.usecases.RequestNextUsersPage
 import timber.log.Timber
+import javax.inject.Inject
 
 @HiltViewModel
 class CreateChatFragmentViewModel
@@ -105,7 +105,7 @@ constructor(
         launchIORequest {
             val createdChat = withContext(Dispatchers.IO) { createChat(targetUserId) }
             Timber.d("handleCreateChat: $createdChat")
-            //            _effects.emit(CreateChatFragmentViewEffect.NavigateToChatListScreen)
+            _effects.emit(CreateChatFragmentViewEffect.NavigateToChatListScreen)
 
             hideLoader()
         }
