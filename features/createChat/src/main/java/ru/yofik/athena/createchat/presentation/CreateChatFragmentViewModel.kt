@@ -103,7 +103,7 @@ constructor(
         showLoader()
 
         launchIORequest {
-            val createdChat = withContext(Dispatchers.IO) { createChat(targetUserId) }
+            val createdChat = createChat(targetUserId)
             Timber.d("handleCreateChat: $createdChat")
             _effects.emit(CreateChatFragmentViewEffect.NavigateToChatListScreen)
 
@@ -115,7 +115,7 @@ constructor(
         showLoader()
 
         launchIORequest {
-            val pagination = withContext(Dispatchers.IO) { requestNextUsersPage(currentPage) }
+            val pagination = requestNextUsersPage(currentPage)
             currentPage = pagination.currentPage
             hideLoader()
         }
