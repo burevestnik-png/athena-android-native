@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupActionBar() {
-        setSupportActionBar(binding.layoutAppBar.toolbar)
+        setSupportActionBar(binding.toolbar)
         setupActionBarWithNavController(navController, appBarConfiguration)
         setRulesWhenAppBarShouldBeHide()
     }
@@ -79,10 +79,10 @@ class MainActivity : AppCompatActivity() {
     private fun setRulesWhenAppBarShouldBeHide() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if (destination.id in DESTINATIONS_WITHOUT_APP_BAR) {
-                binding.layoutAppBar.toolbar.visibility = View.GONE
+                binding.toolbar.visibility = View.GONE
                 binding.navigationView.visibility = View.GONE
             } else {
-                binding.layoutAppBar.toolbar.visibility = View.VISIBLE
+                binding.toolbar.visibility = View.VISIBLE
                 binding.navigationView.visibility = View.VISIBLE
             }
         }
