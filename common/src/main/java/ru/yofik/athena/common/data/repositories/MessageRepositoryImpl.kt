@@ -44,18 +44,16 @@ constructor(
         pageNumber: Int,
         pageSize: Int
     ): PaginatedMessages {
-        val request = RequestWithPagination(pageNumber, pageSize)
-
         try {
-            val response = messageApi.getPaginatedMessages(chatId, request)
+            val response = messageApi.getPaginatedMessages(chatId, pageNumber, pageSize)
             Timber.d("requestGetPaginatedMessages: $response")
 
             return PaginatedMessages(
-                messages = response.payload.map(apiMessageMapper::mapToDomain),
+                messages = response.payload.messages.map(apiMessageMapper::mapToDomain),
                 pagination =
                 Pagination(
                     currentPage = pageNumber + 1,
-                    currentAmountOfItems = response.payload.size
+                    currentAmountOfItems = response.payload.meta.size
                 )
             )
         } catch (exception: HttpException) {
