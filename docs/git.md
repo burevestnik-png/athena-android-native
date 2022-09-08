@@ -2,5 +2,5 @@
 * IMPR - minor improvement
 * DOCS - docs managing
 * FEAT - feature
-* BUGFIX - fixing bug
+* FIX - fixing bug
 * REVERT - reverting changes
