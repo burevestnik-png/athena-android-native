@@ -3,7 +3,6 @@ package ru.yofik.athena.common.data.cache.converters
 import androidx.room.TypeConverter
 import org.threeten.bp.LocalDateTime
 import ru.yofik.athena.common.utils.TimeUtils
-import ru.yofik.athena.common.utils.toFormattedString
 
 class LocalDateTimeConverter {
 

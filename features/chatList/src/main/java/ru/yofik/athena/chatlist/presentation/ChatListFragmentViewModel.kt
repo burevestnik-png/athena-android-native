@@ -86,9 +86,10 @@ constructor(
         val chatFromServer = chats.map(uiChatMapper::mapToView)
 
         val currentChats = state.value.payload.chats
-        val newChats = chatFromServer.subtract(currentChats.toSet())
+        val currentChatIds = currentChats.map { it.id }
+
+        val newChats = chatFromServer.filter { it.id !in currentChatIds }
         val updatedList = currentChats + newChats
-        Timber.d("onNewChatList: $updatedList")
 
         modifyState { payload -> payload.copy(chats = updatedList) }
     }
