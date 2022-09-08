@@ -1,6 +1,7 @@
 # Commit tags
 * IMPR - minor improvement
-* DOCS - docs managing
+* REF - refactoring
 * FEAT - feature
+* DOCS - docs managing
 * FIX - fixing bug
 * REVERT - reverting changes
