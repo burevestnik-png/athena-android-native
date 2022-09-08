@@ -6,7 +6,7 @@ import ru.yofik.athena.common.data.api.http.model.message.requests.SendMessageRe
 import ru.yofik.athena.common.data.api.http.model.message.responses.GetPaginatedMessagesResponse
 
 interface MessageApi {
-    @POST("${ApiHttpConstants.CHATS_ENDPOINT}/{chatId}/messages/send")
+    @POST("${ApiHttpConstants.CHATS_ENDPOINT}/{chatId}/messages/")
     suspend fun sendMessage(
         @Path("chatId") chatId: Long,
         @Body sendMessageRequest: SendMessageRequest
