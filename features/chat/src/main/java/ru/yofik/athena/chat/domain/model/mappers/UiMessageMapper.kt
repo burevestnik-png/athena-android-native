@@ -2,10 +2,10 @@ package ru.yofik.athena.chat.domain.model.mappers
 
 import ru.yofik.athena.chat.domain.model.UiChat
 import ru.yofik.athena.chat.domain.model.UiMessage
-import javax.inject.Inject
 import ru.yofik.athena.common.domain.model.message.Message
 import ru.yofik.athena.common.presentation.model.UiMapper
-import ru.yofik.athena.common.utils.toFormattedString
+import ru.yofik.athena.common.utils.TimeUtils
+import javax.inject.Inject
 
 class UiMessageMapper @Inject constructor(
     private val uiSenderMapper: UiSenderMapper,
@@ -18,7 +18,10 @@ class UiMessageMapper @Inject constructor(
             id = message.id,
             sender = uiSenderMapper.mapToView(model),
             content = message.content,
-            time = message.creationDate.toFormattedString(),
+            time = TimeUtils.localDateTimeToString(
+                message.creationDate,
+                format = TimeUtils.SHORT_TIME_FORMAT
+            ),
             senderType = uiMessageSenderTypeMapper.mapToView(model)
         )
     }

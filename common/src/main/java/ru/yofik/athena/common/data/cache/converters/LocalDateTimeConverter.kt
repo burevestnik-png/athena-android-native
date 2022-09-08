@@ -9,11 +9,11 @@ class LocalDateTimeConverter {
 
     @TypeConverter
     fun toLocalDateTime(value: String?): LocalDateTime? {
-        return value?.let { TimeUtils.parseToLocalDateTime(value) }
+        return value?.let { TimeUtils.parseToLocalDateTime(it) }
     }
 
     @TypeConverter
     fun fromLocalDateTime(value: LocalDateTime?): String? {
-        return value?.toFormattedString()
+        return value?.let { TimeUtils.localDateTimeToString(it) }
     }
 }
