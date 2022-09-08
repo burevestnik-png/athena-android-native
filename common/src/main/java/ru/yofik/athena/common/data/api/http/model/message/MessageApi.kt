@@ -8,13 +8,13 @@ import ru.yofik.athena.common.data.api.http.model.message.requests.SendMessageRe
 import ru.yofik.athena.common.data.api.http.model.message.responses.GetPaginatedMessagesResponse
 
 interface MessageApi {
-    @POST("${ApiHttpConstants.CHATS_ENDPOINT}/{chatId}/messages")
+    @POST("${ApiHttpConstants.CHATS_ENDPOINT}/{chatId}/messages/send")
     suspend fun sendMessage(
         @Path("chatId") chatId: Long,
         @Body sendMessageRequest: SendMessageRequest
     )
 
-    @GET("${ApiHttpConstants.CHATS_ENDPOINT}/{chatId}/messages")
+    @POST("${ApiHttpConstants.CHATS_ENDPOINT}/{chatId}/messages")
     suspend fun getPaginatedMessages(
         @Path("chatId") chatId: Long,
         @Body requestWithPagination: RequestWithPagination

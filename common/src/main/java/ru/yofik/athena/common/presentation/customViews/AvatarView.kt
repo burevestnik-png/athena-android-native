@@ -3,7 +3,9 @@ package ru.yofik.athena.common.presentation.customViews
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.RelativeLayout
+import androidx.appcompat.content.res.AppCompatResources
 import ru.yofik.athena.common.R
 import ru.yofik.athena.common.databinding.ViewAvatarBinding
 import timber.log.Timber
@@ -31,6 +33,26 @@ class AvatarView(context: Context, attrs: AttributeSet? = null) : RelativeLayout
     fun setText(text: String) {
         this.text = text
         setupUI()
+    }
+
+    fun setSelectedState() {
+        binding.apply {
+            iconText.visibility = View.GONE
+            icon.apply {
+                setColorFilter(context.getColor(R.color.purple))
+                setImageDrawable(
+                    AppCompatResources.getDrawable(
+                        context,
+                        R.drawable.baseline_check_24
+                    )
+                )
+            }
+        }
+    }
+
+    fun setUnselectedState() {
+        binding.iconText.visibility = View.VISIBLE
+        setText(text)
     }
 
     private fun setupAttributes(attrs: AttributeSet?) {

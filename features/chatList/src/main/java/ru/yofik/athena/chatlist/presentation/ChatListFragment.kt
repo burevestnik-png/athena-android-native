@@ -10,6 +10,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.chatList.R
 import ru.yofik.athena.chatList.databinding.FragmentChatListBinding
+import ru.yofik.athena.chatlist.presentation.recyclerview.ChatAdapter
 import ru.yofik.athena.common.presentation.components.base.BaseFragment
 import ru.yofik.athena.common.presentation.components.extensions.handleFailures
 import ru.yofik.athena.common.presentation.components.extensions.launchViewModelsFlow
@@ -96,7 +97,7 @@ class ChatListFragment :
     private fun updateScreenState(state: UIState<ChatListFragmentPayload>) {
         Timber.d("updateScreenState: $state")
         binding.swipeLayout.isRefreshing = state.loading
-        adapter.submitList(state.payload.chats)
+        adapter.setChats(state.payload.chats)
         handleFailures(state.failure)
     }
 
