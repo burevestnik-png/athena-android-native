@@ -48,6 +48,9 @@ constructor(
     private val compositeDisposable = CompositeDisposable()
     private var currentPage = 0
 
+
+    private var gettingCachedChatsJob: Job? = null
+
     var isLastPage = false
         private set
 
@@ -60,15 +63,14 @@ constructor(
         subscribeOnChatsUpdates()
     }
 
-    private var job: Job? = null
-
     private fun subscribeOnChatsUpdates() {
-        job =
+        gettingCachedChatsJob?.cancel()
+        gettingCachedChatsJob =
             viewModelScope.launch {
                 getChats()
                     .distinctUntilChanged()
                     .onEach {
-                        Timber.d("subscribeOnChatsUpdates: onEach ${it.size} ${it}")
+                        Timber.d("subscribeOnChatsUpdates: onEach ${it.size}")
                         if (hasNoChatsStoredButCanLoadMore(it)) {
                             Timber.d("subscribeOnChatsUpdates: in has no chat")
                             loadNextChatPage()
@@ -78,12 +80,6 @@ constructor(
                     .catch { onFailure(it) }
                     .collect { onNewChatList(it) }
             }
-    }
-
-    private fun resub() {
-        Timber.d("resub: ")
-        job?.cancel()
-        subscribeOnChatsUpdates()
     }
 
     private fun onNewChatList(chats: List<Chat>) {
@@ -100,7 +96,7 @@ constructor(
     }
 
     private fun loadNextChatPage() {
-        Timber.d("loadNextChatPage: ")
+        Timber.d("loadNextChatPage")
         showLoader()
 
         launchIORequest {
@@ -124,20 +120,10 @@ constructor(
 
     private fun handleNewNotification(notification: NewMessageNotification) {
         Timber.d("Get new notification in chatList feature")
+        launchIORequest { updateMessage(notification.message) }
 
         // todo update cache
         // will list update if I only change db
-        viewModelScope.launch(Dispatchers.IO) { updateMessage(notification.message) }
-        //        val updatedList =
-        //            state.value.payload.chats.map {
-        //                if (it.id == notification.message.chatId) {
-        //                    it.copy(message = uiMessageMapper.mapToView(notification.message))
-        //                } else {
-        //                    it
-        //                }
-        //            }
-
-        //        modifyState { payload -> payload.copy(chats = updatedList) }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -157,11 +143,12 @@ constructor(
 
         launchIORequest {
             removeChatCache()
+
             isLastPage = IS_LAST_PAGE_INITIAL
             currentPage = CURRENT_PAGE_INITIAL
             _state.value = UIState(ChatListFragmentPayload())
 
-            resub()
+            subscribeOnChatsUpdates()
         }
     }
 

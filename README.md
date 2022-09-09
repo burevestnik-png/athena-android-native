@@ -96,6 +96,8 @@
 - add fab
 - add on drawer more info
 - swipes on items
+- add notification builder
+- remade db with caching ONLY last messages
 
 #### Inspected
 
