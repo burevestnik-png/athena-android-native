@@ -1,10 +1,10 @@
 package ru.yofik.athena.chatlist.domain.usecases
 
-import javax.inject.Inject
 import ru.yofik.athena.common.domain.model.exceptions.NoMoreItemsException
 import ru.yofik.athena.common.domain.model.pagination.Pagination
 import ru.yofik.athena.common.domain.repositories.ChatRepository
 import timber.log.Timber
+import javax.inject.Inject
 
 class RequestNextChatsPage
 @Inject

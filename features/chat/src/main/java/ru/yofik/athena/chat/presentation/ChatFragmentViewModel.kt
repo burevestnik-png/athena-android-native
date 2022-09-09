@@ -18,7 +18,7 @@ import ru.yofik.athena.common.domain.model.message.Message
 import ru.yofik.athena.common.domain.model.notification.NewMessageNotification
 import ru.yofik.athena.common.domain.model.pagination.Pagination
 import ru.yofik.athena.common.presentation.components.base.BaseViewModel
-import ru.yofik.athena.common.presentation.model.FailureEvent
+import ru.yofik.athena.common.presentation.model.Event
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -170,7 +170,7 @@ constructor(
         when (throwable) {
             is NoMoreItemsException -> {
                 isLastPage = true
-                modifyState(loading = false, failure = FailureEvent(throwable)) { payload ->
+                modifyState(loading = false, failure = Event(throwable)) { payload ->
                     payload.copy(noMoreMessagesAvailable = true)
                 }
             }

@@ -7,24 +7,22 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import ru.yofik.athena.common.presentation.components.extensions.createExceptionHandler
-import ru.yofik.athena.common.presentation.model.FailureEvent
+import ru.yofik.athena.common.presentation.model.Event
 import ru.yofik.athena.common.presentation.model.UIState
 import kotlin.coroutines.CoroutineContext
 
-abstract class BaseViewModel<Payload>(payload: Payload) : ViewModel() {
-    @Suppress("FunctionName")
-    protected fun MutableUIStateFlow(payload: Payload) = MutableStateFlow(UIState(payload))
+abstract class BaseViewModel<T>(payload: T) : ViewModel() {
 
-    protected val _state = MutableUIStateFlow(payload)
-    val state: StateFlow<UIState<Payload>> = _state
+    protected val _state = MutableStateFlow(UIState(payload))
+    val state: StateFlow<UIState<T>> = _state
 
     protected val payload
         get() = state.value.payload
 
     protected fun modifyState(
         loading: Boolean = _state.value.loading,
-        failure: FailureEvent? = _state.value.failure,
-        copyPayload: (Payload) -> Payload = { it }
+        failure: Event<Throwable>? = _state.value.failure,
+        copyPayload: (T) -> T = { it }
     ) {
         _state.value =
             state.value.copy(loading = loading, failure = failure, copyPayload = copyPayload)

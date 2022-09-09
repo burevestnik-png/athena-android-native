@@ -1,6 +1,5 @@
 package ru.yofik.athena.common.data.repositories
 
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import retrofit2.HttpException
@@ -13,6 +12,7 @@ import ru.yofik.athena.common.domain.model.pagination.PaginatedUsers
 import ru.yofik.athena.common.domain.model.pagination.Pagination
 import ru.yofik.athena.common.domain.model.users.User
 import ru.yofik.athena.common.domain.repositories.UserProfileRepository
+import javax.inject.Inject
 
 class UserProfileRepositoryImpl
 @Inject
@@ -26,17 +26,20 @@ constructor(
     // NETWORK
     ///////////////////////////////////////////////////////////////////////////
 
-    override suspend fun requestGetPaginatedUsersProfiles(pageNumber: Int, pageSize: Int): PaginatedUsers {
+    override suspend fun requestGetPaginatedUsersProfiles(
+        pageNumber: Int,
+        pageSize: Int
+    ): PaginatedUsers {
         try {
             val response = userProfileApi.getPaginatedUsers(pageNumber, pageSize)
 
             return PaginatedUsers(
                 users = response.payload.users.map(apiUserMapper::mapToDomain),
                 pagination =
-                    Pagination(
-                        currentPage = pageNumber + 1,
-                        currentAmountOfItems = response.payload.users.size
-                    )
+                Pagination(
+                    currentPage = pageNumber + 1,
+                    currentAmountOfItems = response.payload.users.size
+                )
             )
         } catch (exception: HttpException) {
             // TODO add exception parse

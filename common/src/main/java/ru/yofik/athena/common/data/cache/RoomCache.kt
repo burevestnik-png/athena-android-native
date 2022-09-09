@@ -1,6 +1,5 @@
 package ru.yofik.athena.common.data.cache
 
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -12,6 +11,7 @@ import ru.yofik.athena.common.data.cache.model.CachedChatUserCrossRef
 import ru.yofik.athena.common.data.cache.model.CachedMessage
 import ru.yofik.athena.common.data.cache.model.CachedUser
 import timber.log.Timber
+import javax.inject.Inject
 
 class RoomCache
 @Inject

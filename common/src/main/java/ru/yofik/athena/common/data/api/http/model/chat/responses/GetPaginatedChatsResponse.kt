@@ -2,9 +2,9 @@ package ru.yofik.athena.common.data.api.http.model.chat.responses
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import ru.yofik.athena.common.data.api.http.model.chat.apiEntity.ApiChat
 import ru.yofik.athena.common.data.api.http.model.common.responses.Response
 import ru.yofik.athena.common.data.api.http.model.common.responses.ResponseStatus
-import ru.yofik.athena.common.data.api.http.model.chat.apiEntity.ApiChat
 
 @JsonClass(generateAdapter = true)
 class GetPaginatedChatsResponse(

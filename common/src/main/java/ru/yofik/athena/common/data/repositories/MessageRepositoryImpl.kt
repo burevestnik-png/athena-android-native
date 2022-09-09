@@ -4,7 +4,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import retrofit2.HttpException
 import ru.yofik.athena.common.data.api.common.mappers.ApiMessageMapper
-import ru.yofik.athena.common.data.api.http.model.common.requests.RequestWithPagination
 import ru.yofik.athena.common.data.api.http.model.message.MessageApi
 import ru.yofik.athena.common.data.api.http.model.message.requests.SendMessageRequest
 import ru.yofik.athena.common.data.cache.dao.MessageDao

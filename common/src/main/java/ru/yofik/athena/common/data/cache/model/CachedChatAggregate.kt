@@ -1,6 +1,8 @@
 package ru.yofik.athena.common.data.cache.model
 
-import androidx.room.*
+import androidx.room.Embedded
+import androidx.room.Junction
+import androidx.room.Relation
 import ru.yofik.athena.common.domain.model.chat.Chat
 
 data class CachedChatAggregate(

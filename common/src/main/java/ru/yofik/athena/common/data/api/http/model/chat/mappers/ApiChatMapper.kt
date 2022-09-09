@@ -6,7 +6,6 @@ import ru.yofik.athena.common.data.api.common.mappers.ApiMessageMapper
 import ru.yofik.athena.common.data.api.http.model.chat.apiEntity.ApiChat
 import ru.yofik.athena.common.data.api.http.model.common.mappers.ApiUserMapper
 import ru.yofik.athena.common.domain.model.chat.Chat
-import ru.yofik.athena.common.domain.model.chat.ChatType
 import javax.inject.Inject
 
 class ApiChatMapper

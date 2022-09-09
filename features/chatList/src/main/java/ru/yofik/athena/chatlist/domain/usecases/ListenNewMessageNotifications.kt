@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class ListenNewMessageNotifications @Inject constructor(
     private val notificationRepository: NotificationRepository
-){
+) {
     operator fun invoke(): Observable<NewMessageNotification> {
         return notificationRepository.listenNewMessageNotifications()
     }

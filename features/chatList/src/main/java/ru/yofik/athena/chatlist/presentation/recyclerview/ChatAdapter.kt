@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.yofik.athena.chatList.databinding.ListItemChatBinding
 import ru.yofik.athena.chatlist.domain.model.UiChat
-import timber.log.Timber
 
 fun interface ChatClickListener {
     fun onChatClick(id: Long)

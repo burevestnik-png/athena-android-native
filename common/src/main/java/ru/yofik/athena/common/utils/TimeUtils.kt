@@ -20,7 +20,10 @@ object TimeUtils {
         }
     }
 
-    fun localDateTimeToString(localDateTime: LocalDateTime, format: String = FULL_TIME_FORMAT): String {
+    fun localDateTimeToString(
+        localDateTime: LocalDateTime,
+        format: String = FULL_TIME_FORMAT
+    ): String {
         return localDateTime.format(DateTimeFormatter.ofPattern(format))
     }
 }

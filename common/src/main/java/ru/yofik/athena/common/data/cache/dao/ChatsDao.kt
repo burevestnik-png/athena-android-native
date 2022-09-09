@@ -44,7 +44,9 @@ abstract class ChatsDao {
         deleteAllChatUserCrossRef()
     }
 
-    @Query("DELETE FROM chats") abstract suspend fun deleteAllChats()
+    @Query("DELETE FROM chats")
+    abstract suspend fun deleteAllChats()
 
-    @Query("DELETE FROM chat_user_cross_ref") abstract suspend fun deleteAllChatUserCrossRef()
+    @Query("DELETE FROM chat_user_cross_ref")
+    abstract suspend fun deleteAllChatUserCrossRef()
 }

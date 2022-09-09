@@ -10,7 +10,7 @@ import ru.yofik.athena.common.domain.model.exceptions.NoMoreItemsException
 import ru.yofik.athena.common.domain.model.pagination.Pagination
 import ru.yofik.athena.common.domain.model.users.User
 import ru.yofik.athena.common.presentation.components.base.BaseViewModel
-import ru.yofik.athena.common.presentation.model.FailureEvent
+import ru.yofik.athena.common.presentation.model.Event
 import ru.yofik.athena.common.presentation.model.UIState
 import ru.yofik.athena.createchat.domain.model.UiUserMapper
 import ru.yofik.athena.createchat.domain.model.exceptions.ChatAlreadyCreatedException
@@ -137,11 +137,11 @@ constructor(
     override fun onFailure(throwable: Throwable) {
         when (throwable) {
             is ChatAlreadyCreatedException -> {
-                _state.value = state.value.copy(loading = false, failure = FailureEvent(throwable))
+                _state.value = state.value.copy(loading = false, failure = Event(throwable))
             }
             is NoMoreItemsException -> {
                 isLastPage = true
-                modifyState(loading = false, failure = FailureEvent(throwable)) { payload ->
+                modifyState(loading = false, failure = Event(throwable)) { payload ->
                     payload.copy(noMoreUsersAnymore = true)
                 }
             }

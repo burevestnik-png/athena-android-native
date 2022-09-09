@@ -1,12 +1,11 @@
 package ru.yofik.athena.common.data.repositories
 
 import retrofit2.HttpException
+import ru.yofik.athena.common.data.api.http.model.common.mappers.ApiUserMapper
 import ru.yofik.athena.common.data.api.http.model.user.UserApi
 import ru.yofik.athena.common.data.api.http.model.user.mappers.ApiAccessTokenMapper
 import ru.yofik.athena.common.data.api.http.model.user.requests.ActivateUserRequest
 import ru.yofik.athena.common.data.api.http.model.user.requests.AuthUserRequest
-import ru.yofik.athena.common.data.api.http.model.common.mappers.ApiUserMapper
-import ru.yofik.athena.common.data.cache.Cache
 import ru.yofik.athena.common.data.preferences.Preferences
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
 import ru.yofik.athena.common.domain.model.users.User
@@ -79,13 +78,12 @@ constructor(
     }
 
 
-
     override fun hasAccess(): Boolean {
         return with(preferences) {
             getAccessToken().isNotEmpty() &&
-                getCurrentUserId() != -1L &&
-                getCurrentUserLogin().isNotEmpty() &&
-                getCurrentUserName().isNotEmpty()
+                    getCurrentUserId() != -1L &&
+                    getCurrentUserLogin().isNotEmpty() &&
+                    getCurrentUserName().isNotEmpty()
         }
     }
 }

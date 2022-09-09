@@ -1,14 +1,13 @@
 package ru.yofik.athena.profile.presentation
 
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import ru.yofik.athena.common.presentation.components.base.BaseViewModel
 import ru.yofik.athena.common.presentation.model.EmptyPayload
 import ru.yofik.athena.profile.domain.usecases.GetCachedUser
 import ru.yofik.athena.profile.domain.usecases.LogoutUser
-import timber.log.Timber
+import javax.inject.Inject
 
 @HiltViewModel
 class ProfileFragmentViewModel

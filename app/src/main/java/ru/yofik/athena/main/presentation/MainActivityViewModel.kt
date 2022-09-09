@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import ru.yofik.athena.main.domain.usecases.HasAccess
 import javax.inject.Inject
 import ru.yofik.athena.R as ChatListR
 import ru.yofik.athena.login.R as RLogin
-import ru.yofik.athena.main.domain.usecases.HasAccess
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(private val hasAccess: HasAccess) : ViewModel() {

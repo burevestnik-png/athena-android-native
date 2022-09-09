@@ -20,8 +20,8 @@ abstract class InfiniteScrollListener(
         if (!isLoading() && !isLastPage()) {
             Timber.d("IsLoading=${isLoading()}; IsLast=${isLastPage()}")
             if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount &&
-                    firstVisibleItemPosition >= 0 &&
-                    totalItemCount >= pageSize
+                firstVisibleItemPosition >= 0 &&
+                totalItemCount >= pageSize
             ) {
                 Timber.d("loadMoreItems")
                 loadMoreItems()

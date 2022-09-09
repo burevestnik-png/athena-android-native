@@ -8,7 +8,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 import ru.yofik.athena.common.data.cache.AthenaDatabase
 import ru.yofik.athena.common.data.cache.Cache
 import ru.yofik.athena.common.data.cache.MIGRATION_1_2
@@ -16,12 +15,14 @@ import ru.yofik.athena.common.data.cache.RoomCache
 import ru.yofik.athena.common.data.cache.dao.ChatsDao
 import ru.yofik.athena.common.data.cache.dao.MessageDao
 import ru.yofik.athena.common.data.cache.dao.UsersDao
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 internal abstract class CacheModule {
 
-    @Binds abstract fun bindCache(cache: RoomCache): Cache
+    @Binds
+    abstract fun bindCache(cache: RoomCache): Cache
 
     companion object {
         @Provides

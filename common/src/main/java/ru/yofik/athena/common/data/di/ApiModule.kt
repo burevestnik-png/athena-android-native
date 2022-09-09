@@ -5,8 +5,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import java.util.concurrent.TimeUnit
-import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.WebSocket
@@ -29,6 +27,8 @@ import ru.yofik.athena.common.data.api.http.model.userProfiles.UserProfileApi
 import ru.yofik.athena.common.data.api.ws.listeners.NotificationListener
 import ru.yofik.athena.common.data.preferences.Preferences
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)

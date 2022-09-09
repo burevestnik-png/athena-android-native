@@ -7,15 +7,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import ru.yofik.athena.common.R
-import ru.yofik.athena.common.presentation.model.FailureEvent
-import timber.log.Timber
+import ru.yofik.athena.common.presentation.model.Event
 
-fun Fragment.handleFailures(event: FailureEvent?) {
-    val unhandledFailure = event?.getFailureOrNull() ?: return
+fun Fragment.handleFailures(event: Event<Throwable>?) {
+    val unhandledFailure = event?.getPayloadOrNull() ?: return
     val fallbackMessage = getString(R.string.an_error_occurred)
 
     val message =

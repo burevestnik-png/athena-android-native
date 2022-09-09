@@ -5,11 +5,11 @@ class EmptyPayload
 data class UIState<Payload>(
     val payload: Payload,
     val loading: Boolean = false,
-    val failure: FailureEvent? = null
+    val failure: Event<Throwable>? = null
 ) {
     fun copy(
         loading: Boolean? = null,
-        failure: FailureEvent? = null,
+        failure: Event<Throwable>? = null,
         copyPayload: (Payload) -> Payload = { it }
     ): UIState<Payload> {
         return copy(

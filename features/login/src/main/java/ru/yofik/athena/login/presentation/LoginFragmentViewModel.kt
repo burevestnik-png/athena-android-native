@@ -1,7 +1,6 @@
 package ru.yofik.athena.login.presentation
 
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -9,10 +8,11 @@ import kotlinx.coroutines.withContext
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
 import ru.yofik.athena.common.domain.model.exceptions.NetworkUnavailableException
 import ru.yofik.athena.common.presentation.components.base.BaseViewModel
-import ru.yofik.athena.common.presentation.model.FailureEvent
+import ru.yofik.athena.common.presentation.model.Event
 import ru.yofik.athena.login.R
 import ru.yofik.athena.login.domain.usecases.RequestUserActivation
 import ru.yofik.athena.login.domain.usecases.RequestUserInfo
+import javax.inject.Inject
 
 @HiltViewModel
 class LoginFragmentViewModel
@@ -67,12 +67,12 @@ constructor(
         }
     }
 
-    override fun onFailure(failure: Throwable) {
-        when (failure) {
+    override fun onFailure(throwable: Throwable) {
+        when (throwable) {
             // todo add to all handlers
             is NetworkUnavailableException,
             is NetworkException -> {
-                modifyState(loading = false, failure = FailureEvent(failure))
+                modifyState(loading = false, failure = Event(throwable))
             }
         }
     }

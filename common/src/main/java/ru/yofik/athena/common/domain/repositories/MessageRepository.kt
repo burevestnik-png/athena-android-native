@@ -11,6 +11,7 @@ interface MessageRepository {
         pageNumber: Int,
         pageSize: Int
     ): PaginatedMessages
+
     suspend fun requestDeleteDefiniteMessage(
         chatId: Long,
         messageId: Long,

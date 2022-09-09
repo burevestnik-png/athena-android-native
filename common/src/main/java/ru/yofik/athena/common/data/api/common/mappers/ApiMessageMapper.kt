@@ -5,7 +5,6 @@ import ru.yofik.athena.common.data.api.common.MappingException
 import ru.yofik.athena.common.data.api.common.apiEntity.ApiMessage
 import ru.yofik.athena.common.domain.model.message.Message
 import ru.yofik.athena.common.utils.TimeUtils
-import timber.log.Timber
 import javax.inject.Inject
 
 class ApiMessageMapper @Inject constructor() : ApiMapper<ApiMessage, Message> {

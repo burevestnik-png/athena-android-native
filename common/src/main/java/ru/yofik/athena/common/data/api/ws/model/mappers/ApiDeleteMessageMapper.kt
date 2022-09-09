@@ -7,7 +7,8 @@ import ru.yofik.athena.common.data.api.ws.model.messages.input.RawDeleteMessage
 import ru.yofik.athena.common.domain.model.notification.DeleteMessageNotification
 import javax.inject.Inject
 
-internal class ApiDeleteMessageMapper @Inject constructor() : ApiMapper<String, DeleteMessageNotification> {
+internal class ApiDeleteMessageMapper @Inject constructor() :
+    ApiMapper<String, DeleteMessageNotification> {
     private val adapter = Moshi.Builder().build().adapter(RawDeleteMessage::class.java)
 
     override fun mapToDomain(apiEntity: String?): DeleteMessageNotification {

@@ -1,9 +1,9 @@
 package ru.yofik.athena.common.data.repositories
 
-import javax.inject.Inject
 import ru.yofik.athena.common.data.cache.Cache
 import ru.yofik.athena.common.data.preferences.Preferences
 import ru.yofik.athena.common.domain.repositories.CommonRepository
+import javax.inject.Inject
 
 class CommonRepositoryImpl
 @Inject

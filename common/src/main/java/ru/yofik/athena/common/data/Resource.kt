@@ -13,7 +13,8 @@ class Resource<in Input, out Output>(
 ) {
     suspend fun query(args: Input, force: Boolean = false) =
         flow<Output> {
-            if (!force) {}
+            if (!force) {
+            }
 
             if (force || refreshStrategy.isExpired()) {
                 kotlin.runCatching {}
