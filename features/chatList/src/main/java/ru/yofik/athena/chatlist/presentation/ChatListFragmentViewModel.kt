@@ -5,7 +5,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
@@ -20,6 +19,7 @@ import ru.yofik.athena.common.presentation.components.base.BaseViewModel
 import ru.yofik.athena.common.presentation.model.FailureEvent
 import ru.yofik.athena.common.presentation.model.UIState
 import timber.log.Timber
+import javax.inject.Inject
 
 @HiltViewModel
 class ChatListFragmentViewModel
@@ -65,7 +65,7 @@ constructor(
                 getChats()
                     .distinctUntilChanged()
                     .onEach {
-                        Timber.d("subscribeOnChatsUpdates: onEach ${it.size}")
+                        Timber.d("subscribeOnChatsUpdates: onEach ${it.size} ${it}")
                         if (hasNoChatsStoredButCanLoadMore(it)) {
                             Timber.d("subscribeOnChatsUpdates: in has no chat")
                             loadNextChatPage()
@@ -78,12 +78,14 @@ constructor(
     }
 
     private fun resub() {
+        Timber.d("resub: ")
         job?.cancel()
         subscribeOnChatsUpdates()
     }
 
     private fun onNewChatList(chats: List<Chat>) {
         val chatFromServer = chats.map(uiChatMapper::mapToView)
+        Timber.d("onNewChatList: $chatFromServer")
 
         val currentChats = state.value.payload.chats
         val currentChatIds = currentChats.map { it.id }
