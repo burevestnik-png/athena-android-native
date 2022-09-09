@@ -93,6 +93,9 @@
 - Подумать о времени кэша
 - DataStore
 - migration on kts configs
+- add fab
+- add on drawer more info
+- swipes on items
 
 #### Inspected
 
