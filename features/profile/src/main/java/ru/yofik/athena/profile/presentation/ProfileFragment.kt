@@ -67,7 +67,7 @@ class ProfileFragment :
         binding.apply {
             userName.text = user.name
             userLogin.text = getString(R.string.user_login, user.login)
-            avatar.setText(user.name)
+            avatar.text = user.name
         }
     }
 

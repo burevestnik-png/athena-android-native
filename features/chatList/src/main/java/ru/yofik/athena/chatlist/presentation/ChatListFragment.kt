@@ -47,19 +47,24 @@ class ChatListFragment :
     }
 
     private fun setupMenu() {
-        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.toolbar_menu, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
-                R.id.action_create_chat -> {
-                    navigate(Routes.CREATE_CHAT)
-                    true
+        (requireActivity() as MenuHost).addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.toolbar_menu, menu)
                 }
-                else -> false
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
+                    when (menuItem.itemId) {
+                        R.id.action_create_chat -> {
+                            navigate(Routes.CREATE_CHAT)
+                            true
+                        }
+                        else -> false
+                    }
+            },
+            viewLifecycleOwner,
+            Lifecycle.State.RESUMED
+        )
     }
 
     private fun listenToListPulling() {
@@ -67,7 +72,10 @@ class ChatListFragment :
     }
 
     private fun setupChatAdapter() =
-        ChatAdapter().apply { setChatClickListener { id -> navigate(Routes.CHAT(id)) } }
+        ChatAdapter(
+            chatNavigateListener = { id -> navigate(Routes.CHAT(id)) },
+            chatSelectionListener = { id -> requestAddChatToSelection(id) }
+        )
 
     private fun setupRecyclerView(adapter: ChatAdapter) {
         binding.recyclerView.apply {
@@ -102,7 +110,12 @@ class ChatListFragment :
     private fun updateScreenState(state: UIState<ChatListFragmentPayload>) {
         Timber.d("updateScreenState: $state")
         binding.swipeLayout.isRefreshing = state.loading
-        adapter.setChats(state.payload.chats)
+
+        adapter.apply {
+            updateChats(state.payload.chats)
+            currentScreenMode = state.payload.mode
+        }
+
         handleFailures(state.failure)
     }
 
@@ -116,5 +129,13 @@ class ChatListFragment :
 
     private fun requestForceGetAllChats() {
         viewModel.onEvent(ChatListEvent.ForceGetAllChats)
+    }
+
+    private fun requestAddChatToSelection(id: Long) {
+        viewModel.onEvent(ChatListEvent.AddChatToSelection(id))
+    }
+
+    private fun requestCancelSelection() {
+        viewModel.onEvent(ChatListEvent.CancelSelection)
     }
 }

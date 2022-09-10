@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.16">
 
-        <ru.yofik.athena.common.presentation.customViews.AvatarView
+        <ru.yofik.athena.common.presentation.customViews.avatarView.AvatarView
             android:id="@+id/avatar"
             android:layout_width="100dp"
             android:layout_height="100dp"

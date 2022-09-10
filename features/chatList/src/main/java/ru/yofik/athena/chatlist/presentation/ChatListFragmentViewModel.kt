@@ -5,7 +5,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -22,7 +22,6 @@ import ru.yofik.athena.common.presentation.components.base.BaseViewModel
 import ru.yofik.athena.common.presentation.model.Event
 import ru.yofik.athena.common.presentation.model.UIState
 import timber.log.Timber
-import javax.inject.Inject
 
 @HiltViewModel
 class ChatListFragmentViewModel
@@ -48,11 +47,12 @@ constructor(
     private val compositeDisposable = CompositeDisposable()
     private var currentPage = 0
 
-
     private var gettingCachedChatsJob: Job? = null
 
     var isLastPage = false
         private set
+
+    private val selectedChatIds: MutableList<Long> = mutableListOf()
 
     ///////////////////////////////////////////////////////////////////////////
     // INIT
@@ -135,6 +135,21 @@ constructor(
         when (event) {
             is ChatListEvent.ForceGetAllChats -> handleForceGetAllChats()
             is ChatListEvent.RequestNextChatsPage -> loadNextChatPage()
+            is ChatListEvent.AddChatToSelection -> handleAddChatToSelection(event.chatId)
+            is ChatListEvent.CancelSelection -> handleSelectionCancellation()
+        }
+    }
+
+    private fun handleSelectionCancellation() {
+        selectedChatIds.clear()
+        modifyState { payload -> payload.copy(mode = ChatListFragmentPayload.Mode.DEFAULT) }
+    }
+
+    private fun handleAddChatToSelection(id: Long) {
+        selectedChatIds.add(id)
+
+        if (payload.mode != ChatListFragmentPayload.Mode.SELECTION) {
+            modifyState { payload -> payload.copy(mode = ChatListFragmentPayload.Mode.SELECTION) }
         }
     }
 

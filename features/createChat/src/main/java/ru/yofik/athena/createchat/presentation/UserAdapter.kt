@@ -40,7 +40,7 @@ class UserAdapter : ListAdapter<UiUser, UserAdapter.UserViewHolder>(UI_USER_COMP
             binding.apply {
                 this.name.text = user.name
                 this.login.text = itemView.context.getString(R.string.user_login, user.login)
-                logo.setText(user.name)
+                logo.text = user.name
 
                 root.setOnClickListener { userClickListener?.onUserClick(user.id) }
             }
