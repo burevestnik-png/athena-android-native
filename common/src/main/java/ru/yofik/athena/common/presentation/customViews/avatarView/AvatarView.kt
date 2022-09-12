@@ -1,6 +1,8 @@
 package ru.yofik.athena.common.presentation.customViews.avatarView
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.RelativeLayout
@@ -67,8 +69,9 @@ class AvatarView(context: Context, attrs: AttributeSet? = null) : RelativeLayout
             }
 
             icon.apply {
-                setColorFilter(context.getColor(BackgroundGenerator.get(text)))
-                setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.bg_avatar))
+                setColorFilter(hashBasedColor)
+                setImageDrawable(bgAvatarBackground)
+                background = null
             }
         }
     }
@@ -78,17 +81,32 @@ class AvatarView(context: Context, attrs: AttributeSet? = null) : RelativeLayout
             binding.iconText.visibility = GONE
         }
 
-        binding.apply {
-            icon.apply {
-                setColorFilter(context.getColor(R.color.purple))
-                setImageDrawable(
-                    AppCompatResources.getDrawable(context, R.drawable.baseline_check_24)
-                )
-            }
+        binding.icon.apply {
+            setColorFilter(purpleColor)
+            setImageDrawable(checkIcon)
+            background = circleBackground
         }
 
         state = State.SELECTED
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // UI UTILS
+    ///////////////////////////////////////////////////////////////////////////
+
+    private val purpleColor = context.getColor(R.color.purple)
+    private val whiteColor = context.getColor(R.color.white)
+    private val hashBasedColor = context.getColor(BackgroundGenerator.get(text))
+
+    private val checkIcon = AppCompatResources.getDrawable(context, R.drawable.baseline_check_24)
+    private val bgAvatarBackground = AppCompatResources.getDrawable(context, R.drawable.bg_avatar)
+
+    private val circleBackground =
+        GradientDrawable().apply {
+            color = ColorStateList.valueOf(whiteColor)
+            shape = GradientDrawable.OVAL
+            setStroke(1, ColorStateList.valueOf(purpleColor))
+        }
 
     sealed class State {
         object DEFAULT : State()

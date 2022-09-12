@@ -9,11 +9,11 @@ import ru.yofik.athena.chatlist.presentation.ChatListFragmentPayload
 import ru.yofik.athena.common.presentation.customViews.avatarView.AvatarView
 
 fun interface ChatNavigateListener {
-    fun onChatClick(id: Long)
+    fun onChatNavigate(id: Long)
 }
 
 fun interface ChatSelectionListener {
-    fun onChatLongClick(id: Long)
+    fun onChatSelection(id: Long)
 }
 
 class ChatAdapter(
@@ -27,23 +27,8 @@ class ChatAdapter(
     fun updateChats(chats: List<UiChat>) {
         // todo check if chats the same
         this.chats = chats
+        // todo add callback
         notifyDataSetChanged()
-    }
-
-    fun updateChatSelection(id: Long) {
-        val chat = chats.find { it.id == id }!!
-        val index = chats.indexOf(chat)
-
-        this.chats =
-            chats
-                .toMutableList()
-                .apply {
-                    removeAt(index)
-                    add(index, chat.copy(isSelected = !chat.isSelected))
-                }
-                .toList()
-
-        notifyItemChanged(index)
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -74,36 +59,34 @@ class ChatAdapter(
                 time.text = uiChat.message.time
                 logo.text = uiChat.name
 
-                if (uiChat.isSelected) setSelectedState() else setUnselectedState()
+                setStateBySelection(uiChat.isSelected)
             }
 
             binding.root.apply {
                 when (currentScreenMode) {
                     is ChatListFragmentPayload.Mode.DEFAULT -> {
-                        setOnClickListener { chatNavigateListener.onChatClick(uiChat.id) }
+                        setOnClickListener { chatNavigateListener.onChatNavigate(uiChat.id) }
 
                         setOnLongClickListener {
-                            if (uiChat.isSelected) setUnselectedState() else setSelectedState()
-                            updateChatSelection(uiChat.id)
+                            chatSelectionListener.onChatSelection(uiChat.id)
                             true
                         }
                     }
                     is ChatListFragmentPayload.Mode.SELECTION -> {
                         setOnClickListener {
-                            if (uiChat.isSelected) setUnselectedState() else setSelectedState()
-                            updateChatSelection(uiChat.id)
+                            chatSelectionListener.onChatSelection(uiChat.id)
                         }
                     }
                 }
             }
         }
 
-        private fun setSelectedState() {
-            binding.logo.setState(AvatarView.State.SELECTED)
-        }
-
-        private fun setUnselectedState() {
-            binding.logo.setState(AvatarView.State.DEFAULT)
+        private fun setStateBySelection(isSelected: Boolean) {
+            if (isSelected) binding.apply {
+                logo.setState(AvatarView.State.SELECTED)
+            } else binding.apply {
+                logo.setState(AvatarView.State.DEFAULT)
+            }
         }
     }
 }

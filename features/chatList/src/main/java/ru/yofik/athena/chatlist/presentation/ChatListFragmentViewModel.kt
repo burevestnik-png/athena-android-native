@@ -72,7 +72,6 @@ constructor(
                     .onEach {
                         Timber.d("subscribeOnChatsUpdates: onEach ${it.size}")
                         if (hasNoChatsStoredButCanLoadMore(it)) {
-                            Timber.d("subscribeOnChatsUpdates: in has no chat")
                             loadNextChatPage()
                         }
                     }
@@ -146,10 +145,34 @@ constructor(
     }
 
     private fun handleAddChatToSelection(id: Long) {
-        selectedChatIds.add(id)
+        if (selectedChatIds.contains(id)) {
+            selectedChatIds.remove(id)
 
-        if (payload.mode != ChatListFragmentPayload.Mode.SELECTION) {
-            modifyState { payload -> payload.copy(mode = ChatListFragmentPayload.Mode.SELECTION) }
+            if (
+                payload.mode == ChatListFragmentPayload.Mode.SELECTION && selectedChatIds.isEmpty()
+            ) {
+                modifyState { payload ->
+                    payload.copy(
+                        mode = ChatListFragmentPayload.Mode.DEFAULT,
+                        chats = payload.toggleChatSelection(id)
+                    )
+                }
+            } else {
+                modifyState { payload -> payload.copy(chats = payload.toggleChatSelection(id)) }
+            }
+        } else {
+            selectedChatIds.add(id)
+
+            if (payload.mode != ChatListFragmentPayload.Mode.SELECTION) {
+                modifyState { payload ->
+                    payload.copy(
+                        mode = ChatListFragmentPayload.Mode.SELECTION,
+                        chats = payload.toggleChatSelection(id)
+                    )
+                }
+            } else {
+                modifyState { payload -> payload.copy(chats = payload.toggleChatSelection(id)) }
+            }
         }
     }
 

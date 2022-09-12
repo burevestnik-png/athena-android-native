@@ -8,7 +8,15 @@ data class ChatListFragmentPayload(
     val chats: List<UiChat> = emptyList()
 ) {
     sealed class Mode {
-        object DEFAULT : Mode()
-        object SELECTION : Mode()
+        object DEFAULT : Mode() {
+            override fun toString() = DEFAULT::class.simpleName!!
+        }
+
+        object SELECTION : Mode() {
+            override fun toString() = SELECTION::class.simpleName!!
+        }
     }
 }
+
+fun ChatListFragmentPayload.toggleChatSelection(id: Long): List<UiChat> =
+    this.chats.map { chat -> if (chat.id == id) chat.copy(isSelected = !chat.isSelected) else chat }
