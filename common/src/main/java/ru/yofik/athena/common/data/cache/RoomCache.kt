@@ -58,7 +58,7 @@ constructor(
     // Message
     ///////////////////////////////////////////////////////////////////////////
 
-    override fun getAllMessagesFromDefiniteChat(chatId: Long): Flow<List<CachedMessage>> {
+    override fun getAllMessagesByChatId(chatId: Long): Flow<List<CachedMessage>> {
         return messageDao.getAllFromDefiniteChat(chatId).map { messages ->
             messages.filter { it.chatId == chatId }
         }
