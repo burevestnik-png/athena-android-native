@@ -32,6 +32,7 @@ class ChatListFragment :
         createMenuProvider(R.menu.default_mode_menu) {
             when (it.itemId) {
                 R.id.action_create_chat -> {
+                    navigate(Routes.CREATE_CHAT)
                     true
                 }
                 else -> false

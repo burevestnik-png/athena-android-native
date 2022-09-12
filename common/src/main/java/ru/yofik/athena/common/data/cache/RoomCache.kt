@@ -2,12 +2,14 @@ package ru.yofik.athena.common.data.cache
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import ru.yofik.athena.common.data.cache.dao.ChatsDao
 import ru.yofik.athena.common.data.cache.dao.MessageDao
 import ru.yofik.athena.common.data.cache.dao.UsersDao
 import ru.yofik.athena.common.data.cache.model.CachedChatAggregate
 import ru.yofik.athena.common.data.cache.model.CachedMessage
 import ru.yofik.athena.common.data.cache.model.CachedUser
+import timber.log.Timber
 import javax.inject.Inject
 
 internal class RoomCache
@@ -39,7 +41,7 @@ constructor(
     ///////////////////////////////////////////////////////////////////////////
 
     override fun getChats(): Flow<List<CachedChatAggregate>> {
-        return chatsDao.getAll()
+        return chatsDao.getAll().onEach { Timber.d("getChats: $it") }
     }
 
     override suspend fun getChat(id: Long): CachedChatAggregate {
@@ -66,6 +68,10 @@ constructor(
 
     override suspend fun insertMessage(message: CachedMessage) {
         messageDao.insertMessage(message)
+    }
+
+    override suspend fun updateLastMessageByChatId(cachedMessage: CachedMessage) {
+        messageDao.updateLastMessageForChat(cachedMessage)
     }
 
     override suspend fun deleteAllMessages() {

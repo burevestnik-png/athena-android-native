@@ -2,6 +2,7 @@ package ru.yofik.athena.common.domain.repositories
 
 import kotlinx.coroutines.flow.Flow
 import ru.yofik.athena.common.domain.model.chat.Chat
+import ru.yofik.athena.common.domain.model.message.Message
 import ru.yofik.athena.common.domain.model.pagination.PaginatedChats
 
 interface ChatRepository {
@@ -12,5 +13,6 @@ interface ChatRepository {
     fun getCachedChats(): Flow<List<Chat>>
     suspend fun getCachedChat(id: Long): Chat
     suspend fun cacheChats(chats: List<Chat>)
+    suspend fun updateLastMessage(message: Message)
     suspend fun removeAllCache()
 }

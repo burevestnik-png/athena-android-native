@@ -10,8 +10,10 @@ import ru.yofik.athena.common.data.api.http.model.chat.requests.CreateChatReques
 import ru.yofik.athena.common.data.cache.Cache
 import ru.yofik.athena.common.data.cache.model.CachedChat
 import ru.yofik.athena.common.data.cache.model.CachedChatAggregate
+import ru.yofik.athena.common.data.cache.model.CachedMessage
 import ru.yofik.athena.common.domain.model.chat.Chat
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
+import ru.yofik.athena.common.domain.model.message.Message
 import ru.yofik.athena.common.domain.model.pagination.PaginatedChats
 import ru.yofik.athena.common.domain.model.pagination.Pagination
 import ru.yofik.athena.common.domain.repositories.ChatRepository
@@ -95,6 +97,10 @@ constructor(
 
     override suspend fun cacheChats(chats: List<Chat>) {
         cache.insertChats(chats.map { CachedChatAggregate.fromDomain(it) })
+    }
+
+    override suspend fun updateLastMessage(message: Message) {
+        cache.updateLastMessageByChatId(CachedMessage.fromDomain(message)!!)
     }
 
     override suspend fun removeAllCache() {
