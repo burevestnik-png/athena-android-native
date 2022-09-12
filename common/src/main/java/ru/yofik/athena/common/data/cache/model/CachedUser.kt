@@ -8,15 +8,13 @@ import ru.yofik.athena.common.domain.model.users.User
 data class CachedUser(
     @PrimaryKey(autoGenerate = false) val userId: Long,
     val login: String,
-    val name: String
+    val name: String,
 ) {
     companion object {
-        fun fromDomain(user: User): CachedUser {
-            return CachedUser(userId = user.id, login = user.login, name = user.name)
-        }
-
-        fun toDomain(cachedUser: CachedUser): User {
-            return User(id = cachedUser.userId, login = cachedUser.login, name = cachedUser.name)
-        }
+        fun fromDomain(user: User) =
+            CachedUser(userId = user.id, login = user.login, name = user.name)
     }
 }
+
+fun CachedUser.toDomain() =
+    User(id = this.userId, login = this.login, name = this.name)

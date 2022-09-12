@@ -8,24 +8,22 @@ import ru.yofik.athena.common.data.cache.converters.LocalDateTimeConverter
 import ru.yofik.athena.common.data.cache.dao.ChatsDao
 import ru.yofik.athena.common.data.cache.dao.MessageDao
 import ru.yofik.athena.common.data.cache.dao.UsersDao
-import ru.yofik.athena.common.data.cache.model.CachedChat
-import ru.yofik.athena.common.data.cache.model.CachedChatUserCrossRef
-import ru.yofik.athena.common.data.cache.model.CachedMessage
-import ru.yofik.athena.common.data.cache.model.CachedUser
+import ru.yofik.athena.common.data.cache.model.*
 
 @Database(
     entities =
     [
         CachedUser::class,
         CachedChat::class,
-        CachedChatUserCrossRef::class,
         CachedMessage::class,
+        CachedChatUserCrossRef::class,
+        CachedChatLastMessageCrossRef::class
     ],
-    version = 6,
+    version = 9,
     exportSchema = false
 )
 @TypeConverters(LocalDateTimeConverter::class, ChatTypeConverter::class)
-abstract class AthenaDatabase : RoomDatabase() {
+internal abstract class AthenaDatabase : RoomDatabase() {
     abstract fun usersDao(): UsersDao
     abstract fun chatsDao(): ChatsDao
     abstract fun messageDao(): MessageDao

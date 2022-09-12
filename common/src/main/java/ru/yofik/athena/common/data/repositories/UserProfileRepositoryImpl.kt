@@ -7,6 +7,7 @@ import ru.yofik.athena.common.data.api.http.model.common.mappers.ApiUserMapper
 import ru.yofik.athena.common.data.api.http.model.userProfiles.UserProfileApi
 import ru.yofik.athena.common.data.cache.Cache
 import ru.yofik.athena.common.data.cache.model.CachedUser
+import ru.yofik.athena.common.data.cache.model.toDomain
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
 import ru.yofik.athena.common.domain.model.pagination.PaginatedUsers
 import ru.yofik.athena.common.domain.model.pagination.Pagination
@@ -62,7 +63,7 @@ constructor(
     ///////////////////////////////////////////////////////////////////////////
 
     override fun getCachedUsers(): Flow<List<User>> {
-        return cache.getUsers().map { users -> users.map { CachedUser.toDomain(it) } }
+        return cache.getUsers().map { users -> users.map { it.toDomain() } }
     }
 
     override suspend fun cacheUsers(users: List<User>) {

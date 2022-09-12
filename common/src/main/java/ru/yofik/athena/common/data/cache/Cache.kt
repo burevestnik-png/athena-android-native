@@ -12,7 +12,7 @@ interface Cache {
 
     fun getChats(): Flow<List<CachedChatAggregate>>
     suspend fun getChat(id: Long): CachedChatAggregate
-    suspend fun insertChats(chatsAggregate: List<CachedChatAggregate>)
+    suspend fun insertChats(chatsAggregates: List<CachedChatAggregate>)
     suspend fun deleteAllChats()
 
     fun getAllMessagesFromDefiniteChat(chatId: Long): Flow<List<CachedMessage>>

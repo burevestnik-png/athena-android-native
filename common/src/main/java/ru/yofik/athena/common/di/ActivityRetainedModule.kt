@@ -10,7 +10,7 @@ import ru.yofik.athena.common.domain.repositories.*
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
-abstract class ActivityRetainedModule {
+internal abstract class ActivityRetainedModule {
 
     @Binds
     @ActivityRetainedScoped

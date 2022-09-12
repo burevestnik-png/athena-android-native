@@ -11,9 +11,12 @@ data class CachedChatAggregate(
         parentColumn = "chatId",
         entityColumn = "userId",
         associateBy = Junction(CachedChatUserCrossRef::class)
-    )
-    val users: List<CachedUser>,
-    @Relation(parentColumn = "chatId", entityColumn = "chatId") val lastMessage: CachedMessage?
+    ) val users: List<CachedUser>,
+    @Relation(
+        parentColumn = "chatId",
+        entityColumn = "messageId",
+        associateBy = Junction(CachedChatLastMessageCrossRef::class)
+    ) val lastMessage: CachedMessage?,
 ) {
     companion object {
         fun fromDomain(chat: Chat): CachedChatAggregate {

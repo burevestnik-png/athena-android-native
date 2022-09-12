@@ -2,23 +2,20 @@ package ru.yofik.athena.common.data.cache
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import ru.yofik.athena.common.data.cache.dao.ChatsDao
 import ru.yofik.athena.common.data.cache.dao.MessageDao
 import ru.yofik.athena.common.data.cache.dao.UsersDao
 import ru.yofik.athena.common.data.cache.model.CachedChatAggregate
-import ru.yofik.athena.common.data.cache.model.CachedChatUserCrossRef
 import ru.yofik.athena.common.data.cache.model.CachedMessage
 import ru.yofik.athena.common.data.cache.model.CachedUser
-import timber.log.Timber
 import javax.inject.Inject
 
-class RoomCache
+internal class RoomCache
 @Inject
 constructor(
     private val usersDao: UsersDao,
     private val chatsDao: ChatsDao,
-    private val messageDao: MessageDao
+    private val messageDao: MessageDao,
 ) : Cache {
 
     ///////////////////////////////////////////////////////////////////////////
@@ -42,7 +39,7 @@ constructor(
     ///////////////////////////////////////////////////////////////////////////
 
     override fun getChats(): Flow<List<CachedChatAggregate>> {
-        return chatsDao.getAll().onEach { Timber.d("getChats: ${it.joinToString("\n")}") }
+        return chatsDao.getAll()
     }
 
     override suspend fun getChat(id: Long): CachedChatAggregate {
@@ -53,21 +50,8 @@ constructor(
         chatsDao.deleteAllChats()
     }
 
-    override suspend fun insertChats(chatsAggregate: List<CachedChatAggregate>) {
-        chatsAggregate.forEach { chatAggregate ->
-            chatsDao.insertChat(chatAggregate.chat)
-            usersDao.insertUsers(chatAggregate.users)
-
-            if (chatAggregate.lastMessage != null) {
-                messageDao.insertMessage(chatAggregate.lastMessage)
-            }
-
-            chatAggregate.users.forEach { user ->
-                chatsDao.insertCachedChatUserCrossRef(
-                    CachedChatUserCrossRef(chatAggregate.chat.chatId, user.userId)
-                )
-            }
-        }
+    override suspend fun insertChats(chatsAggregates: List<CachedChatAggregate>) {
+        chatsDao.insertChatAggregates(chatsAggregates)
     }
 
     ///////////////////////////////////////////////////////////////////////////

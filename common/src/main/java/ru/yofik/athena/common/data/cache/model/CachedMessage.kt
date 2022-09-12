@@ -25,21 +25,21 @@ import ru.yofik.athena.common.domain.model.message.Message
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
         )],
-    indices = [Index("id"), Index("senderId"), Index("chatId")]
+    indices = [Index("messageId"), Index("senderId"), Index("chatId")]
 )
 data class CachedMessage(
-    @PrimaryKey(autoGenerate = false) val id: Long,
+    @PrimaryKey(autoGenerate = false) val messageId: Long,
     val content: String,
     val senderId: Long,
     val chatId: Long,
     val creationDate: LocalDateTime,
-    val modificationDate: LocalDateTime
+    val modificationDate: LocalDateTime,
 ) {
     companion object {
         fun fromDomain(message: Message): CachedMessage? {
             if (message.isNullable) return null
             return CachedMessage(
-                id = message.id,
+                messageId = message.id,
                 content = message.content,
                 senderId = message.senderId,
                 chatId = message.chatId,
@@ -47,17 +47,17 @@ data class CachedMessage(
                 modificationDate = message.modificationDate
             )
         }
-
-        fun toDomain(cachedMessage: CachedMessage?): Message {
-            if (cachedMessage == null) return Message.nullable()
-            return Message(
-                id = cachedMessage.id,
-                content = cachedMessage.content,
-                senderId = cachedMessage.senderId,
-                chatId = cachedMessage.chatId,
-                creationDate = cachedMessage.creationDate,
-                modificationDate = cachedMessage.modificationDate
-            )
-        }
     }
+}
+
+fun CachedMessage?.toDomain(): Message {
+    if (this == null) return Message.nullable()
+    return Message(
+        id = this.messageId,
+        content = this.content,
+        senderId = this.senderId,
+        chatId = this.chatId,
+        creationDate = this.creationDate,
+        modificationDate = this.modificationDate
+    )
 }

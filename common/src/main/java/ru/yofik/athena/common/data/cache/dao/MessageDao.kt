@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import ru.yofik.athena.common.data.cache.model.CachedMessage
 
 @Dao
-interface MessageDao {
+internal interface MessageDao {
 
     ///////////////////////////////////////////////////////////////////////////
     // INSERT

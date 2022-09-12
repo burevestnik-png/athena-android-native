@@ -8,6 +8,7 @@ import ru.yofik.athena.common.data.api.http.model.message.MessageApi
 import ru.yofik.athena.common.data.api.http.model.message.requests.SendMessageRequest
 import ru.yofik.athena.common.data.cache.dao.MessageDao
 import ru.yofik.athena.common.data.cache.model.CachedMessage
+import ru.yofik.athena.common.data.cache.model.toDomain
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
 import ru.yofik.athena.common.domain.model.message.Message
 import ru.yofik.athena.common.domain.model.pagination.PaginatedMessages
@@ -16,7 +17,7 @@ import ru.yofik.athena.common.domain.repositories.MessageRepository
 import timber.log.Timber
 import javax.inject.Inject
 
-class MessageRepositoryImpl
+internal class MessageRepositoryImpl
 @Inject
 constructor(
     private val messageApi: MessageApi,
@@ -80,7 +81,7 @@ constructor(
 
     override fun getCachedMessagesForDefiniteChat(chatId: Long): Flow<List<Message>> {
         return messageDao.getAllFromDefiniteChat(chatId).map { cachedMessages ->
-            cachedMessages.map { CachedMessage.toDomain(it) }
+            cachedMessages.map { it.toDomain() }
         }
     }
 

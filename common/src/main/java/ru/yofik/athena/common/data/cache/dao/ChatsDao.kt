@@ -2,26 +2,61 @@ package ru.yofik.athena.common.data.cache.dao
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
-import ru.yofik.athena.common.data.cache.model.CachedChat
-import ru.yofik.athena.common.data.cache.model.CachedChatAggregate
-import ru.yofik.athena.common.data.cache.model.CachedChatUserCrossRef
+import ru.yofik.athena.common.data.cache.model.*
 
 @Dao
-abstract class ChatsDao {
+internal interface ChatsDao {
 
     ///////////////////////////////////////////////////////////////////////////
     // INSERT
     ///////////////////////////////////////////////////////////////////////////
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract suspend fun insertCachedChatUserCrossRef(crossRef: CachedChatUserCrossRef)
+    suspend fun insertCachedChatUserCrossRef(crossRef: CachedChatUserCrossRef)
 
-    suspend fun insertChats(chat: List<CachedChat>) {
-        chat.forEach { insertChat(it) }
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCachedChatLastMessageRef(crossRef: CachedChatLastMessageCrossRef)
+
+    @Transaction
+    suspend fun insertChatAggregates(chatAggregates: List<CachedChatAggregate>) {
+        chatAggregates.forEach { chatAggregate ->
+            insertChat(chatAggregate.chat)
+            insertUsers(chatAggregate.users)
+
+            if (chatAggregate.lastMessage != null) {
+                insertMessage(chatAggregate.lastMessage)
+
+                insertCachedChatLastMessageRef(
+                    CachedChatLastMessageCrossRef(
+                        chatId = chatAggregate.chat.chatId,
+                        messageId = chatAggregate.lastMessage.messageId
+                    )
+                )
+            }
+
+            chatAggregate.users.forEach { user ->
+                insertCachedChatUserCrossRef(
+                    CachedChatUserCrossRef(
+                        chatId = chatAggregate.chat.chatId,
+                        userId = user.userId
+                    )
+                )
+            }
+        }
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertChat(chat: CachedChat)
+    suspend fun insertChat(chat: CachedChat)
+
+    ///////////////////////////////////////////////////////////////////////////
+    // METHOD DUPLICATION FROM OTHER DAOS DUE TO @TRANSACTIONAL PROBLEM
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUsers(users: List<CachedUser>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertMessage(message: CachedMessage)
 
     ///////////////////////////////////////////////////////////////////////////
     // QUERY
@@ -29,11 +64,11 @@ abstract class ChatsDao {
 
     @Transaction
     @Query("SELECT * FROM chats")
-    abstract fun getAll(): Flow<List<CachedChatAggregate>>
+    fun getAll(): Flow<List<CachedChatAggregate>>
 
     @Transaction
     @Query("SELECT * FROM chats WHERE chatId = :id")
-    abstract fun getById(id: Long): CachedChatAggregate
+    fun getById(id: Long): CachedChatAggregate
 
     ///////////////////////////////////////////////////////////////////////////
     // DELETE
@@ -45,8 +80,8 @@ abstract class ChatsDao {
     }
 
     @Query("DELETE FROM chats")
-    abstract suspend fun deleteAllChats()
+    suspend fun deleteAllChats()
 
     @Query("DELETE FROM chat_user_cross_ref")
-    abstract suspend fun deleteAllChatUserCrossRef()
+    suspend fun deleteAllChatUserCrossRef()
 }
