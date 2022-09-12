@@ -1,12 +1,8 @@
 package ru.yofik.athena.chatlist.presentation
 
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -15,9 +11,7 @@ import ru.yofik.athena.chatList.R
 import ru.yofik.athena.chatList.databinding.FragmentChatListBinding
 import ru.yofik.athena.chatlist.presentation.recyclerview.ChatAdapter
 import ru.yofik.athena.common.presentation.components.base.BaseFragment
-import ru.yofik.athena.common.presentation.components.extensions.handleFailures
-import ru.yofik.athena.common.presentation.components.extensions.launchViewModelsFlow
-import ru.yofik.athena.common.presentation.components.extensions.navigate
+import ru.yofik.athena.common.presentation.components.extensions.*
 import ru.yofik.athena.common.presentation.model.UIState
 import ru.yofik.athena.common.presentation.utils.InfiniteScrollListener
 import ru.yofik.athena.common.utils.Routes
@@ -34,6 +28,26 @@ class ChatListFragment :
 
     private lateinit var adapter: ChatAdapter
 
+    private val defaultModeMenu =
+        createMenuProvider(R.menu.default_mode_menu) {
+            when (it.itemId) {
+                R.id.action_create_chat -> {
+                    true
+                }
+                else -> false
+            }
+        }
+
+    private val selectionModeMenu =
+        createMenuProvider(R.menu.select_mode_menu) {
+            when (it.itemId) {
+                R.id.action_find_chat -> {
+                    true
+                }
+                else -> false
+            }
+        }
+
     ///////////////////////////////////////////////////////////////////////////
     // SETUPING UI
     ///////////////////////////////////////////////////////////////////////////
@@ -41,30 +55,41 @@ class ChatListFragment :
     override fun setupUI() {
         adapter = setupChatAdapter()
         setupRecyclerView(adapter)
-        setupMenu()
 
+        addMenuProvider(defaultModeMenu)
+
+        listenToFabClick()
         listenToListPulling()
     }
 
-    private fun setupMenu() {
-        (requireActivity() as MenuHost).addMenuProvider(
-            object : MenuProvider {
-                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                    menuInflater.inflate(R.menu.toolbar_menu, menu)
+    var a = false
+
+    private fun listenToFabClick() {
+        binding.floatingActionButton.setOnClickListener {
+            //            navigate(Routes.CREATE_CHAT)
+
+            if (a) {
+                menuHost.removeMenuProvider(selectionModeMenu)
+                menuHost.invalidateMenu()
+                menuHost.addMenuProvider(defaultModeMenu)
+
+                (requireActivity() as AppCompatActivity).apply {
+                    supportActionBar!!.title = getString(R.string.chat_list_toolbar_title_chats)
+                }
+            } else {
+                menuHost.removeMenuProvider(defaultModeMenu)
+                menuHost.invalidateMenu()
+                menuHost.addMenuProvider(selectionModeMenu)
+
+                (requireActivity() as AppCompatActivity).apply {
+                    supportActionBar!!.title = "SOSAT"
+
                 }
 
-                override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
-                    when (menuItem.itemId) {
-                        R.id.action_create_chat -> {
-                            navigate(Routes.CREATE_CHAT)
-                            true
-                        }
-                        else -> false
-                    }
-            },
-            viewLifecycleOwner,
-            Lifecycle.State.RESUMED
-        )
+            }
+
+            a = !a
+        }
     }
 
     private fun listenToListPulling() {

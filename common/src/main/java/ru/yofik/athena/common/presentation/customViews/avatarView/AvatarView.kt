@@ -96,7 +96,8 @@ class AvatarView(context: Context, attrs: AttributeSet? = null) : RelativeLayout
 
     private val purpleColor = context.getColor(R.color.purple)
     private val whiteColor = context.getColor(R.color.white)
-    private val hashBasedColor = context.getColor(BackgroundGenerator.get(text))
+    private val hashBasedColor: Int
+        get() = context.getColor(BackgroundGenerator.get(text))
 
     private val checkIcon = AppCompatResources.getDrawable(context, R.drawable.baseline_check_24)
     private val bgAvatarBackground = AppCompatResources.getDrawable(context, R.drawable.bg_avatar)
