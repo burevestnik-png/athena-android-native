@@ -18,8 +18,12 @@ class AvatarView(context: Context, attrs: AttributeSet? = null) : RelativeLayout
 
     private val binding: ViewAvatarBinding
 
-    var text = DEFAULT_TEXT
     private var textSize = DEFAULT_TEXT_SIZE
+    var text = DEFAULT_TEXT
+        set(value) {
+            field = value
+            setDefaultState()
+        }
 
     private var state: State = State.DEFAULT
 
