@@ -41,7 +41,7 @@ constructor(
     ///////////////////////////////////////////////////////////////////////////
 
     override fun getChats(): Flow<List<CachedChatAggregate>> {
-        return chatsDao.getAll().onEach { Timber.d("getChats: $it") }
+        return chatsDao.getAll()
     }
 
     override suspend fun getChat(id: Long): CachedChatAggregate {

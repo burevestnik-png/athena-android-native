@@ -29,10 +29,8 @@ internal interface MessageDao {
     @Transaction
     suspend fun updateLastMessageForChat(cachedMessage: CachedMessage) {
         insertMessage(cachedMessage)
-        /*updateChatLastMessageCrossRef(
-            chatId = cachedMessage.chatId,
-            messageId = cachedMessage.messageId
-        )*/
+        deleteChatLastMessageCrossRefByChatId(cachedMessage.chatId)
+
         insertChat(
             CachedChatLastMessageCrossRef(
                 chatId = cachedMessage.chatId,
@@ -41,8 +39,8 @@ internal interface MessageDao {
         )
     }
 
-    @Query("UPDATE chat_last_message_cross_ref SET messageId = :messageId WHERE chatId = :chatId")
-    suspend fun updateChatLastMessageCrossRef(chatId: Long, messageId: Long)
+    @Query("DELETE FROM chat_last_message_cross_ref WHERE chatId = :chatId")
+    suspend fun deleteChatLastMessageCrossRefByChatId(chatId: Long)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertChat(crossRef: CachedChatLastMessageCrossRef)

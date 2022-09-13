@@ -70,7 +70,7 @@ constructor(
                 getChats()
                     .distinctUntilChanged()
                     .onEach {
-                        Timber.d("subscribeOnChatsUpdates: onEach ${it.size}")
+                        Timber.d("subscribeOnChatsUpdates: onEach ${it}")
                         if (hasNoChatsStoredButCanLoadMore(it)) {
                             loadNextChatPage()
                         }
@@ -83,13 +83,10 @@ constructor(
 
     private fun onNewChatList(chats: List<Chat>) {
         val chatFromServer = chats.map(uiChatMapper::mapToView)
-        Timber.d("onNewChatList: $chatFromServer")
+        val chatFromServerIds = chatFromServer.map { it.id }
 
-        val currentChats = state.value.payload.chats
-        val currentChatIds = currentChats.map { it.id }
-
-        val newChats = chatFromServer.filter { it.id !in currentChatIds }
-        val updatedList = currentChats + newChats
+        val currentChats = state.value.payload.chats.filter { it.id !in chatFromServerIds}
+        val updatedList = currentChats + chatFromServer
 
         modifyState { payload -> payload.copy(chats = updatedList) }
     }
