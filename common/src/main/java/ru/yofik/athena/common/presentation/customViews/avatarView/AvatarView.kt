@@ -106,7 +106,7 @@ class AvatarView(context: Context, attrs: AttributeSet? = null) : RelativeLayout
         GradientDrawable().apply {
             color = ColorStateList.valueOf(whiteColor)
             shape = GradientDrawable.OVAL
-            setStroke(1, ColorStateList.valueOf(purpleColor))
+            setStroke(3, ColorStateList.valueOf(purpleColor))
         }
 
     sealed class State {

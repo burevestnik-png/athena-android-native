@@ -7,6 +7,9 @@ data class ChatListFragmentPayload(
     val noMoreChatsAnymore: Boolean = false,
     val chats: List<UiChat> = emptyList()
 ) {
+    val selectedChatsAmount: Int
+        get() = chats.count { it.isSelected }
+
     sealed class Mode {
         object DEFAULT : Mode() {
             override fun toString() = DEFAULT::class.simpleName!!

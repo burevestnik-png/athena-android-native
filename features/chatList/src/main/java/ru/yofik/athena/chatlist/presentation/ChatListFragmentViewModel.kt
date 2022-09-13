@@ -5,7 +5,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -22,6 +21,7 @@ import ru.yofik.athena.common.presentation.components.base.BaseViewModel
 import ru.yofik.athena.common.presentation.model.Event
 import ru.yofik.athena.common.presentation.model.UIState
 import timber.log.Timber
+import javax.inject.Inject
 
 @HiltViewModel
 class ChatListFragmentViewModel
@@ -85,7 +85,7 @@ constructor(
         val chatFromServer = chats.map(uiChatMapper::mapToView)
         val chatFromServerIds = chatFromServer.map { it.id }
 
-        val currentChats = state.value.payload.chats.filter { it.id !in chatFromServerIds}
+        val currentChats = state.value.payload.chats.filter { it.id !in chatFromServerIds }
         val updatedList = currentChats + chatFromServer
 
         modifyState { payload -> payload.copy(chats = updatedList) }
@@ -117,9 +117,6 @@ constructor(
     private fun handleNewNotification(notification: NewMessageNotification) {
         Timber.d("Get new notification in chatList feature")
         launchIORequest { updateMessage(notification.message) }
-
-        // todo update cache
-        // will list update if I only change db
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -138,7 +135,10 @@ constructor(
 
     private fun handleSelectionCancellation() {
         selectedChatIds.clear()
-        modifyState { payload -> payload.copy(mode = ChatListFragmentPayload.Mode.DEFAULT) }
+        modifyState { payload ->
+            payload.copy(mode = ChatListFragmentPayload.Mode.DEFAULT,
+                chats = payload.chats.map { if (it.isSelected) it.copy(isSelected = false) else it })
+        }
     }
 
     private fun handleAddChatToSelection(id: Long) {

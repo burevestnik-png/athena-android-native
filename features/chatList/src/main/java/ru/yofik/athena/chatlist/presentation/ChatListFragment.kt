@@ -1,7 +1,6 @@
 package ru.yofik.athena.chatlist.presentation
 
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -9,9 +8,10 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.chatList.R
 import ru.yofik.athena.chatList.databinding.FragmentChatListBinding
+import ru.yofik.athena.chatlist.presentation.contextualAppBar.ContextualAppBar
 import ru.yofik.athena.chatlist.presentation.recyclerview.ChatAdapter
 import ru.yofik.athena.common.presentation.components.base.BaseFragment
-import ru.yofik.athena.common.presentation.components.extensions.*
+import ru.yofik.athena.common.presentation.components.extensions.fragment.*
 import ru.yofik.athena.common.presentation.model.UIState
 import ru.yofik.athena.common.presentation.utils.InfiniteScrollListener
 import ru.yofik.athena.common.utils.Routes
@@ -27,27 +27,21 @@ class ChatListFragment :
     override val viewModel: ChatListFragmentViewModel by viewModels()
 
     private lateinit var adapter: ChatAdapter
+    private var actionMode: ActionMode? = null
 
-    private val defaultModeMenu =
-        createMenuProvider(R.menu.default_mode_menu) {
-            when (it.itemId) {
-                R.id.action_create_chat -> {
-                    navigate(Routes.CREATE_CHAT)
-                    true
-                }
-                else -> false
+    private val defaultModeMenu = createMenuProvider(R.menu.default_mode_menu) {
+        when (it.itemId) {
+            R.id.action_find_chat -> {
+                true
             }
+            else -> false
         }
+    }
 
-    private val selectionModeMenu =
-        createMenuProvider(R.menu.select_mode_menu) {
-            when (it.itemId) {
-                R.id.action_find_chat -> {
-                    true
-                }
-                else -> false
-            }
-        }
+    private val contextualAppBar = ContextualAppBar(
+        onDeleteChats = { Timber.d(": ON DELETE") },
+        onDestroyActionMode = { requestCancelSelection() }
+    )
 
     ///////////////////////////////////////////////////////////////////////////
     // SETUPING UI
@@ -63,33 +57,11 @@ class ChatListFragment :
         listenToListPulling()
     }
 
-    var a = false
-
     private fun listenToFabClick() {
         binding.floatingActionButton.setOnClickListener {
-            //            navigate(Routes.CREATE_CHAT)
-
-            if (a) {
-                menuHost.removeMenuProvider(selectionModeMenu)
-                menuHost.invalidateMenu()
-                menuHost.addMenuProvider(defaultModeMenu)
-
-                (requireActivity() as AppCompatActivity).apply {
-                    supportActionBar!!.title = getString(R.string.chat_list_toolbar_title_chats)
-                }
-            } else {
-                menuHost.removeMenuProvider(defaultModeMenu)
-                menuHost.invalidateMenu()
-                menuHost.addMenuProvider(selectionModeMenu)
-
-                (requireActivity() as AppCompatActivity).apply {
-                    supportActionBar!!.title = "SOSAT"
-
-                }
-
-            }
-
-            a = !a
+            navigate(Routes.CREATE_CHAT)
+            actionMode?.finish()
+            actionMode = null
         }
     }
 
@@ -98,10 +70,8 @@ class ChatListFragment :
     }
 
     private fun setupChatAdapter() =
-        ChatAdapter(
-            chatNavigateListener = { id -> navigate(Routes.CHAT(id)) },
-            chatSelectionListener = { id -> requestAddChatToSelection(id) }
-        )
+        ChatAdapter(chatNavigateListener = { id -> navigate(Routes.CHAT(id)) },
+            chatSelectionListener = { id -> requestAddChatToSelection(id) })
 
     private fun setupRecyclerView(adapter: ChatAdapter) {
         binding.recyclerView.apply {
@@ -115,7 +85,7 @@ class ChatListFragment :
     }
 
     private fun createOnScrollListener(
-        layoutManager: LinearLayoutManager
+        layoutManager: LinearLayoutManager,
     ): RecyclerView.OnScrollListener {
         return object :
             InfiniteScrollListener(layoutManager, ChatListFragmentViewModel.UI_PAGE_SIZE) {
@@ -140,6 +110,16 @@ class ChatListFragment :
         adapter.apply {
             updateChats(state.payload.chats)
             currentScreenMode = state.payload.mode
+        }
+
+        contextualAppBar.updateSelectedChatsAmount(state.payload.selectedChatsAmount)
+        if (state.payload.mode == ChatListFragmentPayload.Mode.SELECTION && actionMode == null) {
+            actionMode = requireAppCompatActivity().startSupportActionMode(contextualAppBar)
+        }
+
+        if (state.payload.mode == ChatListFragmentPayload.Mode.DEFAULT && actionMode != null) {
+            actionMode?.finish()
+            actionMode = null
         }
 
         handleFailures(state.failure)

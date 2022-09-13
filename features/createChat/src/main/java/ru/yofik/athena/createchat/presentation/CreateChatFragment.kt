@@ -6,9 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.common.presentation.components.base.BaseFragment
-import ru.yofik.athena.common.presentation.components.extensions.handleFailures
-import ru.yofik.athena.common.presentation.components.extensions.launchViewModelsFlow
-import ru.yofik.athena.common.presentation.components.extensions.navigate
+import ru.yofik.athena.common.presentation.components.extensions.fragment.handleFailures
+import ru.yofik.athena.common.presentation.components.extensions.fragment.launchViewModelsFlow
+import ru.yofik.athena.common.presentation.components.extensions.fragment.navigate
 import ru.yofik.athena.common.presentation.model.UIState
 import ru.yofik.athena.common.presentation.utils.InfiniteScrollListener
 import ru.yofik.athena.common.utils.Routes
