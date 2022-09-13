@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
@@ -12,6 +11,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.chat.R
@@ -19,7 +19,9 @@ import ru.yofik.athena.chat.databinding.FragmentChatBinding
 import ru.yofik.athena.common.presentation.components.base.BaseFragment
 import ru.yofik.athena.common.presentation.components.extensions.fragment.handleFailures
 import ru.yofik.athena.common.presentation.components.extensions.fragment.launchViewModelsFlow
+import ru.yofik.athena.common.presentation.components.extensions.fragment.requireAppCompatActivity
 import ru.yofik.athena.common.presentation.model.UIState
+import ru.yofik.athena.common.presentation.utils.InfiniteScrollListener
 import timber.log.Timber
 
 private const val ARG_ID = "id"
@@ -89,15 +91,24 @@ class ChatFragment :
             layoutManager = LinearLayoutManager(context).apply { stackFromEnd = true }
             this.adapter = adapter
 
-            // this callback provide auto scroll messages
             addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-                // todo think about useless scroll
-                //                if (bottom < oldBottom) {
                 if (adapter.itemCount > 0) {
                     postDelayed({ smoothScrollToPosition(adapter.itemCount - 1) }, 100)
                 }
-                //                }
             }
+
+            addOnScrollListener(createOnScrollListener(layoutManager as LinearLayoutManager))
+        }
+    }
+
+    private fun createOnScrollListener(
+        layoutManager: LinearLayoutManager,
+    ): RecyclerView.OnScrollListener {
+        return object :
+            InfiniteScrollListener(layoutManager, ChatFragmentViewModel.UI_PAGE_SIZE) {
+            override fun loadMoreItems() = requestMoreMessages()
+            override fun isLastPage(): Boolean = viewModel.isLastPage
+            override fun isLoading(): Boolean = viewModel.state.value.loading
         }
     }
 
@@ -129,7 +140,7 @@ class ChatFragment :
     }
 
     private fun handleSetChatName(name: String) {
-        (activity as AppCompatActivity).supportActionBar?.title = name
+        requireAppCompatActivity().supportActionBar?.title = name
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -161,5 +172,9 @@ class ChatFragment :
 
     private fun requestSendMessage() {
         viewModel.onEvent(ChatFragmentEvent.SendMessage)
+    }
+
+    private fun requestMoreMessages() {
+        viewModel.onEvent(ChatFragmentEvent.RequestNextMessagePage)
     }
 }

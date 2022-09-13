@@ -10,6 +10,7 @@ import ru.yofik.athena.common.domain.model.notification.NewMessageNotification
 import ru.yofik.athena.common.domain.model.notification.NotificationType
 import ru.yofik.athena.common.domain.model.notification.UpdateMessageNotification
 import ru.yofik.athena.common.domain.repositories.NotificationRepository
+import timber.log.Timber
 import javax.inject.Inject
 
 class NotificationRepositoryImpl
@@ -19,6 +20,7 @@ constructor(
 ) : NotificationRepository {
     private val notificationStream =
         RxNotificationPublisher.listen(RxNotificationEvent.NewNotification::class.java)
+            .distinctUntilChanged()
 
     override fun subscribeOnNotificationWebsocket() {
         val initialMessage = ApiSubscribeOnNotificationsMessage.toJson()
@@ -40,11 +42,14 @@ constructor(
                 NewMessageNotification(
                     message = (it.notification as NewMessageNotification).message
                 )
+            }.doOnEach {
+                // TODO: delete
+                Timber.d("listenNewMessageNotifications: $it")
             }
     }
 
     override fun listenTargetChatNewMessageNotifications(
-        chatId: Long
+        chatId: Long,
     ): Observable<NewMessageNotification> {
         return listenNewMessageNotifications().filter { it.message.chatId == chatId }
     }

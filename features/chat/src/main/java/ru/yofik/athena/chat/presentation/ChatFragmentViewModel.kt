@@ -5,10 +5,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import ru.yofik.athena.chat.domain.model.UiChat
 import ru.yofik.athena.chat.domain.model.mappers.UiChatMapper
 import ru.yofik.athena.chat.domain.model.mappers.UiMessageMapper
@@ -34,7 +32,7 @@ constructor(
     private val requestNextMessagesPage: RequestNextMessagesPage,
     private val handleNewMessage: HandleNewMessage,
     private val uiMessageMapper: UiMessageMapper,
-    private val uiChatMapper: UiChatMapper
+    private val uiChatMapper: UiChatMapper,
 ) : BaseViewModel<ChatFragmentPayload>(ChatFragmentPayload()) {
 
     companion object {
@@ -55,6 +53,10 @@ constructor(
 
     var isLastPage = false
         private set
+
+    ///////////////////////////////////////////////////////////////////////////
+    // INIT
+    ///////////////////////////////////////////////////////////////////////////
 
     ///////////////////////////////////////////////////////////////////////////
     // ON EVENT
@@ -105,7 +107,7 @@ constructor(
     }
 
     private fun hasNoMessagesStoredButCanLoadMore(messages: List<Message>): Boolean {
-        return messages.isEmpty() && !state.value.payload.noMoreMessagesAvailable
+        return (messages.isEmpty() || messages.size == 1) && !state.value.payload.noMoreMessagesAvailable
     }
 
     private fun onNewMessageList(messages: List<Message>) {
@@ -138,29 +140,14 @@ constructor(
     }
 
     private fun handleNotification(notification: NewMessageNotification) {
-        Timber.d("New notification in chat feature")
-        //        val messages = state.value!!.messages.toMutableList()
-
-        launchIORequest(Dispatchers.IO) { handleNewMessage(notification) }
-
-        // todo update cache
-
-        //        _state.value =
-        //            state.value!!.copy(
-        //                messages =
-        //                    messages.apply {
-        //                        add(uiMessageMapper.mapToView(Pair(notification.message,
-        // uiChat.value!!)))
-        //                    }
-        //            )
+        launchIORequest { handleNewMessage(notification) }
     }
 
     private fun handleSendMessage() {
         showLoader()
 
         launchIORequest {
-            withContext(Dispatchers.IO) { sendMessage(uiChat.id, payload.input) }
-
+            sendMessage(uiChat.id, payload.input)
             modifyState(loading = false) { payload -> payload.copy(input = "") }
             _effects.emit(ChatFragmentViewEffect.ClearInput)
         }

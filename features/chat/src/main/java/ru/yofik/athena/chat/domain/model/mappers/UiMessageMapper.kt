@@ -5,6 +5,7 @@ import ru.yofik.athena.chat.domain.model.UiMessage
 import ru.yofik.athena.common.domain.model.message.Message
 import ru.yofik.athena.common.presentation.model.UiMapper
 import ru.yofik.athena.common.utils.TimeUtils
+import timber.log.Timber
 import javax.inject.Inject
 
 class UiMessageMapper @Inject constructor(
@@ -13,6 +14,9 @@ class UiMessageMapper @Inject constructor(
 ) : UiMapper<Pair<Message, UiChat>, UiMessage> {
     override fun mapToView(model: Pair<Message, UiChat>): UiMessage {
         val (message) = model
+
+        // TODO: DELETE
+        Timber.d("mapToView: $model")
 
         return UiMessage(
             id = message.id,
