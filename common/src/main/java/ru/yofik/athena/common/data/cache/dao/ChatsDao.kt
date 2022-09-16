@@ -72,9 +72,9 @@ internal interface ChatsDao {
     ///////////////////////////////////////////////////////////////////////////
 
     suspend fun deleteAll() {
-        deleteAllChats()
         deleteAllChatUserCrossRef()
         deleteAllChatLastMessageCrossRef()
+        deleteAllChats()
     }
 
     @Query("DELETE FROM chats") suspend fun deleteAllChats()

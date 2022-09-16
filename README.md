@@ -98,6 +98,7 @@
 - swipes on items
 - add navigation builder
 - remade db with caching ONLY last messages
+- why ChatListFragmentViewModel trying to load next chats page on logout
 
 #### Inspected
 

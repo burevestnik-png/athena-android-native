@@ -1,20 +1,42 @@
 package ru.yofik.athena.main.presentation
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import ru.yofik.athena.main.domain.usecases.HasAccess
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
 import ru.yofik.athena.R as ChatListR
+import ru.yofik.athena.common.domain.usecases.GetCachedUser
 import ru.yofik.athena.login.R as RLogin
+import ru.yofik.athena.main.domain.usecases.HasAccess
+import timber.log.Timber
 
 @HiltViewModel
-class MainActivityViewModel @Inject constructor(private val hasAccess: HasAccess) : ViewModel() {
-    private val _effects = MutableLiveData<MainActivityViewEffect>()
+class MainActivityViewModel
+@Inject
+constructor(private val hasAccess: HasAccess, private val getCachedUser: GetCachedUser) :
+    ViewModel() {
 
-    val effects: LiveData<MainActivityViewEffect>
-        get() = _effects
+    private val _effects = MutableSharedFlow<MainActivityViewEffect>(replay = 2)
+    val effects = _effects.asSharedFlow()
+
+    ///////////////////////////////////////////////////////////////////////////
+    // INIT
+    ///////////////////////////////////////////////////////////////////////////
+
+    init {
+        viewModelScope.launch {
+            val user = getCachedUser()
+            Timber.d(": $user")
+            _effects.emit(MainActivityViewEffect.ProvideUserInfo(user))
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // ON EVENT
+    ///////////////////////////////////////////////////////////////////////////
 
     fun onEvent(event: MainActivityEvent) {
         when (event) {
@@ -30,8 +52,14 @@ class MainActivityViewModel @Inject constructor(private val hasAccess: HasAccess
                 RLogin.id.nav_login
             }
 
-        _effects.value = MainActivityViewEffect.SetStartDestination(destination)
+        viewModelScope.launch {
+            _effects.emit(MainActivityViewEffect.SetStartDestination(destination))
+        }
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // ON FAILURE
+    ///////////////////////////////////////////////////////////////////////////
 
     private fun onFailure(failure: Throwable) {
         // todo add

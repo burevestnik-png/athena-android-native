@@ -5,8 +5,9 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import ru.yofik.athena.common.presentation.components.base.BaseViewModel
 import ru.yofik.athena.common.presentation.model.EmptyPayload
-import ru.yofik.athena.profile.domain.usecases.GetCachedUser
+import ru.yofik.athena.common.domain.usecases.GetCachedUser
 import ru.yofik.athena.profile.domain.usecases.LogoutUser
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,8 +46,10 @@ constructor(private val logoutUser: LogoutUser, private val getCachedUser: GetCa
     }
 
     private fun handleLogoutUser() {
+        Timber.d("handleLogoutUser: ")
         launchIORequest {
             logoutUser()
+            Timber.d("handleLogoutUser: ")
             _effects.emit(ProfileFragmentViewEffect.NavigateToLoginScreen)
         }
     }

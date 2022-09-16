@@ -1,4 +1,4 @@
-package ru.yofik.athena.profile.domain.usecases
+package ru.yofik.athena.common.domain.usecases
 
 import ru.yofik.athena.common.domain.model.users.User
 import ru.yofik.athena.common.domain.repositories.UserRepository

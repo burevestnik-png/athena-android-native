@@ -13,6 +13,7 @@ import ru.yofik.athena.common.presentation.model.UIState
 import ru.yofik.athena.common.utils.Routes
 import ru.yofik.athena.profile.R
 import ru.yofik.athena.profile.databinding.FragmentProfileBinding
+import timber.log.Timber
 
 @AndroidEntryPoint
 class ProfileFragment :
@@ -29,7 +30,9 @@ class ProfileFragment :
     }
 
     private fun listenToLogoutButton() {
-        binding.logoutButton.setOnClickListener { requestLogoutUser() }
+        binding.logoutButton.setOnClickListener {
+            requestLogoutUser()
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
