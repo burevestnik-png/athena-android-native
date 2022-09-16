@@ -1,8 +1,8 @@
 package ru.yofik.athena.common.presentation.customViews.avatarView
 
+import ru.yofik.athena.common.R
 import java.util.*
 import kotlin.math.absoluteValue
-import ru.yofik.athena.common.R
 
 internal object BackgroundGenerator {
     private val colors =

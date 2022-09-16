@@ -67,19 +67,23 @@ class ChatFragment :
     }
 
     private fun setupMenu() {
-        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.tool_bar_menu, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
-                R.id.action_profile -> {
-                    true
+        (requireActivity() as MenuHost).addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.tool_bar_menu, menu)
                 }
-                else -> false
-            }
 
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
+                    when (menuItem.itemId) {
+                        R.id.action_profile -> {
+                            true
+                        }
+                        else -> false
+                    }
+            },
+            viewLifecycleOwner,
+            Lifecycle.State.RESUMED
+        )
     }
 
     private fun createAdapter(): MessageAdapter {
@@ -104,8 +108,7 @@ class ChatFragment :
     private fun createOnScrollListener(
         layoutManager: LinearLayoutManager,
     ): RecyclerView.OnScrollListener {
-        return object :
-            InfiniteScrollListener(layoutManager, ChatFragmentViewModel.UI_PAGE_SIZE) {
+        return object : InfiniteScrollListener(layoutManager, ChatFragmentViewModel.UI_PAGE_SIZE) {
             override fun loadMoreItems() = requestMoreMessages()
             override fun isLastPage(): Boolean = viewModel.isLastPage
             override fun isLoading(): Boolean = viewModel.state.value.loading

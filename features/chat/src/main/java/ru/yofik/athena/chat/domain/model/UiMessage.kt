@@ -1,7 +1,8 @@
 package ru.yofik.athena.chat.domain.model
 
 enum class UiMessageSenderType {
-    OWNER, NOT_OWNER
+    OWNER,
+    NOT_OWNER
 }
 
 data class UiMessage(

@@ -5,9 +5,7 @@ import androidx.room.PrimaryKey
 import ru.yofik.athena.common.domain.model.chat.Chat
 import ru.yofik.athena.common.domain.model.chat.ChatType
 
-@Entity(
-    tableName = "chats"
-)
+@Entity(tableName = "chats")
 data class CachedChat(
     @PrimaryKey(autoGenerate = false) val chatId: Long,
     val name: String,
@@ -25,13 +23,13 @@ data class CachedChat(
             cachedChat: CachedChat,
             users: List<CachedUser>,
             lastMessage: CachedMessage?,
-        ) = Chat(
-            id = cachedChat.chatId,
-            type = cachedChat.type,
-            name = cachedChat.name,
-            users = users.map { it.toDomain() },
-            lastMessage = lastMessage.toDomain()
-        )
+        ) =
+            Chat(
+                id = cachedChat.chatId,
+                type = cachedChat.type,
+                name = cachedChat.name,
+                users = users.map { it.toDomain() },
+                lastMessage = lastMessage.toDomain()
+            )
     }
 }
-

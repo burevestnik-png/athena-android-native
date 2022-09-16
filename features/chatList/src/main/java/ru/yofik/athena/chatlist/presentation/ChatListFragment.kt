@@ -17,8 +17,6 @@ import ru.yofik.athena.common.presentation.utils.InfiniteScrollListener
 import ru.yofik.athena.common.utils.Routes
 import timber.log.Timber
 
-// todo как вынести пагинацию
-
 @AndroidEntryPoint
 class ChatListFragment :
     BaseFragment<ChatListFragmentViewModel, FragmentChatListBinding>(R.layout.fragment_chat_list) {
@@ -29,19 +27,21 @@ class ChatListFragment :
     private lateinit var adapter: ChatAdapter
     private var actionMode: ActionMode? = null
 
-    private val defaultModeMenu = createMenuProvider(R.menu.default_mode_menu) {
-        when (it.itemId) {
-            R.id.action_find_chat -> {
-                true
+    private val defaultModeMenu =
+        createMenuProvider(R.menu.default_mode_menu) {
+            when (it.itemId) {
+                R.id.action_find_chat -> {
+                    true
+                }
+                else -> false
             }
-            else -> false
         }
-    }
 
-    private val contextualAppBar = ContextualAppBar(
-        onDeleteChats = { Timber.d(": ON DELETE") },
-        onDestroyActionMode = { requestCancelSelection() }
-    )
+    private val contextualAppBar =
+        ContextualAppBar(
+            onDeleteChats = { Timber.d(": ON DELETE") },
+            onDestroyActionMode = { requestCancelSelection() }
+        )
 
     ///////////////////////////////////////////////////////////////////////////
     // SETUPING UI
@@ -70,8 +70,10 @@ class ChatListFragment :
     }
 
     private fun setupChatAdapter() =
-        ChatAdapter(chatNavigateListener = { id -> navigate(Routes.CHAT(id)) },
-            chatSelectionListener = { id -> requestAddChatToSelection(id) })
+        ChatAdapter(
+            chatNavigateListener = { id -> navigate(Routes.CHAT(id)) },
+            chatSelectionListener = { id -> requestAddChatToSelection(id) }
+        )
 
     private fun setupRecyclerView(adapter: ChatAdapter) {
         binding.recyclerView.apply {

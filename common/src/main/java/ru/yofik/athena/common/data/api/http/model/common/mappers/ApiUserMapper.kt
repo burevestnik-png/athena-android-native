@@ -12,8 +12,8 @@ class ApiUserMapper @Inject constructor() : ApiMapper<ApiUser, User> {
             id = apiEntity?.id ?: throw MappingException("Invalid user id from server"),
             name = apiEntity.name.orEmpty(),
             login = apiEntity.login.orEmpty(),
-//            isOnline = apiEntity.isOnline ?: false,
-//            lastOnlineTime = TimeUtils.parseToLocalDateTime(apiEntity.lastOnlineTime)
-        )
+            //            isOnline = apiEntity.isOnline ?: false,
+            //            lastOnlineTime = TimeUtils.parseToLocalDateTime(apiEntity.lastOnlineTime)
+            )
     }
 }

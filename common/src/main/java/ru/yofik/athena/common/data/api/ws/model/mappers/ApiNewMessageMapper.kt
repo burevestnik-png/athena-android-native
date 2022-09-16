@@ -8,7 +8,9 @@ import ru.yofik.athena.common.data.api.ws.model.messages.input.RawNewMessage
 import ru.yofik.athena.common.domain.model.notification.NewMessageNotification
 import javax.inject.Inject
 
-internal class ApiNewMessageMapper @Inject constructor(private val apiMessageMapper: ApiMessageMapper) :
+internal class ApiNewMessageMapper
+@Inject
+constructor(private val apiMessageMapper: ApiMessageMapper) :
     ApiMapper<String, NewMessageNotification> {
     private val adapter = Moshi.Builder().build().adapter(RawNewMessage::class.java)
 

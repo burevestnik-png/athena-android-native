@@ -6,11 +6,6 @@ import javax.inject.Inject
 
 class UiUserMapper @Inject constructor() : UiMapper<User, UiUser> {
     override fun mapToView(model: User): UiUser {
-        return UiUser(
-            id = model.id,
-            name = model.name,
-            login = model.login
-        )
+        return UiUser(id = model.id, name = model.name, login = model.login)
     }
-
 }

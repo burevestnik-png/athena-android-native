@@ -8,22 +8,22 @@ import androidx.room.Index
     tableName = "chat_user_cross_ref",
     primaryKeys = ["chatId", "userId"],
     foreignKeys =
-    [
-        ForeignKey(
-            entity = CachedChat::class,
-            parentColumns = ["chatId"],
-            childColumns = ["chatId"],
-            onDelete = ForeignKey.CASCADE,
-            onUpdate = ForeignKey.CASCADE
-        ),
-        ForeignKey(
-            entity = CachedUser::class,
-            parentColumns = ["userId"],
-            childColumns = ["userId"],
-            onDelete = ForeignKey.CASCADE,
-            onUpdate = ForeignKey.CASCADE
-        ),
-    ],
+        [
+            ForeignKey(
+                entity = CachedChat::class,
+                parentColumns = ["chatId"],
+                childColumns = ["chatId"],
+                onDelete = ForeignKey.CASCADE,
+                onUpdate = ForeignKey.CASCADE
+            ),
+            ForeignKey(
+                entity = CachedUser::class,
+                parentColumns = ["userId"],
+                childColumns = ["userId"],
+                onDelete = ForeignKey.CASCADE,
+                onUpdate = ForeignKey.CASCADE
+            ),
+        ],
     indices = [Index("chatId"), Index("userId")]
 )
 data class CachedChatUserCrossRef(val chatId: Long, val userId: Long)

@@ -65,7 +65,6 @@
 - Релиз Android нативной версии
 - Разработка и релиз IOS нативной версии
 - Разработка кроссплатформы на Flutter (благо опыт есть)
-- Может быть разработка на React Native
 
 ### P.S
 
@@ -81,22 +80,23 @@
 - Added pagination and caching for users on CreateChat screen, CHatList screen; **Need testing**
 - Created Drawer and removed bottom navigation bar
 - Migrated on Material3
+- Added FAB
+- Added CAB and chats multichoice
+- Bugfixes
 
 #### Plans
 
 - Very bad realization of rx java, need to study more
 - added response error parsing
 - Вопрос, где лучше инитить - в фрагменте или в вм
-- TODO в чат листе, протестить
 - вынести пагинацию
 - Подумать о внешних ключах в кросс рефе, так как пользователей может и не быть
 - Подумать о времени кэша
 - DataStore
 - migration on kts configs
-- add fab
 - add on drawer more info
 - swipes on items
-- add notification builder
+- add navigation builder
 - remade db with caching ONLY last messages
 
 #### Inspected

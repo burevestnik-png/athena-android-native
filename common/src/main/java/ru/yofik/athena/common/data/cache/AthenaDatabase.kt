@@ -12,13 +12,13 @@ import ru.yofik.athena.common.data.cache.model.*
 
 @Database(
     entities =
-    [
-        CachedUser::class,
-        CachedChat::class,
-        CachedMessage::class,
-        CachedChatUserCrossRef::class,
-        CachedChatLastMessageCrossRef::class
-    ],
+        [
+            CachedUser::class,
+            CachedChat::class,
+            CachedMessage::class,
+            CachedChatUserCrossRef::class,
+            CachedChatLastMessageCrossRef::class
+        ],
     version = 9,
     exportSchema = false
 )

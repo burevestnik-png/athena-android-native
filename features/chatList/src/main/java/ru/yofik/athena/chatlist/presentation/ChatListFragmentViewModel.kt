@@ -136,8 +136,10 @@ constructor(
     private fun handleSelectionCancellation() {
         selectedChatIds.clear()
         modifyState { payload ->
-            payload.copy(mode = ChatListFragmentPayload.Mode.DEFAULT,
-                chats = payload.chats.map { if (it.isSelected) it.copy(isSelected = false) else it })
+            payload.copy(
+                mode = ChatListFragmentPayload.Mode.DEFAULT,
+                chats = payload.chats.map { if (it.isSelected) it.copy(isSelected = false) else it }
+            )
         }
     }
 

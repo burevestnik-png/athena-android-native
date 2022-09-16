@@ -15,13 +15,16 @@ abstract class InfiniteScrollListener(
         val visibleItemCount = layoutManager.childCount
         val totalItemCount = layoutManager.itemCount
         val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
-        Timber.d("Visible=$visibleItemCount; Total=$totalItemCount; First=$firstVisibleItemPosition")
+        Timber.d(
+            "Visible=$visibleItemCount; Total=$totalItemCount; First=$firstVisibleItemPosition"
+        )
 
         if (!isLoading() && !isLastPage()) {
             Timber.d("IsLoading=${isLoading()}; IsLast=${isLastPage()}")
-            if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount &&
-                firstVisibleItemPosition >= 0 &&
-                totalItemCount >= pageSize
+            if (
+                (visibleItemCount + firstVisibleItemPosition) >= totalItemCount &&
+                    firstVisibleItemPosition >= 0 &&
+                    totalItemCount >= pageSize
             ) {
                 Timber.d("loadMoreItems")
                 loadMoreItems()

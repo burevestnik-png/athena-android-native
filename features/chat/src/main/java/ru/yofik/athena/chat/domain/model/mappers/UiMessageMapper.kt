@@ -8,7 +8,9 @@ import ru.yofik.athena.common.utils.TimeUtils
 import timber.log.Timber
 import javax.inject.Inject
 
-class UiMessageMapper @Inject constructor(
+class UiMessageMapper
+@Inject
+constructor(
     private val uiSenderMapper: UiSenderMapper,
     private val uiMessageSenderTypeMapper: UiMessageSenderTypeMapper
 ) : UiMapper<Pair<Message, UiChat>, UiMessage> {
@@ -22,10 +24,11 @@ class UiMessageMapper @Inject constructor(
             id = message.id,
             sender = uiSenderMapper.mapToView(model),
             content = message.content,
-            time = TimeUtils.localDateTimeToString(
-                message.creationDate,
-                format = TimeUtils.SHORT_TIME_FORMAT
-            ),
+            time =
+                TimeUtils.localDateTimeToString(
+                    message.creationDate,
+                    format = TimeUtils.SHORT_TIME_FORMAT
+                ),
             senderType = uiMessageSenderTypeMapper.mapToView(model)
         )
     }

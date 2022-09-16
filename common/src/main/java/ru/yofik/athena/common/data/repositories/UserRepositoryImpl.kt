@@ -77,13 +77,12 @@ constructor(
         preferences.removeCurrentUser()
     }
 
-
     override fun hasAccess(): Boolean {
         return with(preferences) {
             getAccessToken().isNotEmpty() &&
-                    getCurrentUserId() != -1L &&
-                    getCurrentUserLogin().isNotEmpty() &&
-                    getCurrentUserName().isNotEmpty()
+                getCurrentUserId() != -1L &&
+                getCurrentUserLogin().isNotEmpty() &&
+                getCurrentUserName().isNotEmpty()
         }
     }
 }

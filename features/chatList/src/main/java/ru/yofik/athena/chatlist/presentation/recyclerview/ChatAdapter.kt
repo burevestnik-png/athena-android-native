@@ -73,20 +73,15 @@ class ChatAdapter(
                         }
                     }
                     is ChatListFragmentPayload.Mode.SELECTION -> {
-                        setOnClickListener {
-                            chatSelectionListener.onChatSelection(uiChat.id)
-                        }
+                        setOnClickListener { chatSelectionListener.onChatSelection(uiChat.id) }
                     }
                 }
             }
         }
 
         private fun setStateBySelection(isSelected: Boolean) {
-            if (isSelected) binding.apply {
-                logo.setState(AvatarView.State.SELECTED)
-            } else binding.apply {
-                logo.setState(AvatarView.State.DEFAULT)
-            }
+            if (isSelected) binding.apply { logo.setState(AvatarView.State.SELECTED) }
+            else binding.apply { logo.setState(AvatarView.State.DEFAULT) }
         }
     }
 }

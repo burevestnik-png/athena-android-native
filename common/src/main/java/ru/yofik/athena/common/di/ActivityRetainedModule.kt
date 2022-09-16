@@ -28,9 +28,7 @@ internal abstract class ActivityRetainedModule {
 
     @Binds
     @ActivityRetainedScoped
-    abstract fun bindCurrentUserRepository(
-        repository: UserRepositoryImpl
-    ): UserRepository
+    abstract fun bindCurrentUserRepository(repository: UserRepositoryImpl): UserRepository
 
     @Binds
     @ActivityRetainedScoped

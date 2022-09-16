@@ -39,10 +39,10 @@ constructor(
             return PaginatedChats(
                 chats = response.payload.map(apiChatMapper::mapToDomain),
                 pagination =
-                Pagination(
-                    currentPage = pageNumber + 1,
-                    currentAmountOfItems = response.payload.size
-                )
+                    Pagination(
+                        currentPage = pageNumber + 1,
+                        currentAmountOfItems = response.payload.size
+                    )
             )
         } catch (exception: HttpException) {
             // TODO add exception parse
@@ -78,12 +78,12 @@ constructor(
     ///////////////////////////////////////////////////////////////////////////
 
     override fun getCachedChats(): Flow<List<Chat>> {
-        return cache.getChats()
+        return cache
+            .getChats()
             .map { cachedChatAggregates ->
                 cachedChatAggregates.map { CachedChat.toDomain(it.chat, it.users, it.lastMessage) }
-            }.filter { chats ->
-                chats.none { it.lastMessage.isNullable && it.users.isEmpty() }
             }
+            .filter { chats -> chats.none { it.lastMessage.isNullable && it.users.isEmpty() } }
     }
 
     override suspend fun getCachedChat(id: Long): Chat {

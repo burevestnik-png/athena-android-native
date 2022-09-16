@@ -9,8 +9,6 @@ class UiSenderMapper @Inject constructor() : UiMapper<Pair<Message, UiChat>, Str
     override fun mapToView(model: Pair<Message, UiChat>): String {
         val (message, chat) = model
 
-        return chat.users.first {
-            it.id == message.senderId
-        }.name
+        return chat.users.first { it.id == message.senderId }.name
     }
 }

@@ -18,7 +18,6 @@ interface MessageRepository {
         isGlobal: Boolean = false
     )
 
-
     fun getCachedMessagesForDefiniteChat(chatId: Long): Flow<List<Message>>
     suspend fun cacheMessage(message: Message)
     suspend fun cacheMessages(messages: List<Message>)

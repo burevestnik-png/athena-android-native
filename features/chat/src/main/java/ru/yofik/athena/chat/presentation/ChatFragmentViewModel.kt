@@ -107,7 +107,8 @@ constructor(
     }
 
     private fun hasNoMessagesStoredButCanLoadMore(messages: List<Message>): Boolean {
-        return (messages.isEmpty() || messages.size == 1) && !state.value.payload.noMoreMessagesAvailable
+        return (messages.isEmpty() || messages.size == 1) &&
+            !state.value.payload.noMoreMessagesAvailable
     }
 
     private fun onNewMessageList(messages: List<Message>) {
@@ -124,8 +125,7 @@ constructor(
         showLoader()
 
         launchIORequest {
-            val pagination =
-                requestNextMessagesPage(chatId = uiChat.id, pageNumber = currentPage)
+            val pagination = requestNextMessagesPage(chatId = uiChat.id, pageNumber = currentPage)
 
             currentPage = pagination.currentPage
             hideLoader()

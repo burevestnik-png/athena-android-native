@@ -51,10 +51,10 @@ constructor(
             return PaginatedMessages(
                 messages = response.payload.messages.map(apiMessageMapper::mapToDomain),
                 pagination =
-                Pagination(
-                    currentPage = pageNumber + 1,
-                    currentAmountOfItems = response.payload.meta.size
-                )
+                    Pagination(
+                        currentPage = pageNumber + 1,
+                        currentAmountOfItems = response.payload.meta.size
+                    )
             )
         } catch (exception: HttpException) {
             // TODO add exception parse

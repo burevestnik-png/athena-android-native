@@ -42,7 +42,8 @@ constructor(
                 NewMessageNotification(
                     message = (it.notification as NewMessageNotification).message
                 )
-            }.doOnEach {
+            }
+            .doOnEach {
                 // TODO: delete
                 Timber.d("listenNewMessageNotifications: $it")
             }

@@ -49,11 +49,7 @@ class ProfileFragment :
     ///////////////////////////////////////////////////////////////////////////
 
     override fun observeViewEffects() {
-        launchViewModelsFlow {
-            viewModel.effects.collect {
-                reactTo(it)
-            }
-        }
+        launchViewModelsFlow { viewModel.effects.collect { reactTo(it) } }
     }
 
     private fun reactTo(effect: ProfileFragmentViewEffect) {
