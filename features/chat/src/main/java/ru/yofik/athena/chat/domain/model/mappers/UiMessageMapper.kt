@@ -17,9 +17,6 @@ constructor(
     override fun mapToView(model: Pair<Message, UiChat>): UiMessage {
         val (message) = model
 
-        // TODO: DELETE
-        Timber.d("mapToView: $model")
-
         return UiMessage(
             id = message.id,
             sender = uiSenderMapper.mapToView(model),
