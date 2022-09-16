@@ -42,7 +42,7 @@ constructor(
         private const val CURRENT_PAGE_INITIAL = 0
     }
 
-    private val _effects = MutableSharedFlow<ChatFragmentViewEffect>()
+    private val _effects = MutableSharedFlow<ChatFragmentViewEffect>(replay = 1)
     val effects: SharedFlow<ChatFragmentViewEffect> = _effects
 
     private lateinit var uiChat: UiChat
