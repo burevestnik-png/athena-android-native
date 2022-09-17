@@ -13,18 +13,15 @@ import androidx.room.Index
                 entity = CachedChat::class,
                 parentColumns = ["chatId"],
                 childColumns = ["chatId"],
-                // TODO: check onActions
-                onDelete = ForeignKey.NO_ACTION,
-                onUpdate = ForeignKey.CASCADE,
-                deferred = true
+                onDelete = ForeignKey.CASCADE,
+                onUpdate = ForeignKey.CASCADE
             ),
             ForeignKey(
                 entity = CachedUser::class,
                 parentColumns = ["userId"],
                 childColumns = ["userId"],
                 onDelete = ForeignKey.NO_ACTION,
-                onUpdate = ForeignKey.CASCADE,
-                deferred = true
+                onUpdate = ForeignKey.CASCADE
             ),
         ],
     indices = [Index("chatId"), Index("userId")]
