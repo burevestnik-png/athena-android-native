@@ -11,11 +11,15 @@ import ru.yofik.athena.common.domain.model.message.Message
     tableName = "messages",
     foreignKeys =
         [
-            ForeignKey(
+            // TODO return in future
+            // Problem exists bcs on force refresh users are treying to delete and constraints
+            // reject delete operation
+            /*ForeignKey(
                 entity = CachedUser::class,
                 parentColumns = ["userId"],
                 childColumns = ["senderId"],
-            ),
+                onDelete = ForeignKey.SET_NULL
+            ),*/
             ForeignKey(
                 entity = CachedChat::class,
                 parentColumns = ["chatId"],
