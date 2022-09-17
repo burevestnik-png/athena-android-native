@@ -88,13 +88,11 @@
 
 - Very bad realization of rx java, need to study more
 - added response error parsing
-- Вопрос, где лучше инитить - в фрагменте или в вм
 - вынести пагинацию
 - Подумать о внешних ключах в кросс рефе, так как пользователей может и не быть
 - Подумать о времени кэша
 - DataStore
 - migration on kts configs
-- add on drawer more info
 - swipes on items
 - add navigation builder
 - remade db with caching ONLY last messages
@@ -104,6 +102,7 @@
 
 - Rework AppBar with Navigation framework
 - Coroutines :]
+- add on drawer more info
 - TextInputLayout rewrite on
 - Add validation on Login screen like on Onboarding
 - рефактор логина и профиля
