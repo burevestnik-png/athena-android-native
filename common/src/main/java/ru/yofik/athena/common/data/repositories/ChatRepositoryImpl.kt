@@ -3,6 +3,7 @@ package ru.yofik.athena.common.data.repositories
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import retrofit2.HttpException
 import ru.yofik.athena.common.data.api.http.model.chat.ChatApi
 import ru.yofik.athena.common.data.api.http.model.chat.mappers.ApiChatMapper
@@ -84,6 +85,7 @@ constructor(
                 cachedChatAggregates.map { CachedChat.toDomain(it.chat, it.users, it.lastMessage) }
             }
             .filter { chats -> chats.none { it.lastMessage.isNullable && it.users.isEmpty() } }
+            .onEach { Timber.d("getCachedChats: $it") }
     }
 
     override suspend fun getCachedChat(id: Long): Chat {

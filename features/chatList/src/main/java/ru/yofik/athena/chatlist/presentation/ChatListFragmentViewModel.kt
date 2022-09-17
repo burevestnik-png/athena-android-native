@@ -70,7 +70,7 @@ constructor(
                 getChats()
                     .distinctUntilChanged()
                     .onEach {
-                        Timber.d("subscribeOnChatsUpdates: onEach ${it}")
+                        Timber.d("subscribeOnChatsUpdates: onEach $it")
                         if (hasNoChatsStoredButCanLoadMore(it)) {
                             loadNextChatPage()
                         }

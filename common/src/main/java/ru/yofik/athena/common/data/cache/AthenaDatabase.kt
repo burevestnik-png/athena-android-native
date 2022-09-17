@@ -19,7 +19,7 @@ import ru.yofik.athena.common.data.cache.model.*
             CachedChatUserCrossRef::class,
             CachedChatLastMessageCrossRef::class
         ],
-    version = 17,
+    version = 26,
     exportSchema = false
 )
 @TypeConverters(LocalDateTimeConverter::class, ChatTypeConverter::class)

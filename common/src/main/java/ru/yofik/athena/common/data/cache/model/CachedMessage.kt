@@ -15,15 +15,12 @@ import ru.yofik.athena.common.domain.model.message.Message
                 entity = CachedUser::class,
                 parentColumns = ["userId"],
                 childColumns = ["senderId"],
-                onDelete = ForeignKey.CASCADE,
-                onUpdate = ForeignKey.CASCADE
             ),
             ForeignKey(
                 entity = CachedChat::class,
                 parentColumns = ["chatId"],
                 childColumns = ["chatId"],
-                onDelete = ForeignKey.CASCADE,
-                onUpdate = ForeignKey.CASCADE
+                onDelete = ForeignKey.CASCADE
             )
         ],
     indices = [Index("messageId"), Index("senderId"), Index("chatId")]
