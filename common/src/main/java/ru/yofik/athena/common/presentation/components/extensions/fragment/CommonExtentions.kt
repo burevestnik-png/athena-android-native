@@ -31,11 +31,6 @@ fun Fragment.handleFailures(event: Event<Throwable>?) {
     }
 }
 
-fun Fragment.navigate(path: String) {
-    val deepLink = path.toUri()
-    findNavController().navigate(deepLink)
-}
-
 fun Fragment.navigate(route: Route) {
     val deepLink = route.path.toUri()
     findNavController().navigate(deepLink)

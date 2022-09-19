@@ -10,6 +10,7 @@ import ru.yofik.athena.common.presentation.components.extensions.fragment.handle
 import ru.yofik.athena.common.presentation.components.extensions.fragment.launchViewModelsFlow
 import ru.yofik.athena.common.presentation.components.extensions.fragment.navigate
 import ru.yofik.athena.common.presentation.model.UIState
+import ru.yofik.athena.common.utils.Route
 import ru.yofik.athena.common.utils.Routes
 import ru.yofik.athena.login.R
 import ru.yofik.athena.login.databinding.FragmentLoginBinding
@@ -65,7 +66,9 @@ class LoginFragment :
 
     private fun reactTo(effect: LoginViewEffect) {
         when (effect) {
-            is LoginViewEffect.NavigateToChatListPage -> navigate(Routes.CHAT_LIST)
+            is LoginViewEffect.NavigateToChatListPage -> navigate(Route.build {
+                screen = Routes.CHAT_LIST
+            })
         }
     }
 

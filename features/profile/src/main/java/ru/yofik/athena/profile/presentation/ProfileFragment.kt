@@ -10,10 +10,10 @@ import ru.yofik.athena.common.presentation.components.extensions.fragment.launch
 import ru.yofik.athena.common.presentation.components.extensions.fragment.navigate
 import ru.yofik.athena.common.presentation.model.EmptyPayload
 import ru.yofik.athena.common.presentation.model.UIState
+import ru.yofik.athena.common.utils.Route
 import ru.yofik.athena.common.utils.Routes
 import ru.yofik.athena.profile.R
 import ru.yofik.athena.profile.databinding.FragmentProfileBinding
-import timber.log.Timber
 
 @AndroidEntryPoint
 class ProfileFragment :
@@ -57,7 +57,9 @@ class ProfileFragment :
 
     private fun reactTo(effect: ProfileFragmentViewEffect) {
         when (effect) {
-            is ProfileFragmentViewEffect.NavigateToLoginScreen -> navigate(Routes.LOGIN)
+            is ProfileFragmentViewEffect.NavigateToLoginScreen -> navigate(Route.build {
+                screen = Routes.LOGIN
+            })
             is ProfileFragmentViewEffect.ProvideUserInfo -> handleProvidingUserInfo(effect.user)
         }
     }

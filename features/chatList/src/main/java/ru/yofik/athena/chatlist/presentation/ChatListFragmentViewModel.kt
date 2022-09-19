@@ -60,7 +60,7 @@ constructor(
 
     init {
         listenNotifications()
-        subscribeOnChatsUpdates()
+        handleForceGetAllChats()
     }
 
     private fun subscribeOnChatsUpdates() {

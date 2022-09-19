@@ -14,6 +14,7 @@ import ru.yofik.athena.common.presentation.components.base.BaseFragment
 import ru.yofik.athena.common.presentation.components.extensions.fragment.*
 import ru.yofik.athena.common.presentation.model.UIState
 import ru.yofik.athena.common.presentation.utils.InfiniteScrollListener
+import ru.yofik.athena.common.utils.Route
 import ru.yofik.athena.common.utils.Routes
 import timber.log.Timber
 
@@ -59,7 +60,9 @@ class ChatListFragment :
 
     private fun listenToFabClick() {
         binding.floatingActionButton.setOnClickListener {
-            navigate(Routes.CREATE_CHAT)
+            navigate(Route.build {
+                screen = Routes.CREATE_CHAT
+            })
             actionMode?.finish()
             actionMode = null
         }
@@ -71,7 +74,12 @@ class ChatListFragment :
 
     private fun setupChatAdapter() =
         ChatAdapter(
-            chatNavigateListener = { id -> navigate(Routes.CHAT(id)) },
+            chatNavigateListener = { id ->
+                navigate(Route.build {
+                    screen = Routes.CHAT
+                    addQueryParam("id", id.toString())
+                })
+            },
             chatSelectionListener = { id -> requestAddChatToSelection(id) }
         )
 
