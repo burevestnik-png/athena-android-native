@@ -39,9 +39,6 @@ internal interface MessageDao {
         )
     }
 
-    @Query("DELETE FROM chat_last_message_cross_ref WHERE chatId = :chatId")
-    suspend fun deleteChatLastMessageCrossRefByChatId(chatId: Long)
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertChat(crossRef: CachedChatLastMessageCrossRef)
 
@@ -53,5 +50,12 @@ internal interface MessageDao {
         deleteAllMessages()
     }
 
-    @Query("DELETE FROM messages") suspend fun deleteAllMessages()
+    @Query("DELETE FROM messages WHERE chatId = :chatId")
+    suspend fun deleteAllMessagesByChatId(chatId: Long)
+
+    @Query("DELETE FROM chat_last_message_cross_ref WHERE chatId = :chatId")
+    suspend fun deleteChatLastMessageCrossRefByChatId(chatId: Long)
+
+    @Query("DELETE FROM messages")
+    suspend fun deleteAllMessages()
 }

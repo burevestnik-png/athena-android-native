@@ -14,7 +14,6 @@ import ru.yofik.athena.chat.domain.usecases.*
 import ru.yofik.athena.common.domain.model.exceptions.NoMoreItemsException
 import ru.yofik.athena.common.domain.model.message.Message
 import ru.yofik.athena.common.domain.model.notification.NewMessageNotification
-import ru.yofik.athena.common.domain.model.pagination.Pagination
 import ru.yofik.athena.common.presentation.components.base.BaseViewModel
 import ru.yofik.athena.common.presentation.model.Event
 import timber.log.Timber
@@ -36,7 +35,7 @@ constructor(
 ) : BaseViewModel<ChatFragmentPayload>(ChatFragmentPayload()) {
 
     companion object {
-        const val UI_PAGE_SIZE = Pagination.DEFAULT_PAGE_SIZE
+        const val UI_PAGE_SIZE = 20
 
         private const val IS_LAST_PAGE_INITIAL = false
         private const val CURRENT_PAGE_INITIAL = 0
@@ -67,7 +66,10 @@ constructor(
             is ChatFragmentEvent.SendMessage -> handleSendMessage()
             is ChatFragmentEvent.GetChatInfo -> handleGetChatInfo(event.id)
             is ChatFragmentEvent.UpdateInput -> handleUpdateInput(event.content)
-            is ChatFragmentEvent.RequestNextMessagePage -> loadNextMessagePage()
+            is ChatFragmentEvent.RequestNextMessagePage -> {
+                Timber.d("onEvent: LOAD!")
+                loadNextMessagePage()
+            }
         }
     }
 
@@ -95,8 +97,9 @@ constructor(
             getMessages(chatId)
                 .distinctUntilChanged()
                 .onEach {
-                    Timber.d("subscribeOnMessagesUpdates: $it")
+//                    Timber.d("subscribeOnMessagesUpdates: $it")
                     if (hasNoMessagesStoredButCanLoadMore(it)) {
+                        Timber.d("subscribeOnMessagesUpdates: load!!")
                         loadNextMessagePage()
                     }
                 }
@@ -108,7 +111,7 @@ constructor(
 
     private fun hasNoMessagesStoredButCanLoadMore(messages: List<Message>): Boolean {
         return (messages.isEmpty() || messages.size == 1) &&
-            !state.value.payload.noMoreMessagesAvailable
+                !state.value.payload.noMoreMessagesAvailable
     }
 
     private fun onNewMessageList(messages: List<Message>) {
@@ -122,14 +125,21 @@ constructor(
     }
 
     private fun loadNextMessagePage() {
+        Timber.d("loadNextMessagePage: $currentPage")
         showLoader()
 
         launchIORequest {
-            val pagination = requestNextMessagesPage(chatId = uiChat.id, pageNumber = currentPage)
+            val pagination = requestNextMessagesPage(
+                chatId = uiChat.id,
+                pageNumber = currentPage,
+                pageSize = UI_PAGE_SIZE
+            )
 
             currentPage = pagination.currentPage
             hideLoader()
         }
+
+        Timber.d("${state.value.loading} $isLastPage" )
     }
 
     private fun subscribeOnNotificationChannel(chatId: Long) {

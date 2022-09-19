@@ -18,6 +18,7 @@ interface Cache {
     fun getAllMessagesByChatId(chatId: Long): Flow<List<CachedMessage>>
     suspend fun insertMessage(message: CachedMessage)
     suspend fun updateLastMessageByChatId(cachedMessage: CachedMessage)
+    suspend fun deleteAllMessagesByChatId(chatId: Long)
     suspend fun deleteAllMessages()
 
     suspend fun cleanup()

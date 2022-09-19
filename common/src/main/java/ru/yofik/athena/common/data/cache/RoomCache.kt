@@ -73,6 +73,10 @@ constructor(
         messageDao.updateLastMessageForChat(cachedMessage)
     }
 
+    override suspend fun deleteAllMessagesByChatId(chatId: Long) {
+        messageDao.deleteAllMessagesByChatId(chatId)
+    }
+
     override suspend fun deleteAllMessages() {
         TODO("Not yet implemented")
     }
