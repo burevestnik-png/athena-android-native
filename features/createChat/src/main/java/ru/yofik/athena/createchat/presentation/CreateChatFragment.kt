@@ -11,6 +11,7 @@ import ru.yofik.athena.common.presentation.components.extensions.fragment.launch
 import ru.yofik.athena.common.presentation.components.extensions.fragment.navigate
 import ru.yofik.athena.common.presentation.model.UIState
 import ru.yofik.athena.common.presentation.utils.InfiniteScrollListener
+import ru.yofik.athena.common.utils.Route
 import ru.yofik.athena.common.utils.Routes
 import ru.yofik.athena.createchat.R
 import ru.yofik.athena.createchat.databinding.FragmentCreateChatBinding
@@ -88,7 +89,8 @@ class CreateChatFragment :
 
     private fun reactTo(effect: CreateChatFragmentViewEffect) {
         when (effect) {
-            is CreateChatFragmentViewEffect.NavigateToChatListScreen -> navigate(Routes.CHAT_LIST)
+            is CreateChatFragmentViewEffect.NavigateToChatListScreen ->
+                navigate(Route.build { screen = Routes.CHAT_LIST })
         }
     }
 

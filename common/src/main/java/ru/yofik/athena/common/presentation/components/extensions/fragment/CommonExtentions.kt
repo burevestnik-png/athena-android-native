@@ -11,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import ru.yofik.athena.common.R
 import ru.yofik.athena.common.presentation.model.Event
+import ru.yofik.athena.common.utils.Route
 
 fun Fragment.requireAppCompatActivity() = requireActivity() as AppCompatActivity
 
@@ -32,6 +33,11 @@ fun Fragment.handleFailures(event: Event<Throwable>?) {
 
 fun Fragment.navigate(path: String) {
     val deepLink = path.toUri()
+    findNavController().navigate(deepLink)
+}
+
+fun Fragment.navigate(route: Route) {
+    val deepLink = route.path.toUri()
     findNavController().navigate(deepLink)
 }
 
