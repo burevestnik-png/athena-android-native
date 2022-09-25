@@ -15,9 +15,15 @@ internal interface MessageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMessage(message: CachedMessage)
 
+    @Transaction
+    suspend fun insertMessages(messages: List<CachedMessage>) {
+        messages.forEach { insertMessage(message = it) }
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // QUERY
     ///////////////////////////////////////////////////////////////////////////
+
     @Transaction
     @Query("SELECT * FROM messages WHERE chatId = :chatId")
     fun getAllFromDefiniteChat(chatId: Long): Flow<List<CachedMessage>>
@@ -45,10 +51,6 @@ internal interface MessageDao {
     ///////////////////////////////////////////////////////////////////////////
     // DELETE
     ///////////////////////////////////////////////////////////////////////////
-
-    suspend fun deleteAll() {
-        deleteAllMessages()
-    }
 
     @Query("DELETE FROM messages WHERE chatId = :chatId")
     suspend fun deleteAllMessagesByChatId(chatId: Long)

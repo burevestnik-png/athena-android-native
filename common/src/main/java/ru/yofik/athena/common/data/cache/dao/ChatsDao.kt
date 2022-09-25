@@ -13,7 +13,7 @@ internal interface ChatsDao {
 
     @Transaction
     suspend fun insertChatAggregates(chatAggregates: List<CachedChatAggregate>) {
-        chatAggregates.forEach { chatAggregate -> insertChatAggregate(chatAggregate) }
+        chatAggregates.forEach { insertChatAggregate(it) }
     }
 
     suspend fun insertChatAggregate(chatAggregate: CachedChatAggregate) {
@@ -33,13 +33,14 @@ internal interface ChatsDao {
 
         insertCachedChatUserCrossRefs(
             crossRefs =
-                chatAggregate.users.map {
-                    CachedChatUserCrossRef(chatId = chatAggregate.chat.chatId, userId = it.userId)
-                }
+            chatAggregate.users.map {
+                CachedChatUserCrossRef(chatId = chatAggregate.chat.chatId, userId = it.userId)
+            }
         )
     }
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertChat(chat: CachedChat)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertChat(chat: CachedChat)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCachedChatUserCrossRefs(crossRefs: List<CachedChatUserCrossRef>)
@@ -61,11 +62,13 @@ internal interface ChatsDao {
     // QUERY
     ///////////////////////////////////////////////////////////////////////////
 
-    @Transaction @Query("SELECT * FROM chats") fun getAll(): Flow<List<CachedChatAggregate>>
+    @Transaction
+    @Query("SELECT * FROM chats")
+    fun getAllChatAggregates(): Flow<List<CachedChatAggregate>>
 
     @Transaction
     @Query("SELECT * FROM chats WHERE chatId = :id")
-    fun getById(id: Long): CachedChatAggregate
+    fun getChatAggregateById(id: Long): CachedChatAggregate
 
     ///////////////////////////////////////////////////////////////////////////
     // DELETE
@@ -77,9 +80,12 @@ internal interface ChatsDao {
         deleteAllChats()
     }
 
-    @Query("DELETE FROM chats") suspend fun deleteAllChats()
+    @Query("DELETE FROM chats")
+    suspend fun deleteAllChats()
 
-    @Query("DELETE FROM chat_user_cross_ref") suspend fun deleteAllChatUserCrossRef()
+    @Query("DELETE FROM chat_user_cross_ref")
+    suspend fun deleteAllChatUserCrossRef()
 
-    @Query("DELETE FROM chat_last_message_cross_ref") suspend fun deleteAllChatLastMessageCrossRef()
+    @Query("DELETE FROM chat_last_message_cross_ref")
+    suspend fun deleteAllChatLastMessageCrossRef()
 }

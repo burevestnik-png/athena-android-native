@@ -8,7 +8,6 @@ import ru.yofik.athena.common.data.cache.dao.UsersDao
 import ru.yofik.athena.common.data.cache.model.CachedChatAggregate
 import ru.yofik.athena.common.data.cache.model.CachedMessage
 import ru.yofik.athena.common.data.cache.model.CachedUser
-import timber.log.Timber
 import javax.inject.Inject
 
 internal class RoomCache
@@ -24,7 +23,7 @@ constructor(
     ///////////////////////////////////////////////////////////////////////////
 
     override fun getUsers(): Flow<List<CachedUser>> {
-        return usersDao.getAll()
+        return usersDao.getAllUsers()
     }
 
     override suspend fun deleteAllUsers() {
@@ -40,11 +39,11 @@ constructor(
     ///////////////////////////////////////////////////////////////////////////
 
     override fun getChats(): Flow<List<CachedChatAggregate>> {
-        return chatsDao.getAll()
+        return chatsDao.getAllChatAggregates()
     }
 
     override suspend fun getChat(id: Long): CachedChatAggregate {
-        return chatsDao.getById(id)
+        return chatsDao.getChatAggregateById(id)
     }
 
     override suspend fun deleteAllChats() {
@@ -67,6 +66,10 @@ constructor(
 
     override suspend fun insertMessage(message: CachedMessage) {
         messageDao.insertMessage(message)
+    }
+
+    override suspend fun insertMessages(messages: List<CachedMessage>) {
+        messageDao.insertMessages(messages)
     }
 
     override suspend fun updateLastMessageByChatId(cachedMessage: CachedMessage) {

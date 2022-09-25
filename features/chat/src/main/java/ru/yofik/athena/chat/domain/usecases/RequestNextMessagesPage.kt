@@ -17,7 +17,7 @@ constructor(private val messageRepository: MessageRepository) {
         val (messages, pagination) =
             messageRepository.requestGetPaginatedMessages(chatId, pageNumber, pageSize)
 
-        Timber.d("invoke: $pagination")
+        Timber.d("invoke: $pagination; Count=${messages.size}")
 
         messageRepository.cacheMessages(messages)
 

@@ -35,7 +35,7 @@ constructor(
 ) : BaseViewModel<ChatFragmentPayload>(ChatFragmentPayload()) {
 
     companion object {
-        const val UI_PAGE_SIZE = 20
+        const val UI_PAGE_SIZE = 16
 
         private const val IS_LAST_PAGE_INITIAL = false
         private const val CURRENT_PAGE_INITIAL = 0
@@ -61,16 +61,11 @@ constructor(
     // ON EVENT
     ///////////////////////////////////////////////////////////////////////////
 
-    fun onEvent(event: ChatFragmentEvent) {
-        when (event) {
-            is ChatFragmentEvent.SendMessage -> handleSendMessage()
-            is ChatFragmentEvent.GetChatInfo -> handleGetChatInfo(event.id)
-            is ChatFragmentEvent.UpdateInput -> handleUpdateInput(event.content)
-            is ChatFragmentEvent.RequestNextMessagePage -> {
-                Timber.d("onEvent: LOAD!")
-                loadNextMessagePage()
-            }
-        }
+    fun onEvent(event: ChatFragmentEvent) = when (event) {
+        is ChatFragmentEvent.SendMessage -> handleSendMessage()
+        is ChatFragmentEvent.GetChatInfo -> handleGetChatInfo(event.id)
+        is ChatFragmentEvent.UpdateInput -> handleUpdateInput(event.content)
+        is ChatFragmentEvent.RequestNextMessagePage -> loadNextMessagePage()
     }
 
     private fun handleUpdateInput(value: String) = modifyState { payload ->
@@ -97,9 +92,8 @@ constructor(
             getMessages(chatId)
                 .distinctUntilChanged()
                 .onEach {
-//                    Timber.d("subscribeOnMessagesUpdates: $it")
+                    Timber.d("subscribeOnMessagesUpdates: ${it.size}")
                     if (hasNoMessagesStoredButCanLoadMore(it)) {
-                        Timber.d("subscribeOnMessagesUpdates: load!!")
                         loadNextMessagePage()
                     }
                 }
@@ -119,7 +113,7 @@ constructor(
 
         val currentMessages = state.value.payload.messages
         val newMessages = messagesFromServer.subtract(currentMessages.toSet())
-        val updatedList = currentMessages + newMessages
+        val updatedList = newMessages.toList() + currentMessages
 
         modifyState { payload -> payload.copy(messages = updatedList) }
     }
@@ -138,8 +132,6 @@ constructor(
             currentPage = pagination.currentPage
             hideLoader()
         }
-
-        Timber.d("${state.value.loading} $isLastPage" )
     }
 
     private fun subscribeOnNotificationChannel(chatId: Long) {

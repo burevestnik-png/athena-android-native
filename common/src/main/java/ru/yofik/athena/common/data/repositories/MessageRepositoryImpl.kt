@@ -46,7 +46,7 @@ constructor(
     ): PaginatedMessages {
         try {
             val response = messageApi.getPaginatedMessages(chatId, pageNumber, pageSize)
-            Timber.d("requestGetPaginatedMessages: $response")
+            Timber.d("requestGetPaginatedMessages: ${response.payload.meta}")
 
             return PaginatedMessages(
                 messages = response.payload.messages.map(apiMessageMapper::mapToDomain),
@@ -92,7 +92,7 @@ constructor(
     }
 
     override suspend fun cacheMessages(messages: List<Message>) {
-        messages.forEach { cacheMessage(it) }
+        cache.insertMessages(messages.map { CachedMessage.fromDomain(it)!! })
     }
 
     override suspend fun removeAllCachedMessagesByChatId(chatId: Long) {

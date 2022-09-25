@@ -18,7 +18,7 @@ internal interface UsersDao {
     // QUERY
     ///////////////////////////////////////////////////////////////////////////
 
-    @Transaction @Query("SELECT * FROM users") fun getAll(): Flow<List<CachedUser>>
+    @Transaction @Query("SELECT * FROM users") fun getAllUsers(): Flow<List<CachedUser>>
 
     ///////////////////////////////////////////////////////////////////////////
     // DELETE

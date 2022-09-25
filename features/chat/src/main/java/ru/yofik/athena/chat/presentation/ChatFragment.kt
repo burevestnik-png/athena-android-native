@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.Orientation
 import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.chat.R
@@ -98,6 +99,7 @@ class ChatFragment :
             addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
                 if (adapter.itemCount > 0) {
                     postDelayed({ smoothScrollToPosition(adapter.itemCount - 1) }, 100)
+//                    scrollToPosition(adapter.itemCount - 1)
                 }
             }
 

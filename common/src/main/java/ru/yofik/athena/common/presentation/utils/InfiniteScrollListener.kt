@@ -6,7 +6,7 @@ import timber.log.Timber
 
 abstract class InfiniteScrollListener(
     private val layoutManager: LinearLayoutManager,
-    private val pageSize: Int
+    private val pageSize: Int,
 ) : RecyclerView.OnScrollListener() {
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -14,22 +14,33 @@ abstract class InfiniteScrollListener(
 
         val visibleItemCount = layoutManager.childCount
         val totalItemCount = layoutManager.itemCount
-        val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+        val firstVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
         Timber.d(
-            "Visible=$visibleItemCount; Total=$totalItemCount; First=$firstVisibleItemPosition"
+            "Visible=$visibleItemCount; Total=$totalItemCount; First=$firstVisibleItemPosition IsLoading=${isLoading()}; IsLast=${isLastPage()}"
         )
 
+
         if (!isLoading() && !isLastPage()) {
-            Timber.d("IsLoading=${isLoading()}; IsLast=${isLastPage()}")
-            if (
+            /*if (
                 (visibleItemCount + firstVisibleItemPosition) >= totalItemCount &&
-                    firstVisibleItemPosition >= 0 &&
-                    totalItemCount >= pageSize
+                firstVisibleItemPosition >= 0 &&
+                totalItemCount >= pageSize
+            ) {
+                Timber.d("loadMoreItems")
+                loadMoreItems()
+            }*/
+            if (
+                (visibleItemCount + (totalItemCount - firstVisibleItemPosition)) >= totalItemCount &&
+                firstVisibleItemPosition >= 0 &&
+                totalItemCount >= pageSize
             ) {
                 Timber.d("loadMoreItems")
                 loadMoreItems()
             }
         }
+
+//        Timber.d("  \n")
+
     }
 
     abstract fun loadMoreItems()
