@@ -45,5 +45,11 @@ abstract class BaseViewModel<T>(payload: T) : ViewModel() {
         viewModelScope.launch(exceptionHandler + coroutineContext) { request() }
     }
 
+    protected fun withLoading(block: () -> Unit) {
+        showLoader()
+        block()
+        hideLoader()
+    }
+
     protected abstract fun onFailure(throwable: Throwable)
 }

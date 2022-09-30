@@ -10,6 +10,7 @@ import ru.yofik.athena.chat.databinding.ListItemSendMessageBinding
 import ru.yofik.athena.chat.domain.model.UiMessage
 import ru.yofik.athena.chat.domain.model.UiMessageSenderType
 
+// todo migrate on delegates
 class MessageAdapter : ListAdapter<UiMessage, RecyclerView.ViewHolder>(UI_MESSAGE_COMPARATOR) {
 
     companion object {
