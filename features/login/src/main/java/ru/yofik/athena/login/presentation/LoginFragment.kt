@@ -6,10 +6,11 @@ import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.common.presentation.components.base.BaseFragment
-import ru.yofik.athena.common.presentation.components.extensions.handleFailures
-import ru.yofik.athena.common.presentation.components.extensions.launchViewModelsFlow
-import ru.yofik.athena.common.presentation.components.extensions.navigate
+import ru.yofik.athena.common.presentation.components.extensions.fragment.handleFailures
+import ru.yofik.athena.common.presentation.components.extensions.fragment.launchViewModelsFlow
+import ru.yofik.athena.common.presentation.components.extensions.fragment.navigate
 import ru.yofik.athena.common.presentation.model.UIState
+import ru.yofik.athena.common.utils.Route
 import ru.yofik.athena.common.utils.Routes
 import ru.yofik.athena.login.R
 import ru.yofik.athena.login.databinding.FragmentLoginBinding
@@ -65,7 +66,9 @@ class LoginFragment :
 
     private fun reactTo(effect: LoginViewEffect) {
         when (effect) {
-            is LoginViewEffect.NavigateToChatListPage -> navigate(Routes.CHAT_LIST)
+            is LoginViewEffect.NavigateToChatListPage -> navigate(Route.build {
+                screen = Routes.CHAT_LIST
+            })
         }
     }
 

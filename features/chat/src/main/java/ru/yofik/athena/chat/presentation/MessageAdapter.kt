@@ -10,6 +10,7 @@ import ru.yofik.athena.chat.databinding.ListItemSendMessageBinding
 import ru.yofik.athena.chat.domain.model.UiMessage
 import ru.yofik.athena.chat.domain.model.UiMessageSenderType
 
+// todo migrate on delegates
 class MessageAdapter : ListAdapter<UiMessage, RecyclerView.ViewHolder>(UI_MESSAGE_COMPARATOR) {
 
     companion object {
@@ -22,26 +23,26 @@ class MessageAdapter : ListAdapter<UiMessage, RecyclerView.ViewHolder>(UI_MESSAG
         val inflater = LayoutInflater.from(parent.context)
 
         when (viewType) {
-            RECEIVE_MESSAGE_TYPE -> viewHolder = ReceiveMessageViewHolder(
-                ListItemReceiveMessageBinding.inflate(
-                    inflater, parent, false
-                )
-            )
-            SEND_MESSAGE_TYPE -> viewHolder = SendMessageViewHolder(
-                ListItemSendMessageBinding.inflate(inflater, parent, false)
-            )
-            else -> {
-                viewHolder = ReceiveMessageViewHolder(
-                    ListItemReceiveMessageBinding.inflate(
-                        inflater, parent, false
+            RECEIVE_MESSAGE_TYPE ->
+                viewHolder =
+                    ReceiveMessageViewHolder(
+                        ListItemReceiveMessageBinding.inflate(inflater, parent, false)
                     )
-                )
+            SEND_MESSAGE_TYPE ->
+                viewHolder =
+                    SendMessageViewHolder(
+                        ListItemSendMessageBinding.inflate(inflater, parent, false)
+                    )
+            else -> {
+                viewHolder =
+                    ReceiveMessageViewHolder(
+                        ListItemReceiveMessageBinding.inflate(inflater, parent, false)
+                    )
             }
         }
 
         return viewHolder
     }
-
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val message = getItem(position)
@@ -51,7 +52,6 @@ class MessageAdapter : ListAdapter<UiMessage, RecyclerView.ViewHolder>(UI_MESSAG
         }
     }
 
-
     override fun getItemViewType(position: Int): Int {
         val message = getItem(position)
         return when (message.senderType) {
@@ -59,7 +59,6 @@ class MessageAdapter : ListAdapter<UiMessage, RecyclerView.ViewHolder>(UI_MESSAG
             UiMessageSenderType.NOT_OWNER -> RECEIVE_MESSAGE_TYPE
         }
     }
-
 
     inner class ReceiveMessageViewHolder(private val binding: ListItemReceiveMessageBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -82,12 +81,13 @@ class MessageAdapter : ListAdapter<UiMessage, RecyclerView.ViewHolder>(UI_MESSAG
     }
 }
 
-private val UI_MESSAGE_COMPARATOR = object : DiffUtil.ItemCallback<UiMessage>() {
-    override fun areItemsTheSame(oldItem: UiMessage, newItem: UiMessage): Boolean {
-        return oldItem.id == newItem.id
-    }
+private val UI_MESSAGE_COMPARATOR =
+    object : DiffUtil.ItemCallback<UiMessage>() {
+        override fun areItemsTheSame(oldItem: UiMessage, newItem: UiMessage): Boolean {
+            return oldItem.id == newItem.id
+        }
 
-    override fun areContentsTheSame(oldItem: UiMessage, newItem: UiMessage): Boolean {
-        return oldItem == newItem
+        override fun areContentsTheSame(oldItem: UiMessage, newItem: UiMessage): Boolean {
+            return oldItem == newItem
+        }
     }
-}

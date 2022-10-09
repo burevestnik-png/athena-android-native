@@ -10,6 +10,7 @@ class UiMessageSenderTypeMapper @Inject constructor() :
     UiMapper<Pair<Message, UiChat>, UiMessageSenderType> {
     override fun mapToView(model: Pair<Message, UiChat>): UiMessageSenderType {
         val (message, chat) = model
-        return if (message.senderId == chat.chatHolderId) UiMessageSenderType.OWNER else UiMessageSenderType.NOT_OWNER
+        return if (message.senderId == chat.chatHolderId) UiMessageSenderType.OWNER
+        else UiMessageSenderType.NOT_OWNER
     }
 }

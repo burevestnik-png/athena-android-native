@@ -20,57 +20,16 @@
 - RxJava и Coroutines API
 - Hilt в качестве DI фреймворка
 
+## Демонстрация
 
-## Реализация требований
-
-### Пререквизиты
-
-Как я говорил, приложение завязано на бэкэнде моего товарища, сложного в настройке из-за различной
-генерации ключей, поднятия докер образов и самих микросервисов, поэтому я думаю что можно
-предоставить набор gif для показа функционала.
-
-### Лента -> детализация
-
-Пример такого решения есть в виде "Чаты -> чат"
-
-![chat detailed](./gifs/chats-chat.gif)
-
-### Использование открытого API
-
-К сожалению никакое открытое API не поможет с написанием своего классного мессенджера, поэтому оно
-не используется :[
-
-### Тесты
-
-Тесты - будут :]
-
-Опыт написания юнит тестов есть, но нужно разобраться с тестированием тех же самых репозиториев и
-вебсокет слушателей, а так же и с тестированием представления.
-
-### Оффлайн режим
-
-Тема, которая реализована на данный момент частично, и только в `createChat` feature. Там просиходит
-тривиальное кэширование пользователей системы. Стратегия тоже простая - если кэш пустой, то
-подгружаем, если нет то достаем данные из него. Если нужно форсировать запрос через сеть, то можно
-потянуть список вниз и вызвать запрос через сеть и обновить кэш.
-
-![create chat](./gifs/create-chat.gif)
-
-Модель приложения не тривиальна и чтобы реализовать оставшийся кэш нужно порисовать UML диаграммы и
-посмотреть как именно хранить чаты и сообщения, какие агрегированные сущности придумать и как
-настроить между всем этим делом связи.
+| ![](media/gif/device-2022-09-30-143105.gif) | ![](media/gif/device-2022-09-30-143543.gif) | ![](media/gif/device-2022-09-30-143606.gif) |
+|---------------------------------------------|---------------------------------------------|---------------------------------------------|
+| ![](media/gif/device-2022-09-30-143640.gif) | ![](media/gif/device-2022-09-30-143806.gif) |                                             |
 
 ## Что будет дальше?
 
 - Релиз Android нативной версии
 - Разработка и релиз IOS нативной версии
-- Разработка кроссплатформы на Flutter (благо опыт есть)
-- Может быть разработка на React Native
-
-### P.S
-
-Цель проекта - мне, как разработчику, попробовать весь современный стек разработки и определиться
-с приоритетами в саморазвитии
 
 ## Version notes
 
@@ -78,31 +37,30 @@
 
 #### Features
 
-- Added pagination and caching for users on CreateChat screen, CHatList screen; **Need testing**
+- Added pagination and caching for users on CreateChat screen, CHatList screen
 - Created Drawer and removed bottom navigation bar
 - Migrated on Material3
+- Added FAB
+- Added CAB for chats multichoice
+- Bugfixes
 
 #### Plans
 
 - Very bad realization of rx java, need to study more
 - added response error parsing
-- Вопрос, где лучше инитить - в фрагменте или в вм
-- TODO в чат листе, протестить
 - вынести пагинацию
-- Подумать о внешних ключах в кросс рефе, так как пользователей может и не быть
 - Подумать о времени кэша
 - DataStore
 - migration on kts configs
-- add fab
-- add on drawer more info
 - swipes on items
-- add notification builder
 - remade db with caching ONLY last messages
+- why ChatListFragmentViewModel trying to load next chats page on logout
 
 #### Inspected
 
 - Rework AppBar with Navigation framework
 - Coroutines :]
+- add on drawer more info
 - TextInputLayout rewrite on
 - Add validation on Login screen like on Onboarding
 - рефактор логина и профиля

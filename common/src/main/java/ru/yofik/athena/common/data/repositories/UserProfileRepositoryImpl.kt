@@ -37,10 +37,10 @@ constructor(
             return PaginatedUsers(
                 users = response.payload.users.map(apiUserMapper::mapToDomain),
                 pagination =
-                Pagination(
-                    currentPage = pageNumber + 1,
-                    currentAmountOfItems = response.payload.users.size
-                )
+                    Pagination(
+                        currentPage = pageNumber + 1,
+                        currentAmountOfItems = response.payload.users.size
+                    )
             )
         } catch (exception: HttpException) {
             // TODO add exception parse

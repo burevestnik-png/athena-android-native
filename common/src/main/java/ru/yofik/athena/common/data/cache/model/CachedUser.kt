@@ -16,5 +16,4 @@ data class CachedUser(
     }
 }
 
-fun CachedUser.toDomain() =
-    User(id = this.userId, login = this.login, name = this.name)
+fun CachedUser.toDomain() = User(id = this.userId, login = this.login, name = this.name)

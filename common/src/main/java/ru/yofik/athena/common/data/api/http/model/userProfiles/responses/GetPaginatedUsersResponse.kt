@@ -7,9 +7,7 @@ import ru.yofik.athena.common.data.api.http.model.common.responses.Response
 import ru.yofik.athena.common.data.api.http.model.common.responses.ResponseStatus
 
 @JsonClass(generateAdapter = true)
-data class GetPaginatedUsersResponsePayload(
-    @field:Json(name = "content") val users: List<ApiUser>
-)
+data class GetPaginatedUsersResponsePayload(@field:Json(name = "content") val users: List<ApiUser>)
 
 @JsonClass(generateAdapter = true)
 class GetPaginatedUsersResponse(

@@ -15,9 +15,15 @@ internal interface MessageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMessage(message: CachedMessage)
 
+    @Transaction
+    suspend fun insertMessages(messages: List<CachedMessage>) {
+        messages.forEach { insertMessage(message = it) }
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // QUERY
     ///////////////////////////////////////////////////////////////////////////
+
     @Transaction
     @Query("SELECT * FROM messages WHERE chatId = :chatId")
     fun getAllFromDefiniteChat(chatId: Long): Flow<List<CachedMessage>>
@@ -29,9 +35,9 @@ internal interface MessageDao {
     @Transaction
     suspend fun updateLastMessageForChat(cachedMessage: CachedMessage) {
         insertMessage(cachedMessage)
-        deleteChatLastMessageCrossRefByChatId(cachedMessage.chatId)
 
-        insertChat(
+        deleteChatLastMessageCrossRefByChatId(cachedMessage.chatId)
+        insertChatLastMessageCrossRef(
             CachedChatLastMessageCrossRef(
                 chatId = cachedMessage.chatId,
                 messageId = cachedMessage.messageId
@@ -39,19 +45,18 @@ internal interface MessageDao {
         )
     }
 
-    @Query("DELETE FROM chat_last_message_cross_ref WHERE chatId = :chatId")
-    suspend fun deleteChatLastMessageCrossRefByChatId(chatId: Long)
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertChat(crossRef: CachedChatLastMessageCrossRef)
+    suspend fun insertChatLastMessageCrossRef(crossRef: CachedChatLastMessageCrossRef)
 
     ///////////////////////////////////////////////////////////////////////////
     // DELETE
     ///////////////////////////////////////////////////////////////////////////
 
-    suspend fun deleteAll() {
-        deleteAllMessages()
-    }
+    @Query("DELETE FROM messages WHERE chatId = :chatId")
+    suspend fun deleteAllMessagesByChatId(chatId: Long)
+
+    @Query("DELETE FROM chat_last_message_cross_ref WHERE chatId = :chatId")
+    suspend fun deleteChatLastMessageCrossRefByChatId(chatId: Long)
 
     @Query("DELETE FROM messages")
     suspend fun deleteAllMessages()

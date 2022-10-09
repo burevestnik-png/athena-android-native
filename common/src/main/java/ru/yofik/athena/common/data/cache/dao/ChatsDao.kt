@@ -11,42 +11,42 @@ internal interface ChatsDao {
     // INSERT
     ///////////////////////////////////////////////////////////////////////////
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertCachedChatUserCrossRef(crossRef: CachedChatUserCrossRef)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCachedChatLastMessageRef(crossRef: CachedChatLastMessageCrossRef)
-
     @Transaction
     suspend fun insertChatAggregates(chatAggregates: List<CachedChatAggregate>) {
-        chatAggregates.forEach { chatAggregate ->
-            insertChat(chatAggregate.chat)
-            insertUsers(chatAggregate.users)
+        chatAggregates.forEach { insertChatAggregate(it) }
+    }
 
-            if (chatAggregate.lastMessage != null) {
-                insertMessage(chatAggregate.lastMessage)
+    suspend fun insertChatAggregate(chatAggregate: CachedChatAggregate) {
+        insertChat(chatAggregate.chat)
+        insertUsers(chatAggregate.users)
 
-                insertCachedChatLastMessageRef(
-                    CachedChatLastMessageCrossRef(
-                        chatId = chatAggregate.chat.chatId,
-                        messageId = chatAggregate.lastMessage.messageId
-                    )
+        if (chatAggregate.lastMessage != null) {
+            insertMessage(chatAggregate.lastMessage)
+
+            insertCachedChatLastMessageRef(
+                CachedChatLastMessageCrossRef(
+                    chatId = chatAggregate.chat.chatId,
+                    messageId = chatAggregate.lastMessage.messageId
                 )
-            }
-
-            chatAggregate.users.forEach { user ->
-                insertCachedChatUserCrossRef(
-                    CachedChatUserCrossRef(
-                        chatId = chatAggregate.chat.chatId,
-                        userId = user.userId
-                    )
-                )
-            }
+            )
         }
+
+        insertCachedChatUserCrossRefs(
+            crossRefs =
+            chatAggregate.users.map {
+                CachedChatUserCrossRef(chatId = chatAggregate.chat.chatId, userId = it.userId)
+            }
+        )
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertChat(chat: CachedChat)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCachedChatUserCrossRefs(crossRefs: List<CachedChatUserCrossRef>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCachedChatLastMessageRef(crossRef: CachedChatLastMessageCrossRef)
 
     ///////////////////////////////////////////////////////////////////////////
     // METHOD DUPLICATION FROM OTHER DAOS DUE TO @TRANSACTIONAL PROBLEM
@@ -64,20 +64,20 @@ internal interface ChatsDao {
 
     @Transaction
     @Query("SELECT * FROM chats")
-    fun getAll(): Flow<List<CachedChatAggregate>>
+    fun getAllChatAggregates(): Flow<List<CachedChatAggregate>>
 
     @Transaction
     @Query("SELECT * FROM chats WHERE chatId = :id")
-    fun getById(id: Long): CachedChatAggregate
+    fun getChatAggregateById(id: Long): CachedChatAggregate
 
     ///////////////////////////////////////////////////////////////////////////
     // DELETE
     ///////////////////////////////////////////////////////////////////////////
 
     suspend fun deleteAll() {
-        deleteAllChats()
         deleteAllChatUserCrossRef()
         deleteAllChatLastMessageCrossRef()
+        deleteAllChats()
     }
 
     @Query("DELETE FROM chats")

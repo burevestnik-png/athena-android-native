@@ -9,9 +9,7 @@ interface NotificationRepository {
     fun subscribeOnNotificationWebsocket()
 
     fun listenNewMessageNotifications(): Observable<NewMessageNotification>
-    fun listenTargetChatNewMessageNotifications(
-        chatId: Long
-    ): Observable<NewMessageNotification>
+    fun listenTargetChatNewMessageNotifications(chatId: Long): Observable<NewMessageNotification>
 
     fun listenUpdatedMessageNotifications(): Observable<UpdateMessageNotification>
     fun listenDeletedMessagesNotifications(): Observable<DeleteMessageNotification>

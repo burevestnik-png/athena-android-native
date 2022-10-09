@@ -3,6 +3,7 @@ package ru.yofik.athena.common.data.repositories
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import retrofit2.HttpException
 import ru.yofik.athena.common.data.api.http.model.chat.ChatApi
 import ru.yofik.athena.common.data.api.http.model.chat.mappers.ApiChatMapper
@@ -39,10 +40,10 @@ constructor(
             return PaginatedChats(
                 chats = response.payload.map(apiChatMapper::mapToDomain),
                 pagination =
-                Pagination(
-                    currentPage = pageNumber + 1,
-                    currentAmountOfItems = response.payload.size
-                )
+                    Pagination(
+                        currentPage = pageNumber + 1,
+                        currentAmountOfItems = response.payload.size
+                    )
             )
         } catch (exception: HttpException) {
             // TODO add exception parse
@@ -78,12 +79,13 @@ constructor(
     ///////////////////////////////////////////////////////////////////////////
 
     override fun getCachedChats(): Flow<List<Chat>> {
-        return cache.getChats()
+        return cache
+            .getChats()
             .map { cachedChatAggregates ->
                 cachedChatAggregates.map { CachedChat.toDomain(it.chat, it.users, it.lastMessage) }
-            }.filter { chats ->
-                chats.none { it.lastMessage.isNullable && it.users.isEmpty() }
             }
+            .filter { chats -> chats.none { it.lastMessage.isNullable && it.users.isEmpty() } }
+            .onEach { Timber.d("getCachedChats: $it") }
     }
 
     override suspend fun getCachedChat(id: Long): Chat {

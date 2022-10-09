@@ -6,7 +6,7 @@ import retrofit2.HttpException
 import ru.yofik.athena.common.data.api.common.mappers.ApiMessageMapper
 import ru.yofik.athena.common.data.api.http.model.message.MessageApi
 import ru.yofik.athena.common.data.api.http.model.message.requests.SendMessageRequest
-import ru.yofik.athena.common.data.cache.dao.MessageDao
+import ru.yofik.athena.common.data.cache.Cache
 import ru.yofik.athena.common.data.cache.model.CachedMessage
 import ru.yofik.athena.common.data.cache.model.toDomain
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
@@ -22,7 +22,7 @@ internal class MessageRepositoryImpl
 constructor(
     private val messageApi: MessageApi,
     private val apiMessageMapper: ApiMessageMapper,
-    private val messageDao: MessageDao
+    private val cache: Cache,
 ) : MessageRepository {
 
     ///////////////////////////////////////////////////////////////////////////
@@ -42,18 +42,19 @@ constructor(
     override suspend fun requestGetPaginatedMessages(
         chatId: Long,
         pageNumber: Int,
-        pageSize: Int
+        pageSize: Int,
     ): PaginatedMessages {
         try {
             val response = messageApi.getPaginatedMessages(chatId, pageNumber, pageSize)
-            Timber.d("requestGetPaginatedMessages: $response")
+            Timber.d("requestGetPaginatedMessages: ${response.payload.meta}")
 
             return PaginatedMessages(
                 messages = response.payload.messages.map(apiMessageMapper::mapToDomain),
                 pagination =
                 Pagination(
                     currentPage = pageNumber + 1,
-                    currentAmountOfItems = response.payload.meta.size
+                    currentAmountOfItems = response.payload.meta.size,
+                    pageSize = pageSize
                 )
             )
         } catch (exception: HttpException) {
@@ -65,7 +66,7 @@ constructor(
     override suspend fun requestDeleteDefiniteMessage(
         chatId: Long,
         messageId: Long,
-        isGlobal: Boolean
+        isGlobal: Boolean,
     ) {
         try {
             messageApi.deleteDefiniteMessage(chatId, messageId, isGlobal)
@@ -79,19 +80,23 @@ constructor(
     // CACHE
     ///////////////////////////////////////////////////////////////////////////
 
-    override fun getCachedMessagesForDefiniteChat(chatId: Long): Flow<List<Message>> {
-        return messageDao.getAllFromDefiniteChat(chatId).map { cachedMessages ->
+    override fun getCachedMessagesByChatId(chatId: Long): Flow<List<Message>> {
+        return cache.getAllMessagesByChatId(chatId).map { cachedMessages ->
             cachedMessages.map { it.toDomain() }
         }
     }
 
     override suspend fun cacheMessage(message: Message) {
         if (message.isNullable) return
-        messageDao.insertMessage(CachedMessage.fromDomain(message)!!)
+        cache.insertMessage(CachedMessage.fromDomain(message)!!)
     }
 
     override suspend fun cacheMessages(messages: List<Message>) {
-        messages.forEach { cacheMessage(it) }
+        cache.insertMessages(messages.map { CachedMessage.fromDomain(it)!! })
+    }
+
+    override suspend fun removeAllCachedMessagesByChatId(chatId: Long) {
+        cache.deleteAllMessagesByChatId(chatId)
     }
 
     override suspend fun removeAllCache() {

@@ -6,6 +6,7 @@ import ru.yofik.athena.common.domain.model.pagination.PaginatedMessages
 
 interface MessageRepository {
     suspend fun requestSendMessage(chatId: Long, text: String)
+
     suspend fun requestGetPaginatedMessages(
         chatId: Long,
         pageNumber: Int,
@@ -18,9 +19,9 @@ interface MessageRepository {
         isGlobal: Boolean = false
     )
 
-
-    fun getCachedMessagesForDefiniteChat(chatId: Long): Flow<List<Message>>
+    fun getCachedMessagesByChatId(chatId: Long): Flow<List<Message>>
     suspend fun cacheMessage(message: Message)
     suspend fun cacheMessages(messages: List<Message>)
+    suspend fun removeAllCachedMessagesByChatId(chatId: Long)
     suspend fun removeAllCache()
 }

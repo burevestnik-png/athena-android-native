@@ -2,8 +2,12 @@ package ru.yofik.athena.main.presentation
 
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -11,8 +15,12 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import ru.yofik.athena.R
+import ru.yofik.athena.common.domain.model.users.User
+import ru.yofik.athena.common.presentation.customViews.avatarView.AvatarView
 import ru.yofik.athena.databinding.ActivityMainBinding
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -93,13 +101,17 @@ class MainActivity : AppCompatActivity() {
     ///////////////////////////////////////////////////////////////////////////
 
     private fun observeViewEffects() {
-        viewModel.effects.observe(this) { reactTo(it) }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) { viewModel.effects.collect { reactTo(it) } }
+        }
     }
 
     private fun reactTo(effect: MainActivityViewEffect) {
+        Timber.d("reactTo: $effect")
         when (effect) {
             is MainActivityViewEffect.SetStartDestination ->
                 setNavGraphStartDestination(effect.destination)
+            is MainActivityViewEffect.ProvideUserInfo -> setupDrawerHeader(effect.user)
         }
     }
 
@@ -108,6 +120,16 @@ class MainActivity : AppCompatActivity() {
 
         navGraph.setStartDestination(startDestination)
         navController.graph = navGraph
+    }
+
+    private fun setupDrawerHeader(user: User) {
+        Timber.d("setupDrawerHeader: $user")
+        val header = binding.navigationView.getHeaderView(0)
+        with(header) {
+            findViewById<AvatarView>(R.id.avatar_view).apply { text = user.name }
+            findViewById<TextView>(R.id.name).apply { text = user.name }
+            findViewById<TextView>(R.id.login).apply { text = user.login }
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////

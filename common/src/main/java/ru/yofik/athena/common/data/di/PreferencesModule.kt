@@ -10,6 +10,5 @@ import ru.yofik.athena.common.data.preferences.Preferences
 @Module
 @InstallIn(SingletonComponent::class)
 internal abstract class PreferencesModule {
-    @Binds
-    abstract fun providePreferences(preferences: MessengerPreferences): Preferences
+    @Binds abstract fun providePreferences(preferences: MessengerPreferences): Preferences
 }

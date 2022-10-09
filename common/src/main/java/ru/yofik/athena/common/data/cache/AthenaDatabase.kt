@@ -12,14 +12,14 @@ import ru.yofik.athena.common.data.cache.model.*
 
 @Database(
     entities =
-    [
-        CachedUser::class,
-        CachedChat::class,
-        CachedMessage::class,
-        CachedChatUserCrossRef::class,
-        CachedChatLastMessageCrossRef::class
-    ],
-    version = 9,
+        [
+            CachedUser::class,
+            CachedChat::class,
+            CachedMessage::class,
+            CachedChatUserCrossRef::class,
+            CachedChatLastMessageCrossRef::class
+        ],
+    version = 28,
     exportSchema = false
 )
 @TypeConverters(LocalDateTimeConverter::class, ChatTypeConverter::class)

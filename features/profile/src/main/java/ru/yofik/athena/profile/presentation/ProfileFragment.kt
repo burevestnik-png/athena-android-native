@@ -6,10 +6,11 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yofik.athena.common.domain.model.users.User
 import ru.yofik.athena.common.presentation.components.base.BaseFragment
-import ru.yofik.athena.common.presentation.components.extensions.launchViewModelsFlow
-import ru.yofik.athena.common.presentation.components.extensions.navigate
+import ru.yofik.athena.common.presentation.components.extensions.fragment.launchViewModelsFlow
+import ru.yofik.athena.common.presentation.components.extensions.fragment.navigate
 import ru.yofik.athena.common.presentation.model.EmptyPayload
 import ru.yofik.athena.common.presentation.model.UIState
+import ru.yofik.athena.common.utils.Route
 import ru.yofik.athena.common.utils.Routes
 import ru.yofik.athena.profile.R
 import ru.yofik.athena.profile.databinding.FragmentProfileBinding
@@ -29,7 +30,9 @@ class ProfileFragment :
     }
 
     private fun listenToLogoutButton() {
-        binding.logoutButton.setOnClickListener { requestLogoutUser() }
+        binding.logoutButton.setOnClickListener {
+            requestLogoutUser()
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -49,16 +52,14 @@ class ProfileFragment :
     ///////////////////////////////////////////////////////////////////////////
 
     override fun observeViewEffects() {
-        launchViewModelsFlow {
-            viewModel.effects.collect {
-                reactTo(it)
-            }
-        }
+        launchViewModelsFlow { viewModel.effects.collect { reactTo(it) } }
     }
 
     private fun reactTo(effect: ProfileFragmentViewEffect) {
         when (effect) {
-            is ProfileFragmentViewEffect.NavigateToLoginScreen -> navigate(Routes.LOGIN)
+            is ProfileFragmentViewEffect.NavigateToLoginScreen -> navigate(Route.build {
+                screen = Routes.LOGIN
+            })
             is ProfileFragmentViewEffect.ProvideUserInfo -> handleProvidingUserInfo(effect.user)
         }
     }
