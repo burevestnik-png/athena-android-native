@@ -1,4 +1,4 @@
-package ru.yofik.athena.common.data.utils
+package ru.yofik.athena.common.data.api.utils
 
 import androidx.test.platform.app.InstrumentationRegistry
 import timber.log.Timber
@@ -6,11 +6,11 @@ import java.io.IOException
 import java.io.InputStream
 
 object JsonReader {
-    fun getNetworkResponse(path: String): String {
-        try {
+    fun getJson(path: String): String {
+        return try {
             val context = InstrumentationRegistry.getInstrumentation().context
-            val jsonStream: InputStream = context.assets.open("network-responses/$path")
-            return String(jsonStream.readBytes())
+            val jsonStream: InputStream = context.assets.open(path)
+            String(jsonStream.readBytes())
         } catch (exception: IOException) {
             Timber.e(exception, "Error reading network response json asset")
             throw exception

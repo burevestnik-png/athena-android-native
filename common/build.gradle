@@ -25,6 +25,14 @@ android {
                 ]
             }
         }
+
+        testInstrumentationRunner "ru.yofik.athena.common.HiltTestRunner"
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
     }
 }
 
@@ -49,4 +57,5 @@ dependencies {
     // testing
     testImplementation("com.squareup.okhttp3:mockwebserver:$mockwebserver_version")
     androidTestImplementation("com.squareup.okhttp3:mockwebserver:$mockwebserver_version")
+
 }

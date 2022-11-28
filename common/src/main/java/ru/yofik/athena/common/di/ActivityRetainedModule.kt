@@ -7,6 +7,8 @@ import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import ru.yofik.athena.common.data.repositories.*
 import ru.yofik.athena.common.domain.repositories.*
+import ru.yofik.athena.common.utils.CoroutineDispatchersProvider
+import ru.yofik.athena.common.utils.DispatchersProvider
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
@@ -37,4 +39,7 @@ internal abstract class ActivityRetainedModule {
     @Binds
     @ActivityRetainedScoped
     abstract fun bindCommonRepository(repository: CommonRepositoryImpl): CommonRepository
+
+    @Binds
+    abstract fun bindDispatcherProvider(dispatchersProvider: CoroutineDispatchersProvider): DispatchersProvider
 }

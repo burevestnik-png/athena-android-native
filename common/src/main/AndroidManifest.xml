@@ -3,4 +3,17 @@
     package="ru.yofik.athena.common">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!--    TODO this is for work of tests-->
+    <application>
+        <activity
+            android:name="androidx.test.core.app.InstrumentationActivityInvoker$BootstrapActivity"
+            android:exported="false" />
+        <activity
+            android:name="androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity"
+            android:exported="false" />
+        <activity
+            android:name="androidx.test.core.app.InstrumentationActivityInvoker$EmptyFloatingActivity"
+            android:exported="false" />
+    </application>
 </manifest>
