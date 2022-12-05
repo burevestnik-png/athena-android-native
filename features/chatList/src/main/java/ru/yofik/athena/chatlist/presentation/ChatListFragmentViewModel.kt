@@ -20,6 +20,7 @@ import ru.yofik.athena.common.domain.model.pagination.Pagination
 import ru.yofik.athena.common.presentation.components.base.BaseViewModel
 import ru.yofik.athena.common.presentation.model.Event
 import ru.yofik.athena.common.presentation.model.UIState
+import ru.yofik.athena.common.utils.DispatchersProvider
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -28,12 +29,13 @@ class ChatListFragmentViewModel
 @Inject
 constructor(
     private val getChats: GetChats,
-    private val listenNewMessageNotifications: ListenNewMessageNotifications,
+    private val uiChatMapper: UiChatMapper,
+    private val updateMessage: UpdateMessage,
+    private val removeChatCache: RemoveChatCache,
+    private val dispatchersProvider: DispatchersProvider,
     private val requestNextChatsPage: RequestNextChatsPage,
     private val subscribeOnNotifications: SubscribeOnNotifications,
-    private val removeChatCache: RemoveChatCache,
-    private val updateMessage: UpdateMessage,
-    private val uiChatMapper: UiChatMapper,
+    private val listenNewMessageNotifications: ListenNewMessageNotifications,
 ) : BaseViewModel<ChatListFragmentPayload>(ChatListFragmentPayload()) {
 
     companion object {
@@ -91,15 +93,13 @@ constructor(
         modifyState { payload -> payload.copy(chats = updatedList) }
     }
 
-    private fun loadNextChatPage() {
+    private fun loadNextChatPage() = launchIORequest(dispatchersProvider.io()) {
         Timber.d("loadNextChatPage")
         showLoader()
 
-        launchIORequest {
-            val pagination = requestNextChatsPage(currentPage)
-            currentPage = pagination.currentPage
-            hideLoader()
-        }
+        val pagination = requestNextChatsPage(currentPage)
+        currentPage = pagination.currentPage
+        hideLoader()
     }
 
     private fun hasNoChatsStoredButCanLoadMore(chats: List<Chat>): Boolean {
@@ -175,18 +175,16 @@ constructor(
         }
     }
 
-    private fun handleForceGetAllChats() {
+    private fun handleForceGetAllChats() = launchIORequest(dispatchersProvider.io()) {
         showLoader()
 
-        launchIORequest {
-            removeChatCache()
+        removeChatCache()
 
-            isLastPage = IS_LAST_PAGE_INITIAL
-            currentPage = CURRENT_PAGE_INITIAL
-            _state.value = UIState(ChatListFragmentPayload())
+        isLastPage = IS_LAST_PAGE_INITIAL
+        currentPage = CURRENT_PAGE_INITIAL
+        _state.value = UIState(ChatListFragmentPayload())
 
-            subscribeOnChatsUpdates()
-        }
+        subscribeOnChatsUpdates()
     }
 
     override fun onFailure(throwable: Throwable) {

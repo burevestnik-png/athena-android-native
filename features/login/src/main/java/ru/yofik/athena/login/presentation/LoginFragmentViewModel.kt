@@ -3,7 +3,6 @@ package ru.yofik.athena.login.presentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.withContext
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
 import ru.yofik.athena.common.domain.model.exceptions.NetworkUnavailableException
 import ru.yofik.athena.common.presentation.components.base.BaseViewModel
@@ -16,8 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginFragmentViewModel
-@Inject
-constructor(
+@Inject constructor(
     private val requestUserInfo: RequestUserInfo,
     private val dispatchersProvider: DispatchersProvider,
     private val requestUserActivation: RequestUserActivation,
@@ -44,28 +42,23 @@ constructor(
     private fun onCodeValueChange(newValue: String) {
         val isCodeValid = newValue.length == MAX_CODE_LENGTH
 
-        val codeError =
-            if (isCodeValid || newValue.isEmpty()) {
-                R.string.no_error
-            } else {
-                R.string.code_error
-            }
+        val codeError = if (isCodeValid || newValue.isEmpty()) {
+            R.string.no_error
+        } else {
+            R.string.code_error
+        }
 
         modifyState { payload -> payload.copy(code = newValue, codeError = codeError) }
     }
 
-    private fun onUserActivation() {
+    private fun onUserActivation() = launchIORequest(dispatchersProvider.io()) {
         showLoader()
 
-        launchIORequest {
-            withContext(dispatchersProvider.io()) {
-                requestUserActivation(payload.code)
-                requestUserInfo()
-            }
+        requestUserActivation(payload.code)
+        requestUserInfo()
 
-            hideLoader()
-            _effects.emit(LoginViewEffect.NavigateToChatListPage)
-        }
+        hideLoader()
+        _effects.emit(LoginViewEffect.NavigateToChatListPage)
     }
 
     override fun onFailure(throwable: Throwable) {
@@ -73,9 +66,8 @@ constructor(
             // todo add to all handlers
             is NetworkUnavailableException,
             is NetworkException,
-            -> {
-                modifyState(loading = false, failure = Event(throwable))
-            }
+            -> modifyState(loading = false, failure = Event(throwable))
+            else -> modifyState(loading = false, failure = Event(throwable))
         }
     }
 }

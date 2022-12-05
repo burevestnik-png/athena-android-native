@@ -37,6 +37,7 @@ abstract class BaseViewModel<T>(payload: T) : ViewModel() {
     }
 
     protected fun launchIORequest(
+        // TODO delete default context
         coroutineContext: CoroutineContext = Dispatchers.IO,
         errorMessage: String = "Failed to make request",
         request: suspend () -> Unit

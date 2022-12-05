@@ -12,6 +12,7 @@ import ru.yofik.athena.common.domain.model.users.User
 import ru.yofik.athena.common.presentation.components.base.BaseViewModel
 import ru.yofik.athena.common.presentation.model.Event
 import ru.yofik.athena.common.presentation.model.UIState
+import ru.yofik.athena.common.utils.DispatchersProvider
 import ru.yofik.athena.createchat.domain.model.UiUserMapper
 import ru.yofik.athena.createchat.domain.model.exceptions.ChatAlreadyCreatedException
 import ru.yofik.athena.createchat.domain.usecases.CreateChat
@@ -27,9 +28,10 @@ class CreateChatFragmentViewModel
 constructor(
     private val getUsers: GetUsers,
     private val createChat: CreateChat,
-    private val requestNextUsersPage: RequestNextUsersPage,
+    private val uiUserMapper: UiUserMapper,
     private val forceRefreshUsers: ForceRefreshUsers,
-    private val uiUserMapper: UiUserMapper
+    private val dispatchersProvider: DispatchersProvider,
+    private val requestNextUsersPage: RequestNextUsersPage,
 ) : BaseViewModel<CreateChatStatePayload>(CreateChatStatePayload()) {
 
     companion object {
@@ -99,39 +101,34 @@ constructor(
         }
     }
 
-    private fun handleCreateChat(targetUserId: Long) {
+    private fun handleCreateChat(targetUserId: Long) = launchIORequest(dispatchersProvider.io()) {
         showLoader()
 
-        launchIORequest {
-            val createdChat = createChat(targetUserId)
-            Timber.d("handleCreateChat: $createdChat")
-            _effects.emit(CreateChatFragmentViewEffect.NavigateToChatListScreen)
+        val createdChat = createChat(targetUserId)
+        Timber.d("handleCreateChat: $createdChat")
+        _effects.emit(CreateChatFragmentViewEffect.NavigateToChatListScreen)
 
-            hideLoader()
-        }
+        hideLoader()
     }
 
-    private fun loadNextUserPage() {
+    private fun loadNextUserPage() = launchIORequest(dispatchersProvider.io()) {
         showLoader()
 
-        launchIORequest {
-            val pagination = requestNextUsersPage(currentPage)
-            currentPage = pagination.currentPage
-            hideLoader()
-        }
+        val pagination = requestNextUsersPage(currentPage)
+        currentPage = pagination.currentPage
+
+        hideLoader()
     }
 
-    private fun forceRequestAllUsers() {
+    private fun forceRequestAllUsers() = launchIORequest(dispatchersProvider.io()) {
         showLoader()
 
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) { forceRefreshUsers() }
+        withContext(Dispatchers.IO) { forceRefreshUsers() }
 
-            isLastPage = IS_LAST_PAGE_INITIAL
-            currentPage = CURRENT_PAGE_INITIAL
+        isLastPage = IS_LAST_PAGE_INITIAL
+        currentPage = CURRENT_PAGE_INITIAL
 
-            _state.value = UIState(CreateChatStatePayload())
-        }
+        _state.value = UIState(CreateChatStatePayload())
     }
 
     override fun onFailure(throwable: Throwable) {
