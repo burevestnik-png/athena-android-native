@@ -14,11 +14,10 @@ import javax.inject.Inject
 class ProfileFragmentViewModel
 @Inject
 constructor(
-    initialPayload: EmptyPayload,
     private val logoutUser: LogoutUser,
     private val getCachedUser: GetCachedUser,
     private val dispatchersProvider: DispatchersProvider,
-) : BaseViewModel<EmptyPayload>(initialPayload) {
+) : BaseViewModel<EmptyPayload>(EmptyPayload()) {
     private val _effects = MutableSharedFlow<ProfileFragmentViewEffect>(replay = 1)
     val effects: SharedFlow<ProfileFragmentViewEffect> = _effects
 
