@@ -2,6 +2,7 @@ package ru.yofik.athena.common.data.api.http.model.common.responses
 
 enum class ResponseStatus(val code: Int, val status: String) {
     DEV_ONLY(100, "DEV_ONLY"),
+    OPERATION_OK(200, "OPERATION_OK"),
     RESOURCE_RETURNED(200, "RESOURCE_RETURNED"),
     RESOURCE_UPDATED(200, "RESOURCE_UPDATED"),
     RESOURCE_DELETED(200, "RESOURCE_DELETED"),

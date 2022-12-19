@@ -1,6 +1,7 @@
 package ru.yofik.athena.common.data.api.http.model.user
 
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
 import ru.yofik.athena.common.data.api.ApiHttpConstants
@@ -32,6 +33,6 @@ interface UserApi {
     @Headers(ApiParameters.NO_AUTH_HEADER_FULL)
     suspend fun auth(@Body request: AuthUserRequest): AuthUserResponse
 
-    @POST(ApiHttpConstants.AUTHORIZATION_ENDPOINT)
+    @GET(ApiHttpConstants.AUTHORIZATION_ENDPOINT)
     suspend fun getUserInfo(): AuthUserResponseV2
 }

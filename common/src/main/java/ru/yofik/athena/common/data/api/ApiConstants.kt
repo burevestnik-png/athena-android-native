@@ -11,7 +11,7 @@ internal object ApiVersions {
 internal object ApiHttpConstants {
     // todo move to localProps
     //    const val BASE_ENDPOINT = "http://192.168.0.13:8080/api/"
-    const val BASE_ENDPOINT_AUTH = "http://10.0.2.2:8080/api/"
+    const val BASE_ENDPOINT_AUTH = "http://10.0.2.2:8081/api/"
     const val BASE_ENDPOINT_MESSENGER = "http://10.0.2.2:8080/api/"
 
     const val ACTIVATE_ENDPOINT = "$V2/auth/users/sign-in"
