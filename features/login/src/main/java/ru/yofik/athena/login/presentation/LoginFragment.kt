@@ -1,5 +1,6 @@
 package ru.yofik.athena.login.presentation
 
+import android.util.Log
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
@@ -27,6 +28,7 @@ class LoginFragment :
 
     override fun setupUI() {
         setOnCodeChangeListener()
+        setOnUserIdChangeListener()
         listenToSubmitButton()
     }
 
@@ -36,6 +38,10 @@ class LoginFragment :
 
     private fun setOnCodeChangeListener() {
         binding.codeInput.editText?.doAfterTextChanged { onCodeValueChange(it?.toString() ?: "") }
+    }
+
+    private fun setOnUserIdChangeListener() {
+        binding.userIdInput.editText?.doAfterTextChanged { onUserIdValueChange(it?.toString() ?: "") }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -82,5 +88,9 @@ class LoginFragment :
 
     private fun onCodeValueChange(value: String) {
         viewModel.onEvent(LoginEvent.OnCodeValueChange(value))
+    }
+
+    private fun onUserIdValueChange(value: String) {
+        viewModel.onEvent(LoginEvent.OnUserIdValueChange(value))
     }
 }

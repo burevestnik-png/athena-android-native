@@ -10,4 +10,5 @@
 
     <string name="no_error" />
     <string name="code_error">Need 3 digits</string>
+    <string name="enter_user_id">Enter user id</string>
 </resources>

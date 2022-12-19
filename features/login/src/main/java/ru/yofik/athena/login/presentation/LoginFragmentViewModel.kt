@@ -18,8 +18,8 @@ import javax.inject.Inject
 class LoginFragmentViewModel
 @Inject
 constructor(
+    private val requestUserInfo: RequestUserInfo,
     private val requestUserActivation: RequestUserActivation,
-    private val requestUserInfo: RequestUserInfo
 ) : BaseViewModel<LoginViewStatePayload>(LoginViewStatePayload()) {
 
     companion object {
@@ -37,7 +37,12 @@ constructor(
         when (event) {
             is LoginEvent.RequestUserActivation -> onUserActivation()
             is LoginEvent.OnCodeValueChange -> onCodeValueChange(event.value)
+            is LoginEvent.OnUserIdValueChange -> onUserIdValueChanged(event.value)
         }
+    }
+
+    private fun onUserIdValueChanged(newValue: String) {
+        modifyState { payload -> payload.copy(userId = newValue.toLongOrNull() ?: 0) }
     }
 
     private fun onCodeValueChange(newValue: String) {
@@ -58,7 +63,7 @@ constructor(
 
         launchIORequest {
             withContext(Dispatchers.IO) {
-                requestUserActivation(payload.code)
+                requestUserActivation(payload.code, payload.userId)
                 requestUserInfo()
             }
 
@@ -71,7 +76,8 @@ constructor(
         when (throwable) {
             // todo add to all handlers
             is NetworkUnavailableException,
-            is NetworkException -> {
+            is NetworkException,
+            -> {
                 modifyState(loading = false, failure = Event(throwable))
             }
         }

@@ -28,7 +28,16 @@ import ru.yofik.athena.common.data.api.ws.listeners.NotificationListener
 import ru.yofik.athena.common.data.preferences.Preferences
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import javax.inject.Qualifier
 import javax.inject.Singleton
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class AuthRetrofit
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class MessengerRetrofit
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -36,32 +45,42 @@ internal object ApiModule {
 
     @Provides
     @Singleton
-    fun provideChatApi(builder: Retrofit.Builder): ChatApi {
+    fun provideChatApi(@MessengerRetrofit builder: Retrofit.Builder): ChatApi {
         return builder.build().create(ChatApi::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideUserProfileApi(builder: Retrofit.Builder): UserProfileApi {
+    fun provideUserProfileApi(@MessengerRetrofit builder: Retrofit.Builder): UserProfileApi {
         return builder.build().create(UserProfileApi::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideUserApi(builder: Builder): UserApi {
+    fun provideUserApi(@AuthRetrofit builder: Builder): UserApi {
         return builder.build().create(UserApi::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideMessageApi(builder: Builder): MessageApi {
+    fun provideMessageApi(@MessengerRetrofit builder: Builder): MessageApi {
         return builder.build().create(MessageApi::class.java)
     }
 
     @Provides
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit.Builder {
+    @MessengerRetrofit
+    fun provideMessengerRetrofit(okHttpClient: OkHttpClient): Retrofit.Builder {
         return Retrofit.Builder()
-            .baseUrl(ApiHttpConstants.BASE_ENDPOINT)
+            .baseUrl(ApiHttpConstants.BASE_ENDPOINT_MESSENGER)
+            .client(okHttpClient)
+            .addConverterFactory(MoshiConverterFactory.create())
+    }
+
+    @Provides
+    @AuthRetrofit
+    fun provideAuthRetrofit(okHttpClient: OkHttpClient): Retrofit.Builder {
+        return Retrofit.Builder()
+            .baseUrl(ApiHttpConstants.BASE_ENDPOINT_AUTH)
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create())
     }

@@ -30,7 +30,7 @@ internal class AuthenticationInterceptor @Inject constructor(private val prefere
     private fun Interceptor.Chain.createRequestWithClientToken(): Request {
         return request()
             .newBuilder()
-            .addHeader(AUTH_HEADER, "$TOKEN_TYPE ${BuildConfig.CLIENT_TOKEN}")
+//            .addHeader(AUTH_HEADER, "$TOKEN_TYPE ${BuildConfig.CLIENT_TOKEN}")
             .build()
     }
 
@@ -39,7 +39,7 @@ internal class AuthenticationInterceptor @Inject constructor(private val prefere
     ): Request {
         return request()
             .newBuilder()
-            .addHeader(AUTH_HEADER, "$TOKEN_TYPE ${BuildConfig.CLIENT_TOKEN} $accessToken")
+            .addHeader(AUTH_HEADER, "$TOKEN_TYPE $accessToken")
             .build()
     }
 }

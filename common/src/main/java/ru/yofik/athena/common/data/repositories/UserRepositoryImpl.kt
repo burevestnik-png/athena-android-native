@@ -2,9 +2,11 @@ package ru.yofik.athena.common.data.repositories
 
 import retrofit2.HttpException
 import ru.yofik.athena.common.data.api.http.model.common.mappers.ApiUserMapper
+import ru.yofik.athena.common.data.api.http.model.common.mappers.ApiUserMapperV2
 import ru.yofik.athena.common.data.api.http.model.user.UserApi
 import ru.yofik.athena.common.data.api.http.model.user.mappers.ApiAccessTokenMapper
 import ru.yofik.athena.common.data.api.http.model.user.requests.ActivateUserRequest
+import ru.yofik.athena.common.data.api.http.model.user.requests.ActivateUserRequestV2
 import ru.yofik.athena.common.data.api.http.model.user.requests.AuthUserRequest
 import ru.yofik.athena.common.data.preferences.Preferences
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
@@ -19,17 +21,17 @@ constructor(
     private val preferences: Preferences,
     private val userApi: UserApi,
     private val apiAccessTokenMapper: ApiAccessTokenMapper,
-    private val apiUserMapper: ApiUserMapper,
+    private val apiUserMapper: ApiUserMapperV2,
 ) : UserRepository {
 
     ///////////////////////////////////////////////////////////////////////////
     // NETWORK
     ///////////////////////////////////////////////////////////////////////////
 
-    override suspend fun requestUserActivation(code: String): String {
+    override suspend fun requestUserActivation(code: String, userId: Long): String {
         try {
-            val request = ActivateUserRequest(code)
-            val response = userApi.activate(request)
+            val request = ActivateUserRequestV2(code, userId)
+            val response = userApi.activateV2(request)
 
             val accessToken = apiAccessTokenMapper.mapToDomain(response.payload)
             Timber.d("Got accessToken $accessToken")
@@ -43,8 +45,7 @@ constructor(
 
     override suspend fun requestGetUserInfo(): User {
         try {
-            val request = AuthUserRequest(preferences.getAccessToken())
-            val response = userApi.auth(request)
+            val response = userApi.getUserInfo()
 
             val user = apiUserMapper.mapToDomain(response.payload)
             Timber.d("Got currentUser $user")
