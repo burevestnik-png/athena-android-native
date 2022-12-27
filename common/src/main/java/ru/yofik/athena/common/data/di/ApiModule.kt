@@ -128,7 +128,7 @@ internal object ApiModule {
         val request =
             Request.Builder()
                 .url(ApiWsConstants.WS_NOTIFICATION_ENDPOINT)
-                .addHeader(AUTH_HEADER, "$TOKEN_TYPE ${BuildConfig.CLIENT_TOKEN} $accessToken")
+                .addHeader(AUTH_HEADER, "$TOKEN_TYPE $accessToken")
                 .build()
 
         Timber.d("Auth header: ${request.header(AUTH_HEADER)}")

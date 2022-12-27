@@ -3,15 +3,19 @@ package ru.yofik.athena.common.data.preferences
 import android.content.Context
 import android.content.SharedPreferences
 import dagger.hilt.android.qualifiers.ApplicationContext
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
 import javax.inject.Inject
 import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_ACCESS_TOKEN
 import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_EXPIRES_IN
 import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_REFRESH_TOKEN
+import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_USER_EMAIL
 import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_USER_ID
 import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_USER_LOGIN
-import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_USER_NAME
+import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_USER_ROLE
+import ru.yofik.athena.common.domain.model.users.Role
 import ru.yofik.athena.common.domain.model.users.Tokens
-import ru.yofik.athena.common.domain.model.users.User
+import ru.yofik.athena.common.domain.model.users.UserV2
 
 class MessengerPreferences @Inject constructor(@ApplicationContext context: Context) : Preferences {
     private val preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
@@ -35,40 +39,37 @@ class MessengerPreferences @Inject constructor(@ApplicationContext context: Cont
         remove(KEY_EXPIRES_IN)
     }
 
-    override fun putCurrentUser(user: User) {
-        edit {
-            putLong(KEY_USER_ID, user.id)
-            putString(KEY_USER_LOGIN, user.login)
-            putString(KEY_USER_NAME, user.name)
+    override fun putCurrentUser(user: UserV2) =
+        with(user) {
+            edit {
+                putLong(KEY_USER_ID, id)
+                putString(KEY_USER_LOGIN, login)
+                putString(KEY_USER_EMAIL, email)
+                putString(KEY_USER_ROLE, role.toString())
+            }
         }
-    }
 
-    override fun getCurrentUser(): User {
-        return User(
-            id = getCurrentUserId(),
-            name = getCurrentUserName(),
-            login = getCurrentUserLogin()
-        )
-    }
+    override fun getCurrentUser(): UserV2 =
+        with(preferences) {
+            UserV2(
+                id = getLong(KEY_USER_ID, -1),
+                email = getString(KEY_USER_LOGIN, "").orEmpty(),
+                login = getString(KEY_USER_EMAIL, "").orEmpty(),
+                role = Role.valueOf(getString(KEY_USER_ROLE, "USER") ?: "ROLE"),
+                isLocked = false,
+                lockReason = "",
+                credentialsExpirationDate = LocalDateTime.now(),
+                lastLoginDate = LocalDateTime.now()
+            )
+        }
 
     override fun removeCurrentUser() {
         edit {
             remove(KEY_USER_ID)
-            remove(KEY_USER_NAME)
+            remove(KEY_USER_EMAIL)
             remove(KEY_USER_LOGIN)
+            remove(KEY_USER_ROLE)
         }
-    }
-
-    override fun getCurrentUserId(): Long {
-        return preferences.getLong(KEY_USER_ID, -1)
-    }
-
-    override fun getCurrentUserLogin(): String {
-        return preferences.getString(KEY_USER_LOGIN, "").orEmpty()
-    }
-
-    override fun getCurrentUserName(): String {
-        return preferences.getString(KEY_USER_NAME, "").orEmpty()
     }
 
     private inline fun edit(block: SharedPreferences.Editor.() -> Unit) {

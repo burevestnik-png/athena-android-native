@@ -10,8 +10,8 @@ interface UserRepository {
     suspend fun requestSignOut()
     suspend fun requestRefresh()
 
-    fun cacheUser(user: User)
-    fun getCachedUser(): User
+    fun cacheUser(user: UserV2)
+    fun getCachedUser(): UserV2
 
     fun cacheTokens(tokens: Tokens)
 

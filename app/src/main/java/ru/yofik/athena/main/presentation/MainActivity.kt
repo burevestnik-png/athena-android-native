@@ -18,6 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.yofik.athena.R
 import ru.yofik.athena.common.domain.model.users.User
+import ru.yofik.athena.common.domain.model.users.UserV2
 import ru.yofik.athena.common.presentation.customViews.avatarView.AvatarView
 import ru.yofik.athena.databinding.ActivityMainBinding
 import timber.log.Timber
@@ -122,12 +123,12 @@ class MainActivity : AppCompatActivity() {
         navController.graph = navGraph
     }
 
-    private fun setupDrawerHeader(user: User) {
+    private fun setupDrawerHeader(user: UserV2) {
         Timber.d("setupDrawerHeader: $user")
         val header = binding.navigationView.getHeaderView(0)
         with(header) {
-            findViewById<AvatarView>(R.id.avatar_view).apply { text = user.name }
-            findViewById<TextView>(R.id.name).apply { text = user.name }
+            findViewById<AvatarView>(R.id.avatar_view).apply { text = user.email }
+            findViewById<TextView>(R.id.name).apply { text = user.email }
             findViewById<TextView>(R.id.login).apply { text = user.login }
         }
     }

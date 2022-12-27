@@ -60,11 +60,11 @@ constructor(
 
     override fun cacheTokens(tokens: Tokens) = preferences.putTokens(tokens)
 
-    override fun cacheUser(user: User) {
+    override fun cacheUser(user: UserV2) {
         preferences.putCurrentUser(user)
     }
 
-    override fun getCachedUser(): User {
+    override fun getCachedUser(): UserV2 {
         return preferences.getCurrentUser()
     }
 

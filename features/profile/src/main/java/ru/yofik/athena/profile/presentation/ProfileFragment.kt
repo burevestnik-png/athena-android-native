@@ -4,7 +4,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
-import ru.yofik.athena.common.domain.model.users.User
+import ru.yofik.athena.common.domain.model.users.UserV2
 import ru.yofik.athena.common.presentation.components.base.BaseFragment
 import ru.yofik.athena.common.presentation.components.extensions.fragment.launchViewModelsFlow
 import ru.yofik.athena.common.presentation.components.extensions.fragment.navigate
@@ -30,9 +30,7 @@ class ProfileFragment :
     }
 
     private fun listenToLogoutButton() {
-        binding.logoutButton.setOnClickListener {
-            requestLogoutUser()
-        }
+        binding.logoutButton.setOnClickListener { requestLogoutUser() }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -57,18 +55,17 @@ class ProfileFragment :
 
     private fun reactTo(effect: ProfileFragmentViewEffect) {
         when (effect) {
-            is ProfileFragmentViewEffect.NavigateToLoginScreen -> navigate(Route.build {
-                screen = Routes.LOGIN
-            })
+            is ProfileFragmentViewEffect.NavigateToLoginScreen ->
+                navigate(Route.build { screen = Routes.LOGIN })
             is ProfileFragmentViewEffect.ProvideUserInfo -> handleProvidingUserInfo(effect.user)
         }
     }
 
-    private fun handleProvidingUserInfo(user: User) {
+    private fun handleProvidingUserInfo(user: UserV2) {
         binding.apply {
-            userName.text = user.name
+            userName.text = user.email
             userLogin.text = getString(R.string.user_login, user.login)
-            avatar.text = user.name
+            avatar.text = user.email
         }
     }
 

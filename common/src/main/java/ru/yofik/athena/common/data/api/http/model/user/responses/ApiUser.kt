@@ -13,6 +13,6 @@ data class ApiUser(
     @field:Json(name = "role") val role: Role?,
     @field:Json(name = "isLocked") val isLocked: Boolean?,
     @field:Json(name = "lockReason") val lockReason: String?,
-    @field:Json(name = "credentialsExpirationTime") val credentialsExpirationTime: LocalDateTime?,
-    @field:Json(name = "lastLoginDate") val lastLoginDate: LocalDateTime?,
+    @field:Json(name = "credentialsExpirationDate") val credentialsExpirationDate: String?,
+    @field:Json(name = "lastLoginDate") val lastLoginDate: String?,
 )

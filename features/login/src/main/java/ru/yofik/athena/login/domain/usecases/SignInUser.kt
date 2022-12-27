@@ -10,7 +10,6 @@ class SignInUser @Inject constructor(private val userRepository: UserRepository)
         userRepository.cacheTokens(tokens)
 
         val user = userRepository.requestGetCurrentUser()
-        Timber.d(user.toString())
-        //        userRepository.cacheUser(user)
+        userRepository.cacheUser(user)
     }
 }

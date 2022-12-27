@@ -1,6 +1,7 @@
 package ru.yofik.athena.common.domain.model.users
 
-import java.time.LocalDateTime
+import org.threeten.bp.LocalDateTime
+
 
 /** Basic entity object which represents user who logged in messenger */
 @Deprecated(message = "Old user")
@@ -22,6 +23,6 @@ data class UserV2(
     val role: Role,
     val isLocked: Boolean,
     val lockReason: String,
-    val credentialsExpirationTime: LocalDateTime,
+    val credentialsExpirationDate: LocalDateTime,
     val lastLoginDate: LocalDateTime,
 )
