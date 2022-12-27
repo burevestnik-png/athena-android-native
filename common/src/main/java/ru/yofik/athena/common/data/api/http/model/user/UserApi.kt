@@ -4,35 +4,23 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
-import ru.yofik.athena.common.data.api.ApiHttpConstants
 import ru.yofik.athena.common.data.api.ApiParameters
-import ru.yofik.athena.common.data.api.http.model.user.requests.ActivateUserRequest
-import ru.yofik.athena.common.data.api.http.model.user.requests.ActivateUserRequestV2
-import ru.yofik.athena.common.data.api.http.model.user.requests.AuthUserRequest
-import ru.yofik.athena.common.data.api.http.model.user.responses.ActivateUserResponse
-import ru.yofik.athena.common.data.api.http.model.user.responses.ActivateUserResponseV2
-import ru.yofik.athena.common.data.api.http.model.user.responses.AuthUserResponse
-import ru.yofik.athena.common.data.api.http.model.user.responses.AuthUserResponseV2
+import ru.yofik.athena.common.data.api.AuthServiceEndpoints
+import ru.yofik.athena.common.data.api.http.model.common.responses.Response
+import ru.yofik.athena.common.data.api.http.model.user.apiEntity.ApiTokens
+import ru.yofik.athena.common.data.api.http.model.user.requests.RefreshUserAccessRequest
+import ru.yofik.athena.common.data.api.http.model.user.requests.SignInUserRequest
+import ru.yofik.athena.common.data.api.http.model.user.responses.ApiUser
 
 interface UserApi {
-    @Deprecated(message = "Old auth")
-    @POST(ApiHttpConstants.ACTIVATE_ENDPOINT)
+    @POST(AuthServiceEndpoints.SIGN_IN_USER)
     @Headers(ApiParameters.NO_AUTH_HEADER_FULL)
-    suspend fun activate(
-        @Body request: ActivateUserRequest,
-    ): ActivateUserResponse
+    suspend fun signInUser(@Body request: SignInUserRequest): Response<ApiTokens>
 
-    @POST(ApiHttpConstants.ACTIVATE_ENDPOINT)
-    @Headers(ApiParameters.NO_AUTH_HEADER_FULL)
-    suspend fun activateV2(
-        @Body request: ActivateUserRequestV2,
-    ): ActivateUserResponseV2
+    @POST(AuthServiceEndpoints.SIGN_OUT_USER) suspend fun signOutUser()
 
-    @Deprecated(message = "Old auth")
-    @POST(ApiHttpConstants.AUTHORIZATION_ENDPOINT)
-    @Headers(ApiParameters.NO_AUTH_HEADER_FULL)
-    suspend fun auth(@Body request: AuthUserRequest): AuthUserResponse
+    @POST(AuthServiceEndpoints.REFRESH_USER_ACCESS)
+    suspend fun refreshUserAccess(@Body request: RefreshUserAccessRequest): Response<ApiTokens>
 
-    @GET(ApiHttpConstants.AUTHORIZATION_ENDPOINT)
-    suspend fun getUserInfo(): AuthUserResponseV2
+    @GET(AuthServiceEndpoints.GET_CURRENT_USER) suspend fun getUserInfo(): Response<ApiUser>
 }

@@ -1,6 +1,5 @@
 package ru.yofik.athena.login.presentation
 
-import android.util.Log
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
@@ -41,15 +40,17 @@ class LoginFragment :
     }
 
     private fun setOnUserIdChangeListener() {
-        binding.userIdInput.editText?.doAfterTextChanged { onUserIdValueChange(it?.toString() ?: "") }
+        binding.userIdInput.editText?.doAfterTextChanged {
+            onUserIdValueChange(it?.toString() ?: "")
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // STATE OBSERVING
     ///////////////////////////////////////////////////////////////////////////
 
-    override fun observeViewState() {
-        launchViewModelsFlow { viewModel.state.collect { updateScreenState(it) } }
+    override fun observeViewState() = launchViewModelsFlow {
+        viewModel.state.collect { updateScreenState(it) }
     }
 
     private fun updateScreenState(state: UIState<LoginViewStatePayload>) {
@@ -66,24 +67,22 @@ class LoginFragment :
     // EFFECT OBSERVING
     ///////////////////////////////////////////////////////////////////////////
 
-    override fun observeViewEffects() {
-        launchViewModelsFlow { viewModel.effects.collect { reactTo(it) } }
+    override fun observeViewEffects() = launchViewModelsFlow {
+        viewModel.effects.collect { reactTo(it) }
     }
 
-    private fun reactTo(effect: LoginViewEffect) {
+    private fun reactTo(effect: LoginViewEffect) =
         when (effect) {
-            is LoginViewEffect.NavigateToChatListPage -> navigate(Route.build {
-                screen = Routes.CHAT_LIST
-            })
+            is LoginViewEffect.NavigateToChatListPage ->
+                navigate(Route.build { screen = Routes.CHAT_LIST })
         }
-    }
 
     ///////////////////////////////////////////////////////////////////////////
     // ON EVENT WRAPPERS
     ///////////////////////////////////////////////////////////////////////////
 
     private fun requestUserActivation() {
-        viewModel.onEvent(LoginEvent.RequestUserActivation)
+        viewModel.onEvent(LoginEvent.RequestUserSignIn)
     }
 
     private fun onCodeValueChange(value: String) {

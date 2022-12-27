@@ -14,7 +14,7 @@ import javax.inject.Inject
 internal class AuthenticationInterceptor @Inject constructor(private val preferences: Preferences) :
     Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        val accessToken = preferences.getAccessToken()
+        val accessToken = preferences.getTokens().accessToken
         Timber.d("token $accessToken")
         val request = chain.request()
 

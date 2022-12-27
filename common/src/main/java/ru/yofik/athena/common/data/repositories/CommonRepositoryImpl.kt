@@ -11,6 +11,6 @@ constructor(private val cache: Cache, private val preferences: Preferences) : Co
     override suspend fun removeAllCache() {
         cache.cleanup()
         preferences.removeCurrentUser()
-        preferences.removeAccessToken()
+        preferences.removeTokens()
     }
 }

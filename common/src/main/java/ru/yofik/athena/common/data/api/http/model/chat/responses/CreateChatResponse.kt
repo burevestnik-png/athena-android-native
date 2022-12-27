@@ -3,7 +3,7 @@ package ru.yofik.athena.common.data.api.http.model.chat.responses
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import ru.yofik.athena.common.data.api.http.model.chat.apiEntity.ApiChat
-import ru.yofik.athena.common.data.api.http.model.common.responses.Response
+import ru.yofik.athena.common.data.api.http.model.common.responses.DeprecatedResponse
 import ru.yofik.athena.common.data.api.http.model.common.responses.ResponseStatus
 
 @JsonClass(generateAdapter = true)
@@ -12,7 +12,7 @@ class CreateChatResponse(
     code: String,
     status: ResponseStatus
 ) :
-    Response(
+    DeprecatedResponse(
         code,
         status,
     )

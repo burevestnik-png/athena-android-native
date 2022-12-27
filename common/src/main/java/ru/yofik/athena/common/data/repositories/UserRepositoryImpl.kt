@@ -1,65 +1,64 @@
 package ru.yofik.athena.common.data.repositories
 
+import javax.inject.Inject
 import retrofit2.HttpException
-import ru.yofik.athena.common.data.api.http.model.common.mappers.ApiUserMapper
-import ru.yofik.athena.common.data.api.http.model.common.mappers.ApiUserMapperV2
 import ru.yofik.athena.common.data.api.http.model.user.UserApi
-import ru.yofik.athena.common.data.api.http.model.user.mappers.ApiAccessTokenMapper
-import ru.yofik.athena.common.data.api.http.model.user.requests.ActivateUserRequest
-import ru.yofik.athena.common.data.api.http.model.user.requests.ActivateUserRequestV2
-import ru.yofik.athena.common.data.api.http.model.user.requests.AuthUserRequest
+import ru.yofik.athena.common.data.api.http.model.user.mappers.ApiTokensMapper
+import ru.yofik.athena.common.data.api.http.model.user.mappers.ApiUserMapper
+import ru.yofik.athena.common.data.api.http.model.user.requests.SignInUserRequest
 import ru.yofik.athena.common.data.preferences.Preferences
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
+import ru.yofik.athena.common.domain.model.users.Tokens
 import ru.yofik.athena.common.domain.model.users.User
+import ru.yofik.athena.common.domain.model.users.UserV2
 import ru.yofik.athena.common.domain.repositories.UserRepository
 import timber.log.Timber
-import javax.inject.Inject
 
 class UserRepositoryImpl
 @Inject
 constructor(
-    private val preferences: Preferences,
     private val userApi: UserApi,
-    private val apiAccessTokenMapper: ApiAccessTokenMapper,
-    private val apiUserMapper: ApiUserMapperV2,
+    private val preferences: Preferences,
+    private val apiUserMapper: ApiUserMapper,
+    private val apiTokensMapper: ApiTokensMapper,
 ) : UserRepository {
 
     ///////////////////////////////////////////////////////////////////////////
     // NETWORK
     ///////////////////////////////////////////////////////////////////////////
 
-    override suspend fun requestUserActivation(code: String, userId: Long): String {
-        try {
-            val request = ActivateUserRequestV2(code, userId)
-            val response = userApi.activateV2(request)
-
-            val accessToken = apiAccessTokenMapper.mapToDomain(response.payload)
-            Timber.d("Got accessToken $accessToken")
-
-            return accessToken
-        } catch (exception: HttpException) {
-            // TODO add exception parse
-            throw NetworkException(exception.message ?: "Code ${exception.code()}")
-        }
-    }
-
-    override suspend fun requestGetUserInfo(): User {
+    override suspend fun requestGetCurrentUser(): UserV2 {
         try {
             val response = userApi.getUserInfo()
 
-            val user = apiUserMapper.mapToDomain(response.payload)
-            Timber.d("Got currentUser $user")
-
-            return user
+            return apiUserMapper.mapToDomain(response.payload)
         } catch (exception: HttpException) {
             // TODO add exception parse
             throw NetworkException(exception.message ?: "Code ${exception.code()}")
         }
     }
+
+    override suspend fun requestSignIn(code: String, userId: Long): Tokens {
+        try {
+            val request = SignInUserRequest(code, userId)
+            val response = userApi.signInUser(request)
+
+            return apiTokensMapper.mapToDomain(response.payload)
+        } catch (exception: HttpException) {
+            // TODO add exception parse
+            throw NetworkException(exception.message ?: "Code ${exception.code()}")
+        }
+    }
+
+    override suspend fun requestSignOut() {}
+
+    override suspend fun requestRefresh() {}
 
     ///////////////////////////////////////////////////////////////////////////
     // CACHE
     ///////////////////////////////////////////////////////////////////////////
+
+    override fun cacheTokens(tokens: Tokens) = preferences.putTokens(tokens)
 
     override fun cacheUser(user: User) {
         preferences.putCurrentUser(user)
@@ -69,21 +68,18 @@ constructor(
         return preferences.getCurrentUser()
     }
 
-    override fun cacheAccessToken(token: String) {
-        preferences.putAccessToken(token)
-    }
-
     override fun removeAllCache() {
-        preferences.removeAccessToken()
+        preferences.removeTokens()
         preferences.removeCurrentUser()
     }
 
     override fun hasAccess(): Boolean {
-        return with(preferences) {
-            getAccessToken().isNotEmpty() &&
-                getCurrentUserId() != -1L &&
-                getCurrentUserLogin().isNotEmpty() &&
-                getCurrentUserName().isNotEmpty()
-        }
+        return false
+        //        return with(preferences) {
+        //            getAccessToken().isNotEmpty() &&
+        //                getCurrentUserId() != -1L &&
+        //                getCurrentUserLogin().isNotEmpty() &&
+        //                getCurrentUserName().isNotEmpty()
+        //        }
     }
 }

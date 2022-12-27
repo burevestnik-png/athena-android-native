@@ -45,13 +45,13 @@ internal object ApiModule {
 
     @Provides
     @Singleton
-    fun provideChatApi(@MessengerRetrofit builder: Retrofit.Builder): ChatApi {
+    fun provideChatApi(@MessengerRetrofit builder: Builder): ChatApi {
         return builder.build().create(ChatApi::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideUserProfileApi(@MessengerRetrofit builder: Retrofit.Builder): UserProfileApi {
+    fun provideUserProfileApi(@MessengerRetrofit builder: Builder): UserProfileApi {
         return builder.build().create(UserProfileApi::class.java)
     }
 
@@ -69,18 +69,18 @@ internal object ApiModule {
 
     @Provides
     @MessengerRetrofit
-    fun provideMessengerRetrofit(okHttpClient: OkHttpClient): Retrofit.Builder {
-        return Retrofit.Builder()
-            .baseUrl(ApiHttpConstants.BASE_ENDPOINT_MESSENGER)
+    fun provideMessengerRetrofit(okHttpClient: OkHttpClient): Builder {
+        return Builder()
+            .baseUrl(ApiHttpConstants.BASE_URL_MESSENGER_SERVICE)
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create())
     }
 
     @Provides
     @AuthRetrofit
-    fun provideAuthRetrofit(okHttpClient: OkHttpClient): Retrofit.Builder {
-        return Retrofit.Builder()
-            .baseUrl(ApiHttpConstants.BASE_ENDPOINT_AUTH)
+    fun provideAuthRetrofit(okHttpClient: OkHttpClient): Builder {
+        return Builder()
+            .baseUrl(ApiHttpConstants.BASE_URL_AUTH_SERVICE)
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create())
     }
@@ -124,7 +124,7 @@ internal object ApiModule {
                 .pingInterval(60, TimeUnit.SECONDS)
                 .build()
 
-        val accessToken = preferences.getAccessToken()
+        val accessToken = preferences.getTokens().accessToken
         val request =
             Request.Builder()
                 .url(ApiWsConstants.WS_NOTIFICATION_ENDPOINT)

@@ -3,26 +3,36 @@ package ru.yofik.athena.common.data.preferences
 import android.content.Context
 import android.content.SharedPreferences
 import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_ACCESS_TOKEN
+import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_EXPIRES_IN
+import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_REFRESH_TOKEN
 import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_USER_ID
 import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_USER_LOGIN
 import ru.yofik.athena.common.data.preferences.PreferencesConstants.KEY_USER_NAME
+import ru.yofik.athena.common.domain.model.users.Tokens
 import ru.yofik.athena.common.domain.model.users.User
-import javax.inject.Inject
 
 class MessengerPreferences @Inject constructor(@ApplicationContext context: Context) : Preferences {
     private val preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
 
-    override fun putAccessToken(accessToken: String) {
-        edit { putString(KEY_ACCESS_TOKEN, accessToken) }
+    override fun putTokens(tokens: Tokens) = edit {
+        putString(KEY_ACCESS_TOKEN, tokens.accessToken)
+        putString(KEY_REFRESH_TOKEN, tokens.refreshToken)
+        putLong(KEY_EXPIRES_IN, tokens.expiresIn)
     }
 
-    override fun getAccessToken(): String {
-        return preferences.getString(KEY_ACCESS_TOKEN, "").orEmpty()
-    }
+    override fun getTokens(): Tokens =
+        Tokens(
+            accessToken = preferences.getString(KEY_ACCESS_TOKEN, "").orEmpty(),
+            refreshToken = preferences.getString(KEY_REFRESH_TOKEN, "").orEmpty(),
+            expiresIn = preferences.getLong(KEY_EXPIRES_IN, -1)
+        )
 
-    override fun removeAccessToken() {
-        edit { remove(KEY_ACCESS_TOKEN) }
+    override fun removeTokens() = edit {
+        remove(KEY_ACCESS_TOKEN)
+        remove(KEY_REFRESH_TOKEN)
+        remove(KEY_EXPIRES_IN)
     }
 
     override fun putCurrentUser(user: User) {

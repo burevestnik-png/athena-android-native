@@ -1,6 +1,7 @@
 package ru.yofik.athena.login.presentation
 
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -10,16 +11,13 @@ import ru.yofik.athena.common.domain.model.exceptions.NetworkUnavailableExceptio
 import ru.yofik.athena.common.presentation.components.base.BaseViewModel
 import ru.yofik.athena.common.presentation.model.Event
 import ru.yofik.athena.login.R
-import ru.yofik.athena.login.domain.usecases.RequestUserActivation
-import ru.yofik.athena.login.domain.usecases.RequestUserInfo
-import javax.inject.Inject
+import ru.yofik.athena.login.domain.usecases.SignInUser
 
 @HiltViewModel
 class LoginFragmentViewModel
 @Inject
 constructor(
-    private val requestUserInfo: RequestUserInfo,
-    private val requestUserActivation: RequestUserActivation,
+    private val signInUser: SignInUser,
 ) : BaseViewModel<LoginViewStatePayload>(LoginViewStatePayload()) {
 
     companion object {
@@ -33,16 +31,15 @@ constructor(
     // ON EVENT
     ///////////////////////////////////////////////////////////////////////////
 
-    fun onEvent(event: LoginEvent) {
+    fun onEvent(event: LoginEvent) =
         when (event) {
-            is LoginEvent.RequestUserActivation -> onUserActivation()
+            is LoginEvent.RequestUserSignIn -> onUserActivation()
             is LoginEvent.OnCodeValueChange -> onCodeValueChange(event.value)
             is LoginEvent.OnUserIdValueChange -> onUserIdValueChanged(event.value)
         }
-    }
 
-    private fun onUserIdValueChanged(newValue: String) {
-        modifyState { payload -> payload.copy(userId = newValue.toLongOrNull() ?: 0) }
+    private fun onUserIdValueChanged(newValue: String) = modifyState { payload ->
+        payload.copy(userId = newValue.toLongOrNull() ?: 0)
     }
 
     private fun onCodeValueChange(newValue: String) {
@@ -63,8 +60,8 @@ constructor(
 
         launchIORequest {
             withContext(Dispatchers.IO) {
-                requestUserActivation(payload.code, payload.userId)
-                requestUserInfo()
+                signInUser(payload.code, payload.userId)
+//                requestUserInfo()
             }
 
             hideLoader()
@@ -76,8 +73,7 @@ constructor(
         when (throwable) {
             // todo add to all handlers
             is NetworkUnavailableException,
-            is NetworkException,
-            -> {
+            is NetworkException, -> {
                 modifyState(loading = false, failure = Event(throwable))
             }
         }
