@@ -5,6 +5,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.WebSocket
@@ -124,7 +125,7 @@ internal object ApiModule {
                 .pingInterval(60, TimeUnit.SECONDS)
                 .build()
 
-        val accessToken = preferences.getTokens().accessToken
+        val accessToken = runBlocking { preferences.getTokens().accessToken }
         val request =
             Request.Builder()
                 .url(ApiWsConstants.WS_NOTIFICATION_ENDPOINT)

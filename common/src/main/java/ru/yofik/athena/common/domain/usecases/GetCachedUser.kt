@@ -6,7 +6,7 @@ import ru.yofik.athena.common.domain.repositories.UserRepository
 import javax.inject.Inject
 
 class GetCachedUser @Inject constructor(private val userRepository: UserRepository) {
-    operator fun invoke(): UserV2 {
+    suspend operator fun invoke(): UserV2 {
         return userRepository.getCachedUser()
     }
 }

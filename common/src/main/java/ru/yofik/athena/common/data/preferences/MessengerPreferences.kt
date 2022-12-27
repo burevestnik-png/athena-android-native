@@ -20,26 +20,26 @@ import ru.yofik.athena.common.domain.model.users.UserV2
 class MessengerPreferences @Inject constructor(@ApplicationContext context: Context) : Preferences {
     private val preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
 
-    override fun putTokens(tokens: Tokens) = edit {
+    override suspend fun putTokens(tokens: Tokens) = edit {
         putString(KEY_ACCESS_TOKEN, tokens.accessToken)
         putString(KEY_REFRESH_TOKEN, tokens.refreshToken)
         putLong(KEY_EXPIRES_IN, tokens.expiresIn)
     }
 
-    override fun getTokens(): Tokens =
+    override suspend fun getTokens(): Tokens =
         Tokens(
             accessToken = preferences.getString(KEY_ACCESS_TOKEN, "").orEmpty(),
             refreshToken = preferences.getString(KEY_REFRESH_TOKEN, "").orEmpty(),
             expiresIn = preferences.getLong(KEY_EXPIRES_IN, -1)
         )
 
-    override fun removeTokens() = edit {
+    override suspend fun removeTokens() = edit {
         remove(KEY_ACCESS_TOKEN)
         remove(KEY_REFRESH_TOKEN)
         remove(KEY_EXPIRES_IN)
     }
 
-    override fun putCurrentUser(user: UserV2) =
+    override suspend fun putCurrentUser(user: UserV2) =
         with(user) {
             edit {
                 putLong(KEY_USER_ID, id)
@@ -49,7 +49,7 @@ class MessengerPreferences @Inject constructor(@ApplicationContext context: Cont
             }
         }
 
-    override fun getCurrentUser(): UserV2 =
+    override suspend fun getCurrentUser(): UserV2 =
         with(preferences) {
             UserV2(
                 id = getLong(KEY_USER_ID, -1),
@@ -63,7 +63,7 @@ class MessengerPreferences @Inject constructor(@ApplicationContext context: Cont
             )
         }
 
-    override fun removeCurrentUser() {
+    override suspend fun removeCurrentUser() {
         edit {
             remove(KEY_USER_ID)
             remove(KEY_USER_EMAIL)

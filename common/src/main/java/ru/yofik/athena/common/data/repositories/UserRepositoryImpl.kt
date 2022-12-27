@@ -9,10 +9,8 @@ import ru.yofik.athena.common.data.api.http.model.user.requests.SignInUserReques
 import ru.yofik.athena.common.data.preferences.Preferences
 import ru.yofik.athena.common.domain.model.exceptions.NetworkException
 import ru.yofik.athena.common.domain.model.users.Tokens
-import ru.yofik.athena.common.domain.model.users.User
 import ru.yofik.athena.common.domain.model.users.UserV2
 import ru.yofik.athena.common.domain.repositories.UserRepository
-import timber.log.Timber
 
 class UserRepositoryImpl
 @Inject
@@ -58,17 +56,17 @@ constructor(
     // CACHE
     ///////////////////////////////////////////////////////////////////////////
 
-    override fun cacheTokens(tokens: Tokens) = preferences.putTokens(tokens)
+    override suspend fun cacheTokens(tokens: Tokens) = preferences.putTokens(tokens)
 
-    override fun cacheUser(user: UserV2) {
+    override suspend fun cacheUser(user: UserV2) {
         preferences.putCurrentUser(user)
     }
 
-    override fun getCachedUser(): UserV2 {
+    override suspend fun getCachedUser(): UserV2 {
         return preferences.getCurrentUser()
     }
 
-    override fun removeAllCache() {
+    override suspend fun removeAllCache() {
         preferences.removeTokens()
         preferences.removeCurrentUser()
     }

@@ -1,8 +1,10 @@
 package ru.yofik.athena.profile.presentation
 
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.launch
 import ru.yofik.athena.common.presentation.components.base.BaseViewModel
 import ru.yofik.athena.common.presentation.model.EmptyPayload
 import ru.yofik.athena.common.domain.usecases.GetCachedUser
@@ -39,8 +41,10 @@ constructor(private val logoutUser: LogoutUser, private val getCachedUser: GetCa
     private fun provideUserInfo() {
         showLoader()
 
-        val user = getCachedUser()
-        _effects.tryEmit(ProfileFragmentViewEffect.ProvideUserInfo(user))
+        viewModelScope.launch {
+            val user = getCachedUser()
+            _effects.emit(ProfileFragmentViewEffect.ProvideUserInfo(user))
+        }
 
         hideLoader()
     }

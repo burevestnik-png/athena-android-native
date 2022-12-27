@@ -1,5 +1,6 @@
 package ru.yofik.athena.common.data.api.http.interceptors
 
+import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -14,7 +15,7 @@ import javax.inject.Inject
 internal class AuthenticationInterceptor @Inject constructor(private val preferences: Preferences) :
     Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        val accessToken = preferences.getTokens().accessToken
+        val accessToken = runBlocking { preferences.getTokens().accessToken }
         Timber.d("token $accessToken")
         val request = chain.request()
 

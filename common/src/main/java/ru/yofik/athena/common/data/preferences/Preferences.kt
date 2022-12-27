@@ -1,15 +1,14 @@
 package ru.yofik.athena.common.data.preferences
 
 import ru.yofik.athena.common.domain.model.users.Tokens
-import ru.yofik.athena.common.domain.model.users.User
 import ru.yofik.athena.common.domain.model.users.UserV2
 
 interface Preferences {
-    fun putTokens(tokens: Tokens)
-    fun getTokens(): Tokens
-    fun removeTokens()
+    suspend fun putTokens(tokens: Tokens)
+    suspend fun getTokens(): Tokens
+    suspend fun removeTokens()
 
-    fun putCurrentUser(user: UserV2)
-    fun getCurrentUser(): UserV2
-    fun removeCurrentUser()
+    suspend fun putCurrentUser(user: UserV2)
+    suspend fun getCurrentUser(): UserV2
+    suspend fun removeCurrentUser()
 }

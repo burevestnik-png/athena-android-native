@@ -4,7 +4,7 @@ import ru.yofik.athena.common.domain.repositories.UserRepository
 import javax.inject.Inject
 
 class GetCurrentUserId @Inject constructor(private val userRepository: UserRepository) {
-    operator fun invoke(): Long {
+    suspend operator fun invoke(): Long {
         return userRepository.getCachedUser().id
     }
 }
