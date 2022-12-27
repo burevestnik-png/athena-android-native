@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.yofik.athena.common.domain.model.exceptions.NoMoreItemsException
 import ru.yofik.athena.common.domain.model.pagination.Pagination
-import ru.yofik.athena.common.domain.model.users.User
+import ru.yofik.athena.common.domain.model.users.UserV2
 import ru.yofik.athena.common.presentation.components.base.BaseViewModel
 import ru.yofik.athena.common.presentation.model.Event
 import ru.yofik.athena.common.presentation.model.UIState
@@ -73,11 +73,11 @@ constructor(
         }
     }
 
-    private fun hasNoUsersStoredButCanLoadMore(users: List<User>): Boolean {
+    private fun hasNoUsersStoredButCanLoadMore(users: List<UserV2>): Boolean {
         return users.isEmpty() && !state.value.payload.noMoreUsersAnymore
     }
 
-    private fun onNewUsersList(users: List<User>) {
+    private fun onNewUsersList(users: List<UserV2>) {
         val userFromServer = users.map(uiUserMapper::mapToView)
 
         val currentUsers = state.value.payload.users

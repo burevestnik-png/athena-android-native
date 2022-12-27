@@ -2,8 +2,9 @@ package ru.yofik.athena.common.data.api.http.model.message
 
 import retrofit2.http.*
 import ru.yofik.athena.common.data.api.ApiHttpConstants
+import ru.yofik.athena.common.data.api.http.model.common.responses.Response
 import ru.yofik.athena.common.data.api.http.model.message.requests.SendMessageRequest
-import ru.yofik.athena.common.data.api.http.model.message.responses.GetPaginatedMessagesResponse
+import ru.yofik.athena.common.data.api.http.model.message.responses.GetPaginatedMessagesResponsePayload
 
 interface MessageApi {
     @POST("${ApiHttpConstants.CHATS_ENDPOINT}/{chatId}/messages/")
@@ -17,7 +18,7 @@ interface MessageApi {
         @Path("chatId") chatId: Long,
         @Query("sequentialNumber") sequentialNumber: Int,
         @Query("size") size: Int
-    ): GetPaginatedMessagesResponse
+    ): Response<GetPaginatedMessagesResponsePayload>
 
     @DELETE("${ApiHttpConstants.CHATS_ENDPOINT}/{chatId}/messages/{messageId}")
     suspend fun deleteDefiniteMessage(

@@ -17,7 +17,6 @@ import androidx.navigation.ui.setupWithNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.yofik.athena.R
-import ru.yofik.athena.common.domain.model.users.User
 import ru.yofik.athena.common.domain.model.users.UserV2
 import ru.yofik.athena.common.presentation.customViews.avatarView.AvatarView
 import ru.yofik.athena.databinding.ActivityMainBinding

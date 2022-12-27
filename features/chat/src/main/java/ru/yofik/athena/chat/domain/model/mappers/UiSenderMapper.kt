@@ -10,6 +10,6 @@ class UiSenderMapper @Inject constructor() : UiMapper<Pair<Message, UiChat>, Str
     override fun mapToView(model: Pair<Message, UiChat>): String {
         val (message, chat) = model
         Timber.d("mapToView: ${chat.users}")
-        return chat.users.first { it.id == message.senderId }.name
+        return chat.users.first { it.id == message.senderId }.email
     }
 }

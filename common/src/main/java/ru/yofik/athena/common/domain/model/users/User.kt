@@ -2,15 +2,6 @@ package ru.yofik.athena.common.domain.model.users
 
 import org.threeten.bp.LocalDateTime
 
-
-/** Basic entity object which represents user who logged in messenger */
-@Deprecated(message = "Old user")
-data class User(
-    val id: Long,
-    val name: String,
-    val login: String,
-)
-
 enum class Role {
     USER,
     ADMIN

@@ -1,7 +1,7 @@
 package ru.yofik.athena.common.domain.model.chat
 
 import ru.yofik.athena.common.domain.model.message.Message
-import ru.yofik.athena.common.domain.model.users.User
+import ru.yofik.athena.common.domain.model.users.UserV2
 
 enum class ChatType {
     PERSONAL,
@@ -12,7 +12,7 @@ data class Chat(
     val id: Long,
     val type: ChatType,
     val name: String,
-    val users: List<User>,
+    val users: List<UserV2>,
     val lastMessage: Message
 ) {
     val isEmpty: Boolean
@@ -24,7 +24,7 @@ data class Chat(
     companion object {
         private const val NULLABLE_ID = -1L
 
-        fun empty(id: Long, type: ChatType, name: String, users: List<User>): Chat {
+        fun empty(id: Long, type: ChatType, name: String, users: List<UserV2>): Chat {
             return Chat(
                 id = id,
                 type = type,
